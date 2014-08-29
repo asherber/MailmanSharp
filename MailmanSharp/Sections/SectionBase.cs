@@ -83,7 +83,7 @@ namespace MailmanSharp.Sections
             var val = prop.GetValue(this, null);
             if (prop.PropertyType == typeof(bool))
                 return Convert.ToInt32(val);
-            if (prop.PropertyType == typeof(List<string>))
+            else if (prop.PropertyType == typeof(List<string>))
                 return String.Join("\n", (List<string>)val);
             else
                 return val;
@@ -106,17 +106,6 @@ namespace MailmanSharp.Sections
             
             return result;
         }
-
-        
-        
-        /*
-        private void AddToken(RestRequest req)
-        {
-            var doc = GetHtmlDocument();
-            var node = doc.DocumentNode.SafeSelectNodes("//input[@name='csrf_token']").SingleOrDefault();
-            if (node != default(HtmlNode))
-                req.AddParameter("csrf_token", node.GetAttributeValue("value", null));
-        }  //*/
 
         protected List<HtmlDocument> GetHtmlDocuments()
         {
@@ -143,11 +132,8 @@ namespace MailmanSharp.Sections
             var dname = prop.Name.Decamel();
             string xpath = String.Format("//input[@name='{0}']", dname);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
-            
-            if (node != default(HtmlNode))
-                return node.GetAttributeValue("value", null);
-            else
-                return null;
+
+            return node != null ? node.GetAttributeValue("value", null) : null;
         }
 
         protected object GetNodeStringValue(HtmlDocument doc, PropertyInfo prop)
@@ -158,19 +144,13 @@ namespace MailmanSharp.Sections
         protected object GetNodeIntValue(HtmlDocument doc, PropertyInfo prop)
         {
             var val = GetNodeValue(doc, prop);
-            if (val != null)
-                return ushort.Parse(val.ToString());
-            else
-                return null;
+            return val != null ? (object)ushort.Parse(val.ToString()) : null;
         }
 
         protected object GetNodeDoubleValue(HtmlDocument doc, PropertyInfo prop)
         {
             var val = GetNodeValue(doc, prop);
-            if (val != null)
-                return double.Parse(val.ToString());
-            else
-                return null;
+            return val != null ? (object)double.Parse(val.ToString()) : null;
         }
 
         protected List<string> GetNodeListValue(HtmlDocument doc, PropertyInfo prop)
@@ -194,11 +174,8 @@ namespace MailmanSharp.Sections
             var dname = prop.Name.Decamel();
             string xpath = String.Format("//input[@name='{0}' and @checked]", dname);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).SingleOrDefault();
-            
-            if (node != default(HtmlNode))
-                return Convert.ToBoolean(node.GetAttributeValue("value", 0));
-            else
-                return null;
+
+            return node != null ? (object)Convert.ToBoolean(node.GetAttributeValue("value", 0)) : null;
         }
 
         protected object GetNodeEnumValue(HtmlDocument doc, PropertyInfo prop)
