@@ -9,13 +9,37 @@ namespace MailmanSharp
     public class MailmanClient: RestClient
     {
         public string ListName { get; set; }
-        public string ServerUrl { get; set; }
         public string Password { get; set; }
 
         public MailmanClient()
         {
             this.FollowRedirects = true;
             this.CookieContainer = new System.Net.CookieContainer();
+        }
+
+        public MailmanClient Clone()
+        {
+            var result = new MailmanClient()
+            {
+                ListName = this.ListName,
+                Password = this.Password,
+
+                Authenticator = this.Authenticator,
+                BaseUrl = this.BaseUrl,
+                ClientCertificates = this.ClientCertificates,
+                //CookieContainer
+                FollowRedirects = this.FollowRedirects,
+                MaxRedirects = this.MaxRedirects,
+                Proxy = this.Proxy,
+                Timeout = this.Timeout,
+                UserAgent = this.UserAgent,
+                UseSynchronizationContext = this.UseSynchronizationContext,
+            };
+
+            foreach (var param in this.DefaultParameters)
+                result.DefaultParameters.Add(param);
+
+            return result;
         }
 
         public IRestResponse ExecuteAdminRequest(string path, RestRequest request)

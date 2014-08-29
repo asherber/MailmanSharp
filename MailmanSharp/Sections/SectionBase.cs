@@ -18,7 +18,6 @@ namespace MailmanSharp.Sections
         {
             _client = list.Client;
 
-
             // Start with path on the class
             var basePath = GetPathValue(this.GetType().GetCustomAttributes(false));
 
@@ -69,6 +68,7 @@ namespace MailmanSharp.Sections
         public virtual void Write()
         {
             var props = this.GetType().GetProperties();
+            var client = _client.Clone();
 
             foreach (var path in _paths)
             {
@@ -86,7 +86,7 @@ namespace MailmanSharp.Sections
                         req.AddParameter(prop.Name.Decamel(), GetPropertyObjectValue(prop));
                 }
 
-                _client.ExecuteAdminRequest(path, req);
+                client.ExecuteAdminRequest(path, req);
             }
         }
 
@@ -127,9 +127,10 @@ namespace MailmanSharp.Sections
         protected List<PathHtmlDocument> GetHtmlDocuments()
         {
             var result = new List<PathHtmlDocument>();
+            var client = _client.Clone();
             foreach (var path in _paths)
             {
-                var resp = _client.ExecuteAdminRequest(path);
+                var resp = client.ExecuteAdminRequest(path);
                 var doc = new PathHtmlDocument();
                 doc.Path = path;
                 doc.LoadHtml(resp.Content);

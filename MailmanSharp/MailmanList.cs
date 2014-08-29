@@ -6,6 +6,9 @@ using RestSharp;
 using System.IO;
 using MailmanSharp.Sections;
 using System.Reflection;
+using System.Threading.Tasks;
+using System.Threading;
+
 
 namespace MailmanSharp
 {
@@ -36,6 +39,8 @@ namespace MailmanSharp
         public MailmanList()
         {
             this.Client = new MailmanClient();
+            ThreadPool.SetMaxThreads(10, 10);
+            ThreadPool.SetMinThreads(10, 10);
 
             // Initialize sections
             foreach (var prop in GetSectionProps())
@@ -46,7 +51,7 @@ namespace MailmanSharp
 
         public void Read()
         {
-            this.InvokeSectionMethod("Read");
+            this.InvokeSectionMethod("Read");            
         }
 
         public void Write()
@@ -57,12 +62,14 @@ namespace MailmanSharp
         private void InvokeSectionMethod(string methodName)
         {
             var method = typeof(SectionBase).GetMethod(methodName);
+            var tasks = new List<Task>();
             foreach (var prop in GetSectionProps())
             {
                 var section = prop.GetValue(this, null);
                 if (section != null)
-                    method.Invoke(section, null);
+                    tasks.Add(Task.Factory.StartNew(() => method.Invoke(section, null)));                
             }
+            Task.WaitAll(tasks.ToArray());
         }
 
         private IEnumerable<PropertyInfo> GetSectionProps()
