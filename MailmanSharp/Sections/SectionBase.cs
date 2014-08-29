@@ -35,8 +35,10 @@ namespace MailmanSharp.Sections
                     SetPropValue(prop, GetNodeIntValue(doc, prop));
                 else if (prop.PropertyType == typeof(bool))
                     SetPropValue(prop, GetNodeBoolValue(doc, prop));
-                else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))                    
+                else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
                     SetPropValue(prop, GetNodeEnumValue(doc, prop));
+                else if (prop.PropertyType == typeof(List<string>))
+                    SetPropValue(prop, GetNodeListValue(doc, prop));
             }
         }
 
@@ -64,6 +66,8 @@ namespace MailmanSharp.Sections
             var val = prop.GetValue(this, null);
             if (prop.PropertyType == typeof(bool))
                 return Convert.ToInt32(val);
+            if (prop.PropertyType == typeof(List<string>))
+                return String.Join("\n", (List<string>)val);
             else
                 return val;
         }
@@ -114,16 +118,11 @@ namespace MailmanSharp.Sections
         protected string GetNodeValue(HtmlDocument doc, PropertyInfo prop)
         {
             var dname = prop.Name.Decamel();
-            string xpath = String.Format("//input[@name='{0}']|//textarea[@name='{0}']", dname);
+            string xpath = String.Format("//input[@name='{0}']", dname);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
             
             if (node != default(HtmlNode))
-            {
-                if (node.Name == "textarea")
-                    return node.InnerText;
-                else
-                    return node.GetAttributeValue("value", null);
-            }
+                return node.GetAttributeValue("value", null);
             else
                 return null;
         }
@@ -136,6 +135,22 @@ namespace MailmanSharp.Sections
         protected ushort GetNodeIntValue(HtmlDocument doc, PropertyInfo prop)
         {
             return ushort.Parse(GetNodeValue(doc, prop));
+        }
+
+        protected List<string> GetNodeListValue(HtmlDocument doc, PropertyInfo prop)
+        {
+            var dname = prop.Name.Decamel();
+            string xpath = String.Format("//textarea[@name='{0}']", dname);
+            var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
+
+            if (node != default(HtmlNode))
+            {
+                if (String.IsNullOrEmpty(node.InnerText))
+                    return new List<string>();
+                else
+                    return node.InnerText.Split(new string[] { "\n" }, StringSplitOptions.None).ToList();
+            }
+            return null;
         }
 
         protected bool GetNodeBoolValue(HtmlDocument doc, PropertyInfo prop)

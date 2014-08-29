@@ -14,10 +14,10 @@ namespace MailmanSharp.Sections
     public class GeneralSection: SectionBase
     {
         public string RealName { get; set; }
-        public string Owner { get; set; }
-        public string Moderator { get; set; }
+        public List<string> Owner { get; set; }
+        public List<string> Moderator { get; set; }
         public string Description { get; set; }
-        public string Info { get; set; }
+        public List<string> Info { get; set; }
         public string SubjectPrefix { get; set; }
         public FromIsListOption FromIsList { get; set; }
         public bool AnonymousList { get; set; }
@@ -27,9 +27,9 @@ namespace MailmanSharp.Sections
         public bool UmbrellaList { get; set; }
         public string UmbrellaMemberSuffix { get; set; }
         public bool SendReminders { get; set; }
-        public string WelcomeMsg { get; set; }
+        public List<string> WelcomeMsg { get; set; }
         public bool SendWelcomeMsg { get; set; }
-        public string GoodbyeMsg { get; set; }
+        public List<string> GoodbyeMsg { get; set; }
         public bool SendGoodbyeMsg { get; set; }
         public bool AdminImmedNotify { get; set; }
         public bool AdminNotifyMchanges { get; set; }

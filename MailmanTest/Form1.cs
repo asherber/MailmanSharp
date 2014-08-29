@@ -24,8 +24,9 @@ namespace MailmanTest
             mm.ListName = "test-sherber.com";
             mm.Password = "***REMOVED***";
             //mm.Login();
-            mm.Read();
-
+            mm.ContentFiltering.Read();
+            mm.ContentFiltering.FilterFilenameExtensions.Add("pdf");
+            mm.ContentFiltering.Write();
         }
     }
 }

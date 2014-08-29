@@ -17,8 +17,8 @@ namespace MailmanSharp.Sections
         public MimeIsDefaultDigestOptions MimeIsDefaultDigest { get; set; }
         public ushort DigestSizeThreshhold { get; set; }
         public bool DigestSendPeriodic { get; set; }
-        public string DigestHeader { get; set; }
-        public string DigestFooter { get; set; }
+        public List<string> DigestHeader { get; set; }
+        public List<string> DigestFooter { get; set; }
         public DigestVolumeFrequencyOption DigestVolumeFrequency { get; set; }
         public bool _NewVolume { get; set; }
         public bool _SendDigestNow { get; set; }

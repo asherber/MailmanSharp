@@ -11,10 +11,10 @@ namespace MailmanSharp.Sections
     public class ContentFilteringSection: SectionBase
     {
         public bool FilterContent { get; set; }
-        public string FilterMimeTypes { get; set; }
-        public string PassMimeTypes { get; set; }
-        public string FilterFilenameExtensions { get; set; }
-        public string PassFilenameExtensions { get; set; }
+        public List<string> FilterMimeTypes { get; set; }
+        public List<string> PassMimeTypes { get; set; }
+        public List<string> FilterFilenameExtensions { get; set; }
+        public List<string> PassFilenameExtensions { get; set; }
         public bool CollapseAlternatives { get; set; }
         public bool ConvertHtmlToPlaintext { get; set; }
         public FilterActionOption FilterAction { get; set; }
