@@ -18,10 +18,11 @@ namespace MailmanSharp.Sections
         {
             _client = list.Client;
 
+
             // Could be one path on the class
             GetPathInfo(this.GetType().GetCustomAttributes(false));
 
-            // Could also be on properties
+            // Or could be on properties
             var props = this.GetType().GetProperties();
             foreach (var prop in props)
             {
@@ -62,20 +63,25 @@ namespace MailmanSharp.Sections
         public virtual void Write()
         {
             var props = this.GetType().GetProperties();
-            var req = new RestRequest();
 
-            foreach (var prop in props)
+            foreach (var path in _paths)
             {
-                if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
+                var req = new RestRequest();
+                var propsToWrite = _paths.Count == 1 ? props
+                    : props.Where(p => p.GetCustomAttributes(false).OfType<PathAttribute>().Any(a => a.Value == path));
+                foreach (var prop in propsToWrite)
                 {
-                    foreach (var val in GetPropertyEnumValues(prop))
-                        req.AddParameter(prop.Name.Decamel(), val);
-                } 
-                else
-                    req.AddParameter(prop.Name.Decamel(), GetPropertyObjectValue(prop));
+                    if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
+                    {
+                        foreach (var val in GetPropertyEnumValues(prop))
+                            req.AddParameter(prop.Name.Decamel(), val);
+                    }
+                    else
+                        req.AddParameter(prop.Name.Decamel(), GetPropertyObjectValue(prop));
+                }
+
+                _client.ExecuteAdminRequest(path, req);
             }
-            
-            //_client.ExecuteAdminRequest(_path, req);
         }
 
         private object GetPropertyObjectValue(PropertyInfo prop)

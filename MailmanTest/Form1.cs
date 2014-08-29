@@ -25,7 +25,7 @@ namespace MailmanTest
             mm.Password = "***REMOVED***";
             //mm.Login();
             mm.Read();
-           
+            mm.Write();
         }
     }
 }
