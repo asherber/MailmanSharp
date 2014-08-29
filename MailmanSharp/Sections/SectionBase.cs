@@ -33,6 +33,8 @@ namespace MailmanSharp.Sections
                     SetPropValue(prop, GetNodeStringValue(doc, prop));
                 else if (prop.PropertyType == typeof(ushort))
                     SetPropValue(prop, GetNodeIntValue(doc, prop));
+                else if (prop.PropertyType == typeof(double))
+                    SetPropValue(prop, GetNodeDoubleValue(doc, prop));
                 else if (prop.PropertyType == typeof(bool))
                     SetPropValue(prop, GetNodeBoolValue(doc, prop));
                 else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
@@ -135,6 +137,11 @@ namespace MailmanSharp.Sections
         protected ushort GetNodeIntValue(HtmlDocument doc, PropertyInfo prop)
         {
             return ushort.Parse(GetNodeValue(doc, prop));
+        }
+
+        protected double GetNodeDoubleValue(HtmlDocument doc, PropertyInfo prop)
+        {
+            return double.Parse(GetNodeValue(doc, prop));
         }
 
         protected List<string> GetNodeListValue(HtmlDocument doc, PropertyInfo prop)

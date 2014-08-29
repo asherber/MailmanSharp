@@ -9,11 +9,10 @@ namespace MailmanSharp.Sections
     public class BounceProcessingSection: SectionBase
     {
         public bool BounceProcessing { get; set; }
-        //TODO: This should be float
-        public ushort BounceScoreThreshold { get; set; }
+        public double BounceScoreThreshold { get; set; }
         public ushort BounceInfoStaleAfter { get; set; }
         public ushort BounceYouAreDisabledWarnings { get; set; }
-        public ushort BounceYouAreDisabledWarningInterval { get; set; }
+        public ushort BounceYouAreDisabledWarningsInterval { get; set; }
         public bool BounceUnrecognizedGoesToListOwner { get; set; }
         public bool BounceNotifyOwnerOnDisable { get; set; }
         public bool BounceNotifyOwnerOnRemoval { get; set; }
