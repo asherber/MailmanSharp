@@ -19,45 +19,51 @@ namespace MailmanSharp.Sections
             _client = list.Client;
 
 
-            // Could be one path on the class
-            GetPathInfo(this.GetType().GetCustomAttributes(false));
+            // Start with path on the class
+            var basePath = GetPathValue(this.GetType().GetCustomAttributes(false));
 
-            // Or could be on properties
+            // Now see if we have subpaths on properties
             var props = this.GetType().GetProperties();
             foreach (var prop in props)
             {
-                GetPathInfo(prop.GetCustomAttributes(false));
+                var subPath = GetPathValue(prop.GetCustomAttributes(false));
+                if (subPath != null)
+                    _paths.Add(String.Format("{0}/{1}", basePath, subPath));
             }
+            if (!_paths.Any())
+                _paths.Add(basePath);
         }
 
-        private void GetPathInfo(object[] attributes)
+        private string GetPathValue(object[] attributes)
         {
             var att = attributes.OfType<PathAttribute>().FirstOrDefault();
-            if (att != null)
-                _paths.Add(att.Value);
+            return att != null ? att.Value : null;
         }
 
         public virtual void Read()
         {
             var docs = GetHtmlDocuments();
             var props = this.GetType().GetProperties();
-            
-            foreach (var prop in props)
+
             foreach (var doc in docs)
             {
-                if (prop.PropertyType == typeof(string))
-                    SetPropValue(prop, GetNodeStringValue(doc, prop));
-                else if (prop.PropertyType == typeof(ushort))
-                    SetPropValue(prop, GetNodeIntValue(doc, prop));
-                else if (prop.PropertyType == typeof(double))
-                    SetPropValue(prop, GetNodeDoubleValue(doc, prop));
-                else if (prop.PropertyType == typeof(bool))
-                    SetPropValue(prop, GetNodeBoolValue(doc, prop));
-                else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
-                    SetPropValue(prop, GetNodeEnumValue(doc, prop));
-                else if (prop.PropertyType == typeof(List<string>))
-                    SetPropValue(prop, GetNodeListValue(doc, prop));
-            }
+                var propsToRead = docs.Count == 1 ? props : GetPropsForPath(props, doc.Path);
+                foreach (var prop in propsToRead)
+                {
+                    if (prop.PropertyType == typeof(string))
+                        SetPropValue(prop, GetNodeStringValue(doc, prop));
+                    else if (prop.PropertyType == typeof(ushort))
+                        SetPropValue(prop, GetNodeIntValue(doc, prop));
+                    else if (prop.PropertyType == typeof(double))
+                        SetPropValue(prop, GetNodeDoubleValue(doc, prop));
+                    else if (prop.PropertyType == typeof(bool))
+                        SetPropValue(prop, GetNodeBoolValue(doc, prop));
+                    else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
+                        SetPropValue(prop, GetNodeEnumValue(doc, prop));
+                    else if (prop.PropertyType == typeof(List<string>))
+                        SetPropValue(prop, GetNodeListValue(doc, prop));
+                }
+            }            
         }
 
         public virtual void Write()
@@ -67,8 +73,8 @@ namespace MailmanSharp.Sections
             foreach (var path in _paths)
             {
                 var req = new RestRequest();
-                var propsToWrite = _paths.Count == 1 ? props
-                    : props.Where(p => p.GetCustomAttributes(false).OfType<PathAttribute>().Any(a => a.Value == path));
+                var propsToWrite = _paths.Count == 1 ? props : GetPropsForPath(props, path);
+                    
                 foreach (var prop in propsToWrite)
                 {
                     if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
@@ -82,6 +88,11 @@ namespace MailmanSharp.Sections
 
                 _client.ExecuteAdminRequest(path, req);
             }
+        }
+
+        private IEnumerable<PropertyInfo> GetPropsForPath(IEnumerable<PropertyInfo> props, string path)
+        {
+            return props.Where(p => p.GetCustomAttributes(false).OfType<PathAttribute>().Any(a => path.Contains(a.Value)));
         }
 
         private object GetPropertyObjectValue(PropertyInfo prop)
@@ -113,13 +124,14 @@ namespace MailmanSharp.Sections
             return result;
         }
 
-        protected List<HtmlDocument> GetHtmlDocuments()
+        protected List<PathHtmlDocument> GetHtmlDocuments()
         {
-            var result = new List<HtmlDocument>();
+            var result = new List<PathHtmlDocument>();
             foreach (var path in _paths)
             {
                 var resp = _client.ExecuteAdminRequest(path);
-                var doc = new HtmlDocument();
+                var doc = new PathHtmlDocument();
+                doc.Path = path;
                 doc.LoadHtml(resp.Content);
                 result.Add(doc);
             }

@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="MailmanClient.cs" />
     <Compile Include="MailmanList.cs" />
+    <Compile Include="PathHtmlDocument.cs" />
     <Compile Include="Sections\ArchivingSection.cs" />
     <Compile Include="Sections\AutoResponderSection.cs" />
     <Compile Include="Sections\BounceProcessingSection.cs" />
