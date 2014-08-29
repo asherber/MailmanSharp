@@ -9,7 +9,7 @@ namespace MailmanSharp
 {
     static class Utils
     {
-        private static Regex _humpRegex = new Regex(@"\B[A-Z]");
+        private static Regex _humpRegex = new Regex(@"(?<!_)\B[A-Z]");
         public static string Decamel(this string input)
         {
             return _humpRegex.Replace(input, "_$0").ToLower();
@@ -18,7 +18,10 @@ namespace MailmanSharp
         private static Regex _underscoreRegex = new Regex("(^|_)([a-z])");
         public static string Encamel(this string input)
         {
-            return _underscoreRegex.Replace(input, m => m.Groups[2].Value.ToUpper());
+            string result = _underscoreRegex.Replace(input, m => m.Groups[2].Value.ToUpper());
+            if (!String.IsNullOrEmpty(input) && input[0] == '_')
+                result = "_" + result;
+            return result;
         }
 
         // SelectNodes will return null if nothing is found, which kills further 

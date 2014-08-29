@@ -24,9 +24,7 @@ namespace MailmanTest
             mm.ListName = "test-sherber.com";
             mm.Password = "***REMOVED***";
             //mm.Login();
-            mm.General.Read();
-            mm.General.Description = "Updated description2";
-            mm.General.Write();
+            mm.Read();
 
         }
     }

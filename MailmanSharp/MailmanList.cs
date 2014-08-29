@@ -16,16 +16,16 @@ namespace MailmanSharp
         public string Password { get { return Client.Password; } set { Client.Password = value; } }
 
         public GeneralSection General { get; private set; }
+        public NonDigestSection NonDigest { get; private set; }
+        public DigestSection Digest { get; private set; }
         /*
         public ArchivingSection Archiving { get; private set; }
         public AutoResponderSection AutoResponder { get; private set; }
         public BounceProcessingSection BounceProcessing { get; private set; }
         public ContentFilteringSection ContentFiltering { get; private set; }
-        public DigestSection Digest { get; private set; }
         public LanguageSection Language { get; private set; }
         public MailNewsGatewaysSection MailNewsGateways { get; private set; }
         public MembershipSection Membership { get; private set; }
-        public NonDigestSection NonDigest { get; private set; }
         public PasswordsSection Passwords { get; private set; }
         public PrivacySection Privacy { get; private set; }
         public TopicsSection Topics { get; private set; }  //*/

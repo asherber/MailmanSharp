@@ -5,8 +5,8 @@ using System.Text;
 
 namespace MailmanSharp.Sections
 {
-    public enum FromIsListOptions { No, MungFrom, WrapMessage }
-    public enum ReplyGoesToListOptions { Poster, ThisList, ExplicitAddress }
+    public enum FromIsListOption { No, MungFrom, WrapMessage }
+    public enum ReplyGoesToListOption { Poster, ThisList, ExplicitAddress }
     [Flags]
     public enum NewMemberOptions { None = 0, Hide = 1, Ack = 2, NotMeToo = 4, NoDupes = 8 }
 
@@ -19,10 +19,10 @@ namespace MailmanSharp.Sections
         public string Description { get; set; }
         public string Info { get; set; }
         public string SubjectPrefix { get; set; }
-        public FromIsListOptions FromIsList { get; set; }
+        public FromIsListOption FromIsList { get; set; }
         public bool AnonymousList { get; set; }
         public bool FirstStripReplyTo { get; set; }
-        public ReplyGoesToListOptions ReplyGoesToList { get; set; }
+        public ReplyGoesToListOption ReplyGoesToList { get; set; }
         public string ReplyToAddress { get; set; }
         public bool UmbrellaList { get; set; }
         public string UmbrellaMemberSuffix { get; set; }

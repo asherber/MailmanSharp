@@ -156,13 +156,14 @@ namespace MailmanSharp.Sections
             string xpath = String.Format("//input[@name='{0}' and @checked]", dname);
             var nodes = doc.DocumentNode.SafeSelectNodes(xpath);
 
-            int foo = 0;
+            int result = 0;
             foreach (var node in nodes)
             {
-                var bar = Enum.Parse(prop.PropertyType, node.GetAttributeValue("value", null), true);
-                foo |= (int)bar;
+                var val = node.GetAttributeValue("value", null); 
+                var enumVal = Enum.Parse(prop.PropertyType, val, true);
+                result |= (int)enumVal;
             }
-            return Enum.ToObject(prop.PropertyType, foo);
+            return Enum.ToObject(prop.PropertyType, result);
         }
         #endregion
 
