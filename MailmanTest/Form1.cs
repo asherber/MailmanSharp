@@ -24,9 +24,8 @@ namespace MailmanTest
             mm.ListName = "test-sherber.com";
             mm.Password = "***REMOVED***";
             //mm.Login();
-            mm.BounceProcessing.Read();
-            mm.BounceProcessing.BounceScoreThreshold = 6.4;
-            mm.BounceProcessing.Write();
+            mm.Privacy.Read();
+           
         }
     }
 }

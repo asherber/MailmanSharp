@@ -5,7 +5,8 @@ using System.Text;
 
 namespace MailmanSharp.Sections
 {
-    public  class LanguageSection: SectionBase
+    // Not going to implement
+    public class LanguageSection: SectionBase
     {
         public LanguageSection(MailmanList list) : base(list) { }
     }

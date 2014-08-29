@@ -12,22 +12,37 @@ namespace MailmanSharp.Sections
     public abstract class SectionBase
     {
         protected MailmanClient _client;
-        protected string _path;
+        protected HashSet<string> _paths = new HashSet<string>();
 
         public SectionBase(MailmanList list)
         {
             _client = list.Client;
 
-            var pathAttribute = (PathAttribute)this.GetType().GetCustomAttributes(typeof(PathAttribute), false).First();
-            _path = pathAttribute.Value;
+            // Could be one path on the class
+            GetPathInfo(this.GetType().GetCustomAttributes(false));
+
+            // Could also be on properties
+            var props = this.GetType().GetProperties();
+            foreach (var prop in props)
+            {
+                GetPathInfo(prop.GetCustomAttributes(false));
+            }
+        }
+
+        private void GetPathInfo(object[] attributes)
+        {
+            var att = attributes.OfType<PathAttribute>().FirstOrDefault();
+            if (att != null)
+                _paths.Add(att.Value);
         }
 
         public virtual void Read()
         {
-            var doc = GetHtmlDocument();
+            var docs = GetHtmlDocuments();
             var props = this.GetType().GetProperties();
             
             foreach (var prop in props)
+            foreach (var doc in docs)
             {
                 if (prop.PropertyType == typeof(string))
                     SetPropValue(prop, GetNodeStringValue(doc, prop));
@@ -60,7 +75,7 @@ namespace MailmanSharp.Sections
                     req.AddParameter(prop.Name.Decamel(), GetPropertyObjectValue(prop));
             }
             
-            _client.ExecuteAdminRequest(_path, req);
+            //_client.ExecuteAdminRequest(_path, req);
         }
 
         private object GetPropertyObjectValue(PropertyInfo prop)
@@ -94,30 +109,36 @@ namespace MailmanSharp.Sections
 
         
         
-
+        /*
         private void AddToken(RestRequest req)
         {
             var doc = GetHtmlDocument();
             var node = doc.DocumentNode.SafeSelectNodes("//input[@name='csrf_token']").SingleOrDefault();
             if (node != default(HtmlNode))
                 req.AddParameter("csrf_token", node.GetAttributeValue("value", null));
-        }
+        }  //*/
 
-        protected HtmlDocument GetHtmlDocument()
+        protected List<HtmlDocument> GetHtmlDocuments()
         {
-            var resp = _client.ExecuteAdminRequest(_path);
-            var result = new HtmlDocument();
-            result.LoadHtml(resp.Content);
+            var result = new List<HtmlDocument>();
+            foreach (var path in _paths)
+            {
+                var resp = _client.ExecuteAdminRequest(path);
+                var doc = new HtmlDocument();
+                doc.LoadHtml(resp.Content);
+                result.Add(doc);
+            }
             return result;
         }
 
         #region Reading helpers
         protected void SetPropValue(PropertyInfo prop, object value)
         {
-            prop.SetValue(this, value, null);
+            if (value != null)
+                prop.SetValue(this, value, null);
         }
 
-        protected string GetNodeValue(HtmlDocument doc, PropertyInfo prop)
+        protected object GetNodeValue(HtmlDocument doc, PropertyInfo prop)
         {
             var dname = prop.Name.Decamel();
             string xpath = String.Format("//input[@name='{0}']", dname);
@@ -129,19 +150,27 @@ namespace MailmanSharp.Sections
                 return null;
         }
 
-        protected string GetNodeStringValue(HtmlDocument doc, PropertyInfo prop)
+        protected object GetNodeStringValue(HtmlDocument doc, PropertyInfo prop)
         {
             return GetNodeValue(doc, prop);
         }
 
-        protected ushort GetNodeIntValue(HtmlDocument doc, PropertyInfo prop)
+        protected object GetNodeIntValue(HtmlDocument doc, PropertyInfo prop)
         {
-            return ushort.Parse(GetNodeValue(doc, prop));
+            var val = GetNodeValue(doc, prop);
+            if (val != null)
+                return ushort.Parse(val.ToString());
+            else
+                return null;
         }
 
-        protected double GetNodeDoubleValue(HtmlDocument doc, PropertyInfo prop)
+        protected object GetNodeDoubleValue(HtmlDocument doc, PropertyInfo prop)
         {
-            return double.Parse(GetNodeValue(doc, prop));
+            var val = GetNodeValue(doc, prop);
+            if (val != null)
+                return double.Parse(val.ToString());
+            else
+                return null;
         }
 
         protected List<string> GetNodeListValue(HtmlDocument doc, PropertyInfo prop)
@@ -160,7 +189,7 @@ namespace MailmanSharp.Sections
             return null;
         }
 
-        protected bool GetNodeBoolValue(HtmlDocument doc, PropertyInfo prop)
+        protected object GetNodeBoolValue(HtmlDocument doc, PropertyInfo prop)
         {
             var dname = prop.Name.Decamel();
             string xpath = String.Format("//input[@name='{0}' and @checked]", dname);
@@ -169,7 +198,7 @@ namespace MailmanSharp.Sections
             if (node != default(HtmlNode))
                 return Convert.ToBoolean(node.GetAttributeValue("value", 0));
             else
-                return false;
+                return null;
         }
 
         protected object GetNodeEnumValue(HtmlDocument doc, PropertyInfo prop)
@@ -178,14 +207,19 @@ namespace MailmanSharp.Sections
             string xpath = String.Format("//input[@name='{0}' and @checked]", dname);
             var nodes = doc.DocumentNode.SafeSelectNodes(xpath);
 
-            int result = 0;
-            foreach (var node in nodes)
+            if (nodes.Any())
             {
-                var val = node.GetAttributeValue("value", null); 
-                var enumVal = Enum.Parse(prop.PropertyType, val, true);
-                result |= (int)enumVal;
+                int result = 0;
+                foreach (var node in nodes)
+                {
+                    var val = node.GetAttributeValue("value", null);
+                    var enumVal = Enum.Parse(prop.PropertyType, val, true);
+                    result |= (int)enumVal;
+                }
+                return Enum.ToObject(prop.PropertyType, result);
             }
-            return Enum.ToObject(prop.PropertyType, result);
+            else
+                return null;
         }
         #endregion
 

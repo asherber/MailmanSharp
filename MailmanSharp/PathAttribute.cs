@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MailmanSharp
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
     class PathAttribute : Attribute
     {
         public string Value { get; set; }

@@ -15,6 +15,7 @@ namespace MailmanSharp
         public string ListName { get { return Client.ListName; } set { Client.ListName = value; } }
         public string Password { get { return Client.Password; } set { Client.Password = value; } }
 
+        public PrivacySection Privacy { get; private set; }
         public GeneralSection General { get; private set; }
         public NonDigestSection NonDigest { get; private set; }
         public DigestSection Digest { get; private set; }
@@ -27,7 +28,6 @@ namespace MailmanSharp
         public LanguageSection Language { get; private set; }
         public MembershipSection Membership { get; private set; }
         public PasswordsSection Passwords { get; private set; }
-        public PrivacySection Privacy { get; private set; }
         public TopicsSection Topics { get; private set; }  //*/
 
         internal MailmanClient Client { get; private set; }
