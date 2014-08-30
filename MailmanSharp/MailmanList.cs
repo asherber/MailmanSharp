@@ -8,13 +8,17 @@ using MailmanSharp.Sections;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Xml.Linq;
+using System.Collections.ObjectModel;
+using hap = HtmlAgilityPack;
+using System.Windows.Forms;
 
 
 namespace MailmanSharp
 {
     public class MailmanList
     {
-        public string ServerUrl { get { return Client.BaseUrl; } set { Client.BaseUrl = value; } }
+        public string BaseUrl { get { return Client.BaseUrl; } set { Client.BaseUrl = value; } }
         public string ListName { get { return Client.ListName; } set { Client.ListName = value; } }
         public string Password { get { return Client.Password; } set { Client.Password = value; } }
 
@@ -33,30 +37,118 @@ namespace MailmanSharp
         public PasswordsSection Passwords { get; private set; }
         public TopicsSection Topics { get; private set; }  //*/
 
+        public ReadOnlyCollection<string> CurrentSubscribers { get { return _currentSubscribers.AsReadOnly(); } }
+
         internal MailmanClient Client { get; private set; }
-        
+
+        private List<string> _currentSubscribers;
         
         public MailmanList()
         {
             this.Client = new MailmanClient();
+            _currentSubscribers = new List<string>();
             ThreadPool.SetMaxThreads(10, 10);
             ThreadPool.SetMinThreads(10, 10);
 
-            // Initialize sections
-            foreach (var prop in GetSectionProps())
-            {
-                prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, this), null);
-            }
+            InitSections();
         }
 
         public void Read()
         {
-            this.InvokeSectionMethod("Read");            
+            Cursor.Current = Cursors.WaitCursor;
+            try
+            {
+                var tasks = new Task[]
+                {
+                    Task.Factory.StartNew(() => this.InvokeSectionMethod("Read")),
+                    Task.Factory.StartNew(() => GetCurrentSubscribers()),
+                };
+                Task.WaitAll(tasks);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         public void Write()
         {
-            this.InvokeSectionMethod("Write");
+            Cursor.Current = Cursors.WaitCursor;
+            try
+            {
+                this.InvokeSectionMethod("Write");
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        public string Serialize()
+        {
+            var root = new XElement("MailmanList",
+                new XElement("BaseUrl", BaseUrl),
+                new XElement("ListName", ListName),
+                new XElement("Password", Password)
+            );
+
+            foreach (var prop in GetSectionProps())
+            {
+                var xml = ((SectionBase)prop.GetValue(this, null)).Serialize();
+                root.Add(XElement.Parse(xml));
+            }
+            return root.ToString();
+        }
+
+        public void MergeValues(string xml)
+        {
+            var root = XElement.Parse(xml);
+            BaseUrl = GetNodeValue(root, "BaseUrl") ?? BaseUrl;
+            ListName = GetNodeValue(root, "ListName") ?? ListName;
+            Password = GetNodeValue(root, "Password") ?? Password;
+
+            foreach (var prop in GetSectionProps())
+            {
+                var nodeName = prop.Name.Replace("Section", "");
+                var el = root.Element(nodeName);
+                if (el != null)
+                    ((SectionBase)prop.GetValue(this, null)).MergeValues(el.ToString());
+            }
+        }
+
+        public void LoadValues(string xml)
+        {
+            InitSections();
+            MergeValues(xml);
+        }
+
+        public void GetCurrentSubscribers()
+        {
+            _currentSubscribers.Clear();
+            var resp = Client.ExecuteRosterRequest();
+            // The <li> tags on this page are unclosed
+            var doc = new hap.HtmlDocument() { OptionFixNestedTags = true };
+            doc.LoadHtml(resp.Content);
+
+            var addrs = doc.DocumentNode.SafeSelectNodes("//li");
+            foreach (var addr in addrs)
+            {
+                _currentSubscribers.Add(addr.InnerText.Trim().Replace(" at ", "@"));
+            }
+        }
+
+        private string GetNodeValue(XElement root, string nodeName)
+        {
+            var el = root.Element(nodeName);
+            return el != null ? el.Value : null;
+        }
+
+        private void InitSections()
+        {
+            foreach (var prop in GetSectionProps())
+            {
+                prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, this), null);
+            }
         }
 
         private void InvokeSectionMethod(string methodName)
@@ -77,14 +169,7 @@ namespace MailmanSharp
             return this.GetType().GetProperties().Where(p => p.PropertyType.IsSubclassOf(typeof(SectionBase)));
         }
 
-        public void Login()
-        {
-            this.Client.BaseUrl = ServerUrl;
-            this.Client.ListName = ListName;
-            
-
-            var resp = this.Client.ExecuteAdminRequest("", "adminpw", Password);
-        }
+        
 
         
     }

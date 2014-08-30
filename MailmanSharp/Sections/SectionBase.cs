@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Xml.Linq;
 
 namespace MailmanSharp.Sections
 {
@@ -93,6 +94,50 @@ namespace MailmanSharp.Sections
         private IEnumerable<PropertyInfo> GetPropsForPath(IEnumerable<PropertyInfo> props, string path)
         {
             return props.Where(p => p.GetCustomAttributes(false).OfType<PathAttribute>().Any(a => path.Contains(a.Value)));
+        }
+
+        internal string Serialize()
+        {
+            var result = new XElement(this.GetType().Name.Replace("Section", ""));            
+            var props = this.GetType().GetProperties();
+
+            foreach (var prop in props)
+            {
+                var val = prop.GetValue(this, null);
+                if (val is List<string>)
+                    val = String.Join("\n", (List<string>)val);                    
+                    
+                result.Add(new XElement(prop.Name, val));
+            }
+            return result.ToString();
+        }
+
+        internal void MergeValues(string xml)
+        {
+            var root = XElement.Parse(xml);
+            var props = this.GetType().GetProperties();
+            foreach (var prop in props)
+            {
+                var el = root.Element(prop.Name);
+                if (el != null && !String.IsNullOrEmpty(el.Value))
+                {
+                    if (prop.PropertyType == typeof(bool))
+                        prop.SetValue(this, Convert.ToBoolean(el.Value), null);
+                    else if (prop.PropertyType == typeof(ushort))
+                        prop.SetValue(this, Convert.ToUInt16(el.Value), null);
+                    else if (prop.PropertyType == typeof(double))
+                        prop.SetValue(this, Convert.ToDouble(el.Value), null);
+                    else if (prop.PropertyType == typeof(List<string>))
+                    {
+                        var list = el.Value.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
+                        prop.SetValue(this, list, null);
+                    }
+                    else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
+                        prop.SetValue(this, Enum.Parse(prop.PropertyType, el.Value, true), null);
+                    else
+                        prop.SetValue(this, el.Value, null);
+                }
+            }
         }
 
         private object GetPropertyObjectValue(PropertyInfo prop)

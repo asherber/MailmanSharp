@@ -13,7 +13,7 @@ namespace MailmanSharp.Sections
     [Path("general")]
     public class GeneralSection: SectionBase
     {
-        public string RealName { get; set; }
+        public string RealName { get; internal set; }
         public List<string> Owner { get; set; }
         public List<string> Moderator { get; set; }
         public string Description { get; set; }

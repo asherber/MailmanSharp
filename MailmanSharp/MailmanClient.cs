@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace MailmanSharp
@@ -14,7 +15,7 @@ namespace MailmanSharp
         public MailmanClient()
         {
             this.FollowRedirects = true;
-            this.CookieContainer = new System.Net.CookieContainer();
+            this.CookieContainer = new System.Net.CookieContainer();            
         }
 
         public MailmanClient Clone()
@@ -50,8 +51,8 @@ namespace MailmanSharp
             var req = request ?? new RestRequest();
             req.Resource = resource;
             req.Method = Method.POST;
-            req.AddParameter("adminpw", this.Password);
-
+            EnsureAdminPassword(req);
+            
             return this.Execute(req);
         }
 
@@ -85,9 +86,31 @@ namespace MailmanSharp
 
         public IRestResponse ExecuteRosterRequest()
         {
+            if (!HasAdminCookie()) Login();
             var resource = String.Format("roster.cgi/{0}", ListName);
             var req = new RestRequest(resource, Method.POST);
+            req.AddParameter("adminpw", this.Password);
             return this.Execute(req);
+        }
+
+        private bool HasAdminCookie()
+        {
+            var cookies = CookieContainer.GetCookies(new Uri(BaseUrl));
+            return cookies.Cast<Cookie>().Any(c => c.Name == String.Format("{0}+admin", ListName));
+        }
+
+        private void EnsureAdminPassword(RestRequest req)
+        {
+            var parm = req.Parameters.FirstOrDefault(p => p.Name == "adminpw");
+            if (parm == null)
+                req.AddParameter("adminpw", this.Password);
+            else
+                parm.Value = this.Password;
+        }
+
+        public void Login()
+        {
+            ExecuteAdminRequest("");
         }
     }
 }

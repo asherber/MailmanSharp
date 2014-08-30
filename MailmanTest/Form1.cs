@@ -23,7 +23,7 @@ namespace MailmanTest
         private void button1_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList();
-            mm.ServerUrl = "http://lists.sherber.com";
+            mm.BaseUrl = "http://lists.sherber.com";
             mm.ListName = "test-sherber.com";
             mm.Password = "***REMOVED***";
             //mm.Login();
@@ -36,28 +36,23 @@ namespace MailmanTest
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var m = new MailmanList();
-            var foo = m.Serialize();
+            var mm = new MailmanList();
+            mm.BaseUrl = "http://lists.sherber.com";
+            mm.ListName = "test-sherber.com";
+            mm.Password = "***REMOVED***";
+            mm.Read();
+            var foo = mm.Serialize();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var mm = new MailmanList();
+            mm.BaseUrl = "http://lists.sherber.com";
+            mm.ListName = "test-sherber.com";
+            mm.Password = "***REMOVED***";
+            mm.GetCurrentSubscribers();
         }
     }
 
-    public static class XmlHelper
-    {
-        public static string Serialize(this object input, bool includeDeclaration = true)
-        {
-            var serializer = new XmlSerializer(input.GetType());
-            using (var writer = new StringWriter())
-            {
-                serializer.Serialize(writer, input);
-                return writer.ToString();
-            }
-        }
-
-        public static T Deserialize<T>(this string input)
-        {
-            var serializer = new XmlSerializer(typeof(T));
-            using (var rdr = new StringReader(input))
-                return (T)serializer.Deserialize(rdr);
-        }
-    }
+    
 }
