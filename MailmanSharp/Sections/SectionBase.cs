@@ -12,13 +12,13 @@ namespace MailmanSharp.Sections
     [Path("")]
     public abstract class SectionBase
     {
-        protected MailmanClient _client;
+        protected MailmanList _list;
         protected HashSet<string> _paths = new HashSet<string>();
 
         public SectionBase(MailmanList list)
         {
-            _client = list.Client;
-
+            _list = list;
+            
             // Start with path on the class
             var basePath = GetPathValue(this.GetType().GetCustomAttributes(false));
 
@@ -43,7 +43,7 @@ namespace MailmanSharp.Sections
         public virtual void Read()
         {
             var docs = GetHtmlDocuments();
-            var props = this.GetType().GetProperties();
+            var props = GetUnignoredProps(this.GetType());
 
             foreach (var doc in docs)
             {
@@ -68,8 +68,8 @@ namespace MailmanSharp.Sections
 
         public virtual void Write()
         {
-            var props = this.GetType().GetProperties();
-            var client = _client.Clone();
+            var props = GetUnignoredProps(this.GetType());
+            var client = _list.Client.Clone();
 
             foreach (var path in _paths)
             {
@@ -91,9 +91,15 @@ namespace MailmanSharp.Sections
             }
         }
 
-        private IEnumerable<PropertyInfo> GetPropsForPath(IEnumerable<PropertyInfo> props, string path)
+        protected IEnumerable<PropertyInfo> GetPropsForPath(IEnumerable<PropertyInfo> props, string path)
         {
             return props.Where(p => p.GetCustomAttributes(false).OfType<PathAttribute>().Any(a => path.Contains(a.Value)));
+        }
+
+        protected IEnumerable<PropertyInfo> GetUnignoredProps(Type type)
+        {
+            var props = type.GetProperties();
+            return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
         }
 
         internal string Serialize()
@@ -169,15 +175,14 @@ namespace MailmanSharp.Sections
             return result;
         }
 
-        protected List<PathHtmlDocument> GetHtmlDocuments()
+        protected List<MailmanHtmlDocument> GetHtmlDocuments()
         {
-            var result = new List<PathHtmlDocument>();
-            var client = _client.Clone();
+            var result = new List<MailmanHtmlDocument>();
+            var client = _list.Client.Clone();
             foreach (var path in _paths)
             {
                 var resp = client.ExecuteAdminRequest(path);
-                var doc = new PathHtmlDocument();
-                doc.Path = path;
+                var doc = new MailmanHtmlDocument(path);
                 doc.LoadHtml(resp.Content);
                 result.Add(doc);
             }

@@ -10,6 +10,7 @@ using MailmanSharp;
 using System.Diagnostics;
 using System.Xml.Serialization;
 using System.IO;
+using MailmanSharp.Sections;
 
 namespace MailmanTest
 {
@@ -46,11 +47,21 @@ namespace MailmanTest
 
         private void button3_Click(object sender, EventArgs e)
         {
-            var mm = new MailmanList();
-            mm.BaseUrl = "http://lists.sherber.com";
-            mm.ListName = "test-sherber.com";
-            mm.Password = "***REMOVED***";
-            mm.GetCurrentSubscribers();
+            var list = new MailmanList()
+            {
+                ListName = "test-sherber.com",
+                Password = "***REMOVED***",
+                BaseUrl = "http://lists.sherber.com"
+            };
+            /*
+            var sec = new GeneralSection(list);
+            sec.Read();
+            var chunk = sec.AdminMemberChunksize;
+            sec.AdminMemberChunksize = 1000;
+            sec.Write();
+            sec.AdminMemberChunksize = chunk;
+            sec.Write();  //*/
+            list.Membership.Read();
         }
     }
 

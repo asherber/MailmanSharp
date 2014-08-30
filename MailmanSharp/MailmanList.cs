@@ -22,6 +22,7 @@ namespace MailmanSharp
         public string ListName { get { return Client.ListName; } set { Client.ListName = value; } }
         public string Password { get { return Client.Password; } set { Client.Password = value; } }
 
+        public MembershipSection Membership { get; private set; }
         public PrivacySection Privacy { get; private set; }
         public GeneralSection General { get; private set; }
         public NonDigestSection NonDigest { get; private set; }
@@ -30,23 +31,18 @@ namespace MailmanSharp
         public ArchivingSection Archiving { get; private set; }
         public MailNewsGatewaysSection MailNewsGateways { get; private set; }
         public ContentFilteringSection ContentFiltering { get; private set; }
-        /*
-        public AutoResponderSection AutoResponder { get; private set; }
-        public LanguageSection Language { get; private set; }
-        public MembershipSection Membership { get; private set; }
-        public PasswordsSection Passwords { get; private set; }
-        public TopicsSection Topics { get; private set; }  //*/
 
-        public ReadOnlyCollection<string> CurrentSubscribers { get { return _currentSubscribers.AsReadOnly(); } }
+        /*
+        public AutoResponderSection AutoResponder { get; private set; }  // Could implement; not necessary
+        public LanguageSection Language { get; private set; }   // Could implement; not necessary
+        public PasswordsSection Passwords { get; private set; }   // Should probably implement
+        public TopicsSection Topics { get; private set; }  // Won't implement     //*/
 
         internal MailmanClient Client { get; private set; }
 
-        private List<string> _currentSubscribers;
-        
         public MailmanList()
         {
             this.Client = new MailmanClient();
-            _currentSubscribers = new List<string>();
             ThreadPool.SetMaxThreads(10, 10);
             ThreadPool.SetMinThreads(10, 10);
 
@@ -58,12 +54,7 @@ namespace MailmanSharp
             Cursor.Current = Cursors.WaitCursor;
             try
             {
-                var tasks = new Task[]
-                {
-                    Task.Factory.StartNew(() => this.InvokeSectionMethod("Read")),
-                    Task.Factory.StartNew(() => GetCurrentSubscribers()),
-                };
-                Task.WaitAll(tasks);
+                this.InvokeSectionMethod("Read");
             }
             finally
             {
@@ -120,21 +111,6 @@ namespace MailmanSharp
         {
             InitSections();
             MergeValues(xml);
-        }
-
-        public void GetCurrentSubscribers()
-        {
-            _currentSubscribers.Clear();
-            var resp = Client.ExecuteRosterRequest();
-            // The <li> tags on this page are unclosed
-            var doc = new hap.HtmlDocument() { OptionFixNestedTags = true };
-            doc.LoadHtml(resp.Content);
-
-            var addrs = doc.DocumentNode.SafeSelectNodes("//li");
-            foreach (var addr in addrs)
-            {
-                _currentSubscribers.Add(addr.InnerText.Trim().Replace(" at ", "@"));
-            }
         }
 
         private string GetNodeValue(XElement root, string nodeName)

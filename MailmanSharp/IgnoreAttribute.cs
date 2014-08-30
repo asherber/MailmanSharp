@@ -5,8 +5,8 @@ using System.Text;
 
 namespace MailmanSharp
 {
-    public class PathHtmlDocument: HtmlAgilityPack.HtmlDocument
-    {
-        public string Path { get; set; }
+    [AttributeUsage(AttributeTargets.Property)]
+    class IgnoreAttribute : Attribute
+    {       
     }
 }
