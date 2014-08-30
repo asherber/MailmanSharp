@@ -104,8 +104,8 @@ namespace MailmanSharp.Sections
 
         internal string Serialize()
         {
-            var result = new XElement(this.GetType().Name.Replace("Section", ""));            
-            var props = this.GetType().GetProperties();
+            var result = new XElement(this.GetType().Name.Replace("Section", ""));
+            var props = GetUnignoredProps(this.GetType());
 
             foreach (var prop in props)
             {
@@ -121,7 +121,7 @@ namespace MailmanSharp.Sections
         internal void MergeValues(string xml)
         {
             var root = XElement.Parse(xml);
-            var props = this.GetType().GetProperties();
+            var props = GetUnignoredProps(this.GetType());
             foreach (var prop in props)
             {
                 var el = root.Element(prop.Name);

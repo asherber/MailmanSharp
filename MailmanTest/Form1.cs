@@ -53,15 +53,13 @@ namespace MailmanTest
                 Password = "***REMOVED***",
                 BaseUrl = "http://lists.sherber.com"
             };
-            /*
-            var sec = new GeneralSection(list);
-            sec.Read();
-            var chunk = sec.AdminMemberChunksize;
-            sec.AdminMemberChunksize = 1000;
-            sec.Write();
-            sec.AdminMemberChunksize = chunk;
-            sec.Write();  //*/
+            
             list.Membership.Read();
+            list.Membership.Subscribe("president@mtwashswimclub.com", "aaron.sherber@sterlingbackcheck.com");
+            list.Membership.Unsubscribe("president@mtwashswimclub.com", "asherb@acxiom.com");
+
+
+
         }
     }
 
