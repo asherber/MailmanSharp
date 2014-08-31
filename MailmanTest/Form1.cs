@@ -42,21 +42,31 @@ namespace MailmanTest
             mm.ListName = "test-sherber.com";
             mm.Password = "***REMOVED***";
             mm.Read();
-            var foo = mm.Serialize();
+            var foo = mm.GetConfig();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
+            //*
+            var list = new MailmanList()
+            {
+                ListName = "calhoun-parents-mountwashingtonschool.org",
+                Password = "***REMOVED***",
+                BaseUrl = "http://lists.mountwashingtonschool.org"
+            };  //*/
+
+            /*
             var list = new MailmanList()
             {
                 ListName = "test-sherber.com",
                 Password = "***REMOVED***",
                 BaseUrl = "http://lists.sherber.com"
-            };
+            };  //*/
             
-            list.Membership.Read();
-            list.Membership.Subscribe("president@mtwashswimclub.com", "aaron.sherber@sterlingbackcheck.com");
-            list.Membership.Unsubscribe("president@mtwashswimclub.com", "asherb@acxiom.com");
+            list.Read();
+            //list.MergeConfig(Clipboard.GetText());
+            //list.Write();
+            var foo = list.GetConfig();
 
 
 

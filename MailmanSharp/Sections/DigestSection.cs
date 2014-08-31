@@ -20,8 +20,16 @@ namespace MailmanSharp.Sections
         public List<string> DigestHeader { get; set; }
         public List<string> DigestFooter { get; set; }
         public DigestVolumeFrequencyOption DigestVolumeFrequency { get; set; }
-        public bool _NewVolume { get; set; }
-        public bool _SendDigestNow { get; set; }
+        
+        public void NewVolume()
+        {
+            _list.Client.Clone().ExecuteAdminRequest(_paths.First(), "_new_volume", 1);
+        }
+
+        public void SendDigestNow()
+        {
+            _list.Client.Clone().ExecuteAdminRequest(_paths.First(), "_send_digest_now", 1);
+        }
     
         public DigestSection(MailmanList list) : base(list) { }
     }

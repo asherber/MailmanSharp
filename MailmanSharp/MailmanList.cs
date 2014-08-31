@@ -75,7 +75,7 @@ namespace MailmanSharp
             }
         }
 
-        public string Serialize()
+        public string GetConfig()
         {
             var root = new XElement("MailmanList",
                 new XElement("BaseUrl", BaseUrl),
@@ -85,13 +85,13 @@ namespace MailmanSharp
 
             foreach (var prop in GetSectionProps())
             {
-                var xml = ((SectionBase)prop.GetValue(this, null)).Serialize();
+                var xml = ((SectionBase)prop.GetValue(this, null)).GetConfig();
                 root.Add(XElement.Parse(xml));
             }
             return root.ToString();
         }
 
-        public void MergeValues(string xml)
+        public void MergeConfig(string xml)
         {
             var root = XElement.Parse(xml);
             BaseUrl = GetNodeValue(root, "BaseUrl") ?? BaseUrl;
@@ -103,14 +103,14 @@ namespace MailmanSharp
                 var nodeName = prop.Name.Replace("Section", "");
                 var el = root.Element(nodeName);
                 if (el != null)
-                    ((SectionBase)prop.GetValue(this, null)).MergeValues(el.ToString());
+                    ((SectionBase)prop.GetValue(this, null)).MergeConfig(el.ToString());
             }
         }
 
-        public void LoadValues(string xml)
+        public void LoadConfig(string xml)
         {
             InitSections();
-            MergeValues(xml);
+            MergeConfig(xml);
         }
 
         private string GetNodeValue(XElement root, string nodeName)
