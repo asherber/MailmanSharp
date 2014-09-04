@@ -31,11 +31,11 @@ namespace MailmanSharp
         public ArchivingSection Archiving { get; private set; }
         public MailNewsGatewaysSection MailNewsGateways { get; private set; }
         public ContentFilteringSection ContentFiltering { get; private set; }
+        public PasswordsSection Passwords { get; private set; }   
 
         /*
         public AutoResponderSection AutoResponder { get; private set; }  // Could implement; not necessary
         public LanguageSection Language { get; private set; }   // Could implement; not necessary
-        public PasswordsSection Passwords { get; private set; }   // Should probably implement
         public TopicsSection Topics { get; private set; }  // Won't implement     //*/
 
         internal MailmanClient Client { get; private set; }

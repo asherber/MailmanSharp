@@ -47,7 +47,7 @@ namespace MailmanTest
 
         private void button3_Click(object sender, EventArgs e)
         {
-            //*
+            /*
             var list = new MailmanList()
             {
                 ListName = "calhoun-parents-mountwashingtonschool.org",
@@ -55,19 +55,15 @@ namespace MailmanTest
                 BaseUrl = "http://lists.mountwashingtonschool.org"
             };  //*/
 
-            /*
+            //*
             var list = new MailmanList()
             {
                 ListName = "test-sherber.com",
                 Password = "***REMOVED***",
                 BaseUrl = "http://lists.sherber.com"
             };  //*/
-            
-            list.Read();
-            //list.MergeConfig(Clipboard.GetText());
-            //list.Write();
-            var foo = list.GetConfig();
 
+            list.Membership.Unsubscribe("jeremy@sherber.com");
 
 
         }

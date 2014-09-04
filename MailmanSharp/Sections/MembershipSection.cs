@@ -20,7 +20,7 @@ namespace MailmanSharp.Sections
         protected static string _membersPage = "members";
 
         public MembershipSection(MailmanList list) : base(list) { }
-        
+
         public override void Read()
         {
             GetEmailList();
@@ -38,20 +38,19 @@ namespace MailmanSharp.Sections
             {
                 list.Add(addr.InnerText.Trim().Replace(" at ", "@"));
             }
+
             this.EmailList = String.Join("\n", list);
         }
 
         public void Unsubscribe(string members)
         {
-            if (String.IsNullOrWhiteSpace(members)) 
+            if (String.IsNullOrWhiteSpace(members))
                 return;
 
             var req = new RestRequest();
-            req.AddParameter("unsubscribees", members);
+            req.AddParameter("unsubscribees_upload", members);
             req.AddParameter("send_unsub_ack_to_this_batch", 0);
             req.AddParameter("send_unsub_notifications_to_list_owner", 0);
-            req.AddFile("unsubscribees_upload", new byte[0], "", "application/octet-stream");
-            req.AddParameter("setmemberopts_btn", "Submit Your Changes");
 
             _list.Client.Clone().ExecuteAdminRequest(_removePage, req);
             GetEmailList();
@@ -73,12 +72,10 @@ namespace MailmanSharp.Sections
                 return;
 
             var req = new RestRequest();
-            req.AddParameter("subscribees", members);
+            req.AddParameter("subscribees_upload", members);
             req.AddParameter("subscribe_or_invite", 0);
             req.AddParameter("send_welcome_msg_to_this_batch", 0);
             req.AddParameter("send_notifications_to_list_owner", 0);
-            req.AddFile("subscribees_upload", new byte[0], "", "application/octet-stream");
-            req.AddParameter("setmemberopts_btn", "Submit Your Changes");
 
             _list.Client.Clone().ExecuteAdminRequest(_addPage, req);
             GetEmailList();
@@ -98,7 +95,7 @@ namespace MailmanSharp.Sections
         {
             // This isn't great -- it assumes that members have the default values
             var req = new RestRequest();
-            req.AddParameter("setmemberopts_btn", "Submit Your Changes");
+            req.AddParameter("setmemberopts_btn", 1);
 
             foreach (var member in members)
             {
@@ -122,6 +119,22 @@ namespace MailmanSharp.Sections
         {
             Unmoderate(members.ToList());
         }
+        
+        /*
+        List lists:
+        http://example.com/mailman/admin
+         
+        List a member:
+        http://example.com/mailman/admin/<listname>/members?findmember=<email-address>&setmemberopts_btn&adminpw=<adminpassword>
+         
+        Unsubscribe:
+        http://example.com/mailman/admin/<listname>/members/remove?send_unsub_ack_to_this_batch=0&send_unsub_notifications_to_list_owner=0&unsubscribees_upload=<email-address>&adminpw=<adminpassword>
+         
+        Subscribe:
+        http://example.com/mailman/admin/<listname>/members/add?subscribe_or_invite=0&send_welcome_msg_to_this_batch=0&notification_to_list_owner=0&subscribees_upload=<email-address>&adminpw=<adminpassword>
+         
+        Set digest (you have to first subscribe them using URL above, then set digest):
+        http://example.com/mailman/admin/<listname>/members?user=<email-address>&setmemberopts_btn=1&<email-address>_digest=1&<email-address>_nodupes=1&adminpw=<adminpassword>  //*/
 
 
         #region Code for reading real membership pages
