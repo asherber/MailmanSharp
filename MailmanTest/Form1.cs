@@ -41,8 +41,13 @@ namespace MailmanTest
             mm.BaseUrl = "http://lists.sherber.com";
             mm.ListName = "test-sherber.com";
             mm.Password = "***REMOVED***";
-            mm.Read();
-            var foo = mm.GetConfig();
+
+            
+            mm.AutoResponder.Read();
+            mm.AutoResponder.AutoresponsePostingsText.Clear();
+            mm.AutoResponder.AutoresponsePostingsText.Add("Updated");
+            mm.AutoResponder.AutoresponsePostingsText.Add("Second line");
+            mm.AutoResponder.Write();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -63,7 +68,7 @@ namespace MailmanTest
                 BaseUrl = "http://lists.sherber.com"
             };  //*/
 
-            list.Membership.Unsubscribe("jeremy@sherber.com");
+            list.Membership.Unsubscribe("jeremy@sherber.com", "bob@example.com", "jill@example.com");
 
 
         }

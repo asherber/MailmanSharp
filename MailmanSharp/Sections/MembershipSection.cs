@@ -48,7 +48,7 @@ namespace MailmanSharp.Sections
                 return;
 
             var req = new RestRequest();
-            req.AddParameter("unsubscribees_upload", members);
+            req.AddParameter("unsubscribees", members);
             req.AddParameter("send_unsub_ack_to_this_batch", 0);
             req.AddParameter("send_unsub_notifications_to_list_owner", 0);
 
@@ -72,7 +72,7 @@ namespace MailmanSharp.Sections
                 return;
 
             var req = new RestRequest();
-            req.AddParameter("subscribees_upload", members);
+            req.AddParameter("subscribees", members);
             req.AddParameter("subscribe_or_invite", 0);
             req.AddParameter("send_welcome_msg_to_this_batch", 0);
             req.AddParameter("send_notifications_to_list_owner", 0);

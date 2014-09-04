@@ -32,9 +32,9 @@ namespace MailmanSharp
         public MailNewsGatewaysSection MailNewsGateways { get; private set; }
         public ContentFilteringSection ContentFiltering { get; private set; }
         public PasswordsSection Passwords { get; private set; }   
+        public AutoResponderSection AutoResponder { get; private set; }  
 
         /*
-        public AutoResponderSection AutoResponder { get; private set; }  // Could implement; not necessary
         public LanguageSection Language { get; private set; }   // Could implement; not necessary
         public TopicsSection Topics { get; private set; }  // Won't implement     //*/
 
