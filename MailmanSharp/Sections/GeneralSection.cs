@@ -51,7 +51,7 @@ namespace MailmanSharp.Sections
         private void SetRealName(string value)
         {
             // Only allow case changes
-            if (value != _realName)
+            if (!String.IsNullOrWhiteSpace(_realName) && value != _realName)
             {
                 if (String.Compare(value, _realName, true) == 0)
                     _realName = value;

@@ -37,9 +37,9 @@ namespace MailmanSharp.Sections
             foreach (var prop in props)
             {
                 if (prop.PropertyType.GetConstructor(Type.EmptyTypes) != null)
-                {
                     prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, null), null);
-                }
+                else if (prop.PropertyType == typeof(string))
+                    prop.SetValue(this, "", null);
             }
 
         }
