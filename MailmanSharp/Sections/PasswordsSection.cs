@@ -27,7 +27,7 @@ namespace MailmanSharp.Sections
             SetParams("mod", this.Moderator, req);
             SetParams("post", this.Poster, req);
 
-            _list.Client.Clone().ExecuteAdminRequest(_paths.Single(), req);
+            this.Client.ExecuteAdminRequest(_paths.Single(), req);
         }
 
         private void SetParams(string tag, string property, RestRequest req)

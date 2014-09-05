@@ -42,9 +42,9 @@ namespace MailmanTest
             mm.ListName = "test-sherber.com";
             mm.Password = "***REMOVED***";
 
-
-            mm.General.RealName = "foo";
-            mm.General.RealName = "bar";
+            var foo = mm.Membership.GetAllMembers();
+            foo.First().Mod = false;
+            
         }
 
         private void button3_Click(object sender, EventArgs e)

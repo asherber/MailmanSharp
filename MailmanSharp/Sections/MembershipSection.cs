@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using RestSharp;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,34 +13,44 @@ namespace MailmanSharp.Sections
     [Path("members")]
     public class MembershipSection: SectionBase
     {
-        [Ignore]
-        public string EmailList { get; private set; }
+        public string Emails { get { return String.Join("\n", _emailList); } }
+        public IEnumerable<string> EmailList { get { return _emailList; } }
 
         protected static string _addPage = "members/add";
         protected static string _removePage = "members/remove";
-        protected static string _membersPage = "members";
-
+        protected List<string> _emailList = new List<string>();
+        
         public MembershipSection(MailmanList list) : base(list) { }
 
         public override void Read()
         {
-            GetEmailList();
+            PopulateEmailList();
         }
 
-        private void GetEmailList()
+        public override void Write()
         {
-            var list = new List<string>();
-            var resp = _list.Client.Clone().ExecuteRosterRequest();
+            // do nothing
+        }
+
+        private void PopulateEmailList()
+        {
+            var resp = this.Client.ExecuteRosterRequest();
             var doc = new MailmanHtmlDocument();
             doc.LoadHtml(resp.Content);
 
             var addrs = doc.DocumentNode.SafeSelectNodes("//li");
             foreach (var addr in addrs)
             {
-                list.Add(addr.InnerText.Trim().Replace(" at ", "@"));
+                _emailList.Add(addr.InnerText.Trim().Replace(" at ", "@"));
             }
+        }
 
-            this.EmailList = String.Join("\n", list);
+        public void ModerateAll(bool moderate)
+        {
+            var req = new RestRequest();
+            req.AddParameter("allmodbit_val", moderate ? 1 : 0);
+            req.AddParameter("allmodbit_btn", 1);
+            this.Client.ExecuteAdminRequest(_paths.Single(), req);
         }
 
         public void Unsubscribe(string members)
@@ -52,8 +63,8 @@ namespace MailmanSharp.Sections
             req.AddParameter("send_unsub_ack_to_this_batch", 0);
             req.AddParameter("send_unsub_notifications_to_list_owner", 0);
 
-            _list.Client.Clone().ExecuteAdminRequest(_removePage, req);
-            GetEmailList();
+            this.Client.ExecuteAdminRequest(_removePage, req);
+            PopulateEmailList();
         }
 
         public void Unsubscribe(IEnumerable<string> members)
@@ -77,8 +88,8 @@ namespace MailmanSharp.Sections
             req.AddParameter("send_welcome_msg_to_this_batch", 0);
             req.AddParameter("send_notifications_to_list_owner", 0);
 
-            _list.Client.Clone().ExecuteAdminRequest(_addPage, req);
-            GetEmailList();
+            this.Client.ExecuteAdminRequest(_addPage, req);
+            PopulateEmailList();
         }
 
         public void Subscribe(IEnumerable<string> members)
@@ -91,99 +102,80 @@ namespace MailmanSharp.Sections
             Subscribe(String.Join("\n", members));
         }
 
-        public void Unmoderate(IEnumerable<string> members)
+        public IList<Member> GetMembers(string search)
         {
-            // This isn't great -- it assumes that members have the default values
+            var result = new List<Member>();
+            var req = new RestRequest();
+            req.AddParameter("findmember", search);
+            var resp = this.Client.ExecuteAdminRequest(_paths.Single(), req);
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(resp.Content);
+
+            var userNodes = doc.DocumentNode.SafeSelectNodes("//input[@name='user']");
+            var emails = userNodes.Select(n => n.GetAttributeValue("value", null));
+
+            foreach (var email in emails)
+            {
+                var xpath = String.Format("//input[contains(@name, '{0}')]", email);
+                var nodes = doc.DocumentNode.SafeSelectNodes(xpath);
+                if (nodes.Any())
+                    result.Add(new Member(nodes));
+            }
+
+            return result;
+        }
+
+        public void SaveMembers(IEnumerable<Member> members)
+        {
             var req = new RestRequest();
             req.AddParameter("setmemberopts_btn", 1);
 
             foreach (var member in members)
-            {
-                string addr = HttpUtility.HtmlEncode(member);
-                req.AddParameter("user", addr);
-                req.AddParameter(addr + "_nomail", "off");
-                req.AddParameter(addr + "_nodupes", "on");
-                req.AddParameter(addr + "_plain", "on");
-                req.AddParameter(addr + "_language", "en");
-            }
+                req.Parameters.AddRange(member.ToParameters());
 
-            _list.Client.Clone().ExecuteAdminRequest(_membersPage, req);
+            this.Client.ExecuteAdminRequest(_paths.Single(), req);
         }
 
-        public void Unmoderate(string members)
+        public void SaveMembers(params Member[] members)
         {
-            Unmoderate(members.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None));
+            SaveMembers(members.ToList());
         }
 
-        public void Unmoderate(params string[] members)
+        public IEnumerable<Member> GetAllMembers()
         {
-            Unmoderate(members.ToList());
-        }
-        
-        /*
-        List lists:
-        http://example.com/mailman/admin
-         
-        List a member:
-        http://example.com/mailman/admin/<listname>/members?findmember=<email-address>&setmemberopts_btn&adminpw=<adminpassword>
-         
-        Unsubscribe:
-        http://example.com/mailman/admin/<listname>/members/remove?send_unsub_ack_to_this_batch=0&send_unsub_notifications_to_list_owner=0&unsubscribees_upload=<email-address>&adminpw=<adminpassword>
-         
-        Subscribe:
-        http://example.com/mailman/admin/<listname>/members/add?subscribe_or_invite=0&send_welcome_msg_to_this_batch=0&notification_to_list_owner=0&subscribees_upload=<email-address>&adminpw=<adminpassword>
-         
-        Set digest (you have to first subscribe them using URL above, then set digest):
-        http://example.com/mailman/admin/<listname>/members?user=<email-address>&setmemberopts_btn=1&<email-address>_digest=1&<email-address>_nodupes=1&adminpw=<adminpassword>  //*/
+            var result = new List<Member>();
 
-
-        #region Code for reading real membership pages
-        /*
-        public ICollection<Member> Roster { get { return _roster; } }
-        private List<Member> _roster = new List<Member>();
-        public override void Read()
-        {
-            // There's a problem here with timing
-            // The alternative is to loop through all the letter/chunk pages, which is expensive
+            // Increase chunk size
             var general = new GeneralSection(_list);
             general.Read();
             var chunkSize = general.AdminMemberChunksize;
-            general.AdminMemberChunksize = 5000;
-            general.Write()
+            general.AdminMemberChunksize = 10000;
+            general.Write();
 
-            var doc = GetHtmlDocuments().Single();
-            var nodes = doc.DocumentNode.SafeSelectNodes("//input[@name='user']");
-            var props = typeof(Member).GetProperties();
-
-            foreach (var node in nodes)
+            try
             {
-                var email = node.GetAttributeValue("value", null);
-                var member = new Member(HttpUtility.HtmlDecode(email));
+                // Get all user nodes
+                var doc = GetHtmlDocuments().Single();
+                var nodes = doc.DocumentNode.SafeSelectNodes("//input[@name='user']");
 
-                foreach (var prop in props)
+                foreach (var node in nodes)
                 {
-                    string xpath = String.Format("//input[@name='{0}_{1}']", email, prop.Name.ToLower());
-                    var propNode = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
-                    if (propNode != null)
-                    {
-                        var val = propNode.GetAttributeValue("value", null);
-                        if (prop.PropertyType == typeof(string))
-                            prop.SetValue(member, val, null);
-                        else if (prop.PropertyType == typeof(bool))
-                            prop.SetValue(member, val == "on", null);
-                    }
+                    var email = node.GetAttributeValue("value", null);
+                    var xpath = String.Format("//input[contains(@name, '{0}')]", email);
+                    var memberNodes = doc.DocumentNode.SafeSelectNodes(xpath);
+
+                    result.Add(new Member(memberNodes));
                 }
-
-                _roster.Add(member);
             }
-        }
+            finally
+            {
+                // Reset chunk size
+                general.AdminMemberChunksize = chunkSize;
+                general.Write();
+            }
 
-        public override void Write()
-        {
-            // do nothing
+            return result;
         }
-        //*/
-        #endregion
-
     }
 }

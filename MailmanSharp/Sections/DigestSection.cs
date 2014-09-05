@@ -23,12 +23,12 @@ namespace MailmanSharp.Sections
         
         public void NewVolume()
         {
-            _list.Client.Clone().ExecuteAdminRequest(_paths.First(), "_new_volume", 1);
+            this.Client.ExecuteAdminRequest(_paths.First(), "_new_volume", 1);
         }
 
         public void SendDigestNow()
         {
-            _list.Client.Clone().ExecuteAdminRequest(_paths.First(), "_send_digest_now", 1);
+            this.Client.ExecuteAdminRequest(_paths.First(), "_send_digest_now", 1);
         }
     
         public DigestSection(MailmanList list) : base(list) { }

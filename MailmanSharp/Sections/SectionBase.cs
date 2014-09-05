@@ -14,6 +14,7 @@ namespace MailmanSharp.Sections
     {
         protected MailmanList _list;
         protected HashSet<string> _paths = new HashSet<string>();
+        protected MailmanClient Client { get { return _list.Client.Clone(); } }
         
         public SectionBase(MailmanList list)
         {
@@ -34,7 +35,7 @@ namespace MailmanSharp.Sections
                 _paths.Add(basePath);
 
             // Initialize any reference types
-            foreach (var prop in props)
+            foreach (var prop in props.Where(p => p.CanWrite))
             {
                 if (prop.PropertyType.GetConstructor(Type.EmptyTypes) != null)
                     prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, null), null);
@@ -81,7 +82,7 @@ namespace MailmanSharp.Sections
         public virtual void Write()
         {
             var props = GetUnignoredProps(this.GetType());
-            var client = _list.Client.Clone();
+            var client = this.Client;
 
             foreach (var path in _paths)
             {
@@ -194,7 +195,7 @@ namespace MailmanSharp.Sections
         protected List<MailmanHtmlDocument> GetHtmlDocuments()
         {
             var result = new List<MailmanHtmlDocument>();
-            var client = _list.Client.Clone();
+            var client = this.Client;
             foreach (var path in _paths)
             {
                 var resp = client.ExecuteAdminRequest(path);

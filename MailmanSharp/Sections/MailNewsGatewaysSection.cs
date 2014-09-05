@@ -19,7 +19,7 @@ namespace MailmanSharp.Sections
         
         public void MassCatchup()
         {
-            _list.Client.Clone().ExecuteAdminRequest(_paths.First(), "_mass_catchup", 1);
+            this.Client.ExecuteAdminRequest(_paths.First(), "_mass_catchup", 1);
         }
 
         public MailNewsGatewaysSection(MailmanList list) : base(list) { }
