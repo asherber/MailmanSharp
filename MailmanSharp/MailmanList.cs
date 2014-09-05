@@ -13,6 +13,9 @@ using System.Collections.ObjectModel;
 using hap = HtmlAgilityPack;
 using System.Windows.Forms;
 
+/**
+ * Tested with Mailman 2.1.17
+ */
 
 namespace MailmanSharp
 {
@@ -33,10 +36,10 @@ namespace MailmanSharp
         public ContentFilteringSection ContentFiltering { get; private set; }
         public PasswordsSection Passwords { get; private set; }   
         public AutoResponderSection AutoResponder { get; private set; }  
+        public TopicsSection Topics { get; private set; }     
 
-        /*
-        public LanguageSection Language { get; private set; }   // Could implement; not necessary
-        public TopicsSection Topics { get; private set; }  // Won't implement     //*/
+        //public LanguageSection Language { get; private set; }   // Won't implement
+         
 
         internal MailmanClient Client { get; private set; }
 

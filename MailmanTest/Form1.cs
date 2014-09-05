@@ -42,12 +42,9 @@ namespace MailmanTest
             mm.ListName = "test-sherber.com";
             mm.Password = "***REMOVED***";
 
-            
-            mm.AutoResponder.Read();
-            mm.AutoResponder.AutoresponsePostingsText.Clear();
-            mm.AutoResponder.AutoresponsePostingsText.Add("Updated");
-            mm.AutoResponder.AutoresponsePostingsText.Add("Second line");
-            mm.AutoResponder.Write();
+
+            mm.General.RealName = "foo";
+            mm.General.RealName = "bar";
         }
 
         private void button3_Click(object sender, EventArgs e)

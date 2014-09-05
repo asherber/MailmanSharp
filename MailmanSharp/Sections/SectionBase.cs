@@ -14,7 +14,7 @@ namespace MailmanSharp.Sections
     {
         protected MailmanList _list;
         protected HashSet<string> _paths = new HashSet<string>();
-
+        
         public SectionBase(MailmanList list)
         {
             _list = list;
@@ -32,6 +32,16 @@ namespace MailmanSharp.Sections
             }
             if (!_paths.Any())
                 _paths.Add(basePath);
+
+            // Initialize any reference types
+            foreach (var prop in props)
+            {
+                if (prop.PropertyType.GetConstructor(Type.EmptyTypes) != null)
+                {
+                    prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, null), null);
+                }
+            }
+
         }
 
         private string GetPathValue(object[] attributes)
@@ -63,7 +73,9 @@ namespace MailmanSharp.Sections
                     else if (prop.PropertyType == typeof(List<string>))
                         SetPropValue(prop, GetNodeListValue(doc, prop));
                 }
-            }            
+            }
+
+            DoAfterRead(docs);
         }
 
         public virtual void Write()
@@ -87,9 +99,13 @@ namespace MailmanSharp.Sections
                         req.AddParameter(prop.Name.Decamel(), GetPropertyObjectValue(prop));
                 }
 
+                DoBeforeFinishWrite(req);
                 client.ExecuteAdminRequest(path, req);
             }
         }
+
+        protected virtual void DoAfterRead(List<MailmanHtmlDocument> docs) { }
+        protected virtual void DoBeforeFinishWrite(RestRequest req) { }
 
         protected IEnumerable<PropertyInfo> GetPropsForPath(IEnumerable<PropertyInfo> props, string path)
         {
