@@ -15,15 +15,20 @@ using System.Windows.Forms;
 
 /**
  * Tested with Mailman 2.1.17
+ * 
+ * TODO: Error checking on Subscribe/Unsubscribe
  */
 
 namespace MailmanSharp
 {
     public class MailmanList
     {
-        public string BaseUrl { get { return Client.BaseUrl; } set { Client.BaseUrl = value; } }
+        /// <summary>
+        /// Should end in admin or admin.cgi; do not include list name.
+        /// </summary>
+        public string BaseAdminUrl { get { return Client.BaseAdminUrl; } set { Client.BaseAdminUrl = value; } }
         public string ListName { get { return Client.ListName; } set { Client.ListName = value; } }
-        public string Password { get { return Client.Password; } set { Client.Password = value; } }
+        public string AdminPassword { get { return Client.AdminPassword; } set { Client.AdminPassword = value; } }
 
         public MembershipSection Membership { get; private set; }
         public PrivacySection Privacy { get; private set; }
@@ -81,9 +86,9 @@ namespace MailmanSharp
         public string GetConfig()
         {
             var root = new XElement("MailmanList",
-                new XElement("BaseUrl", BaseUrl),
+                new XElement("BaseUrl", BaseAdminUrl),
                 new XElement("ListName", ListName),
-                new XElement("Password", Password)
+                new XElement("Password", AdminPassword)
             );
 
             foreach (var prop in GetSectionProps())
@@ -97,9 +102,9 @@ namespace MailmanSharp
         public void MergeConfig(string xml)
         {
             var root = XElement.Parse(xml);
-            BaseUrl = GetNodeValue(root, "BaseUrl") ?? BaseUrl;
+            BaseAdminUrl = GetNodeValue(root, "BaseUrl") ?? BaseAdminUrl;
             ListName = GetNodeValue(root, "ListName") ?? ListName;
-            Password = GetNodeValue(root, "Password") ?? Password;
+            AdminPassword = GetNodeValue(root, "Password") ?? AdminPassword;
 
             foreach (var prop in GetSectionProps())
             {

@@ -9,8 +9,15 @@ namespace MailmanSharp
 {
     public class MailmanClient: RestClient
     {
+        /// <summary>
+        /// Should end in admin or admin.cgi; do not include list name.
+        /// </summary>        
+        public string BaseAdminUrl { get { return GetBaseAdminUrl(); } set { SetBaseAdminUrl(value); } }
         public string ListName { get; set; }
-        public string Password { get; set; }
+        public string AdminPassword { get; set; }
+
+        private string AdminSeg { get; set; }
+        private string RosterSeg { get { return AdminSeg.Replace("admin", "roster"); } }
 
         public MailmanClient()
         {
@@ -23,10 +30,11 @@ namespace MailmanSharp
             var result = new MailmanClient()
             {
                 ListName = this.ListName,
-                Password = this.Password,
+                AdminPassword = this.AdminPassword,
+                BaseAdminUrl = this.BaseAdminUrl,
 
                 Authenticator = this.Authenticator,
-                BaseUrl = this.BaseUrl,
+                //BaseUrl = this.BaseUrl,
                 ClientCertificates = this.ClientCertificates,
                 //CookieContainer
                 FollowRedirects = this.FollowRedirects,
@@ -45,11 +53,11 @@ namespace MailmanSharp
 
         public IRestResponse ExecuteAdminRequest(string path, RestRequest request)
         {
-            if (!String.IsNullOrEmpty(path) && path.StartsWith("/"))
-                path = path.Substring(1);
-            var resource = String.Format("admin.cgi/{0}/{1}", ListName, path);
+            if (!String.IsNullOrEmpty(path))
+                path = path.Trim('/');
+
             var req = request ?? new RestRequest();
-            req.Resource = resource;
+            req.Resource = String.Format("{0}/{1}/{2}", AdminSeg, ListName, path);;
             req.Method = Method.POST;
             EnsureAdminPassword(req);
             
@@ -82,15 +90,18 @@ namespace MailmanSharp
             return this.ExecuteAdminRequest(path, req);
         }
 
-        
-
         public IRestResponse ExecuteRosterRequest()
         {
             if (!HasAdminCookie()) Login();
-            var resource = String.Format("roster.cgi/{0}", ListName);
+            var resource = String.Format("{0}/{1}", RosterSeg, ListName);
             var req = new RestRequest(resource, Method.POST);
-            req.AddParameter("adminpw", this.Password);
+            req.AddParameter("adminpw", this.AdminPassword);
             return this.Execute(req);
+        }
+
+        public void Login()
+        {
+            ExecuteAdminRequest("");
         }
 
         private bool HasAdminCookie()
@@ -103,14 +114,26 @@ namespace MailmanSharp
         {
             var parm = req.Parameters.FirstOrDefault(p => p.Name == "adminpw");
             if (parm == null)
-                req.AddParameter("adminpw", this.Password);
+                req.AddParameter("adminpw", this.AdminPassword);
             else
-                parm.Value = this.Password;
+                parm.Value = this.AdminPassword;
+        }
+        private void SetBaseAdminUrl(string value)
+        {
+            var uri = new Uri(value);
+            var sb = new StringBuilder();
+            sb.AppendFormat("{0}://{1}", uri.Scheme, uri.Host);
+            foreach (var seg in uri.Segments.Take(uri.Segments.Length - 1))
+                sb.Append(seg);
+            this.BaseUrl = sb.ToString();
+
+            AdminSeg = uri.Segments.Last().TrimEnd('/');
         }
 
-        public void Login()
+        private string GetBaseAdminUrl()
         {
-            ExecuteAdminRequest("");
-        }
+            var ub = new UriBuilder(this.BaseUrl) { Path = AdminSeg };
+            return ub.ToString();
+        }        
     }
 }

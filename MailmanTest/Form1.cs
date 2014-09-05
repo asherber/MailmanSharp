@@ -24,9 +24,9 @@ namespace MailmanTest
         private void button1_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList();
-            mm.BaseUrl = "http://lists.sherber.com";
+            mm.BaseAdminUrl = "http://lists.sherber.com/admin.cgi";
             mm.ListName = "test-sherber.com";
-            mm.Password = "***REMOVED***";
+            mm.AdminPassword = "***REMOVED***";
             //mm.Login();
             var st = Stopwatch.StartNew();
             mm.Read();
@@ -38,12 +38,11 @@ namespace MailmanTest
         private void button2_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList();
-            mm.BaseUrl = "http://lists.sherber.com";
+            mm.BaseAdminUrl = "http://lists.sherber.com/admin.cgi/";
             mm.ListName = "test-sherber.com";
-            mm.Password = "***REMOVED***";
+            mm.AdminPassword = "***REMOVED***";
 
-            var foo = mm.Membership.GetAllMembers();
-            foo.First().Mod = false;
+            mm.Membership.Read();
             
         }
 
@@ -54,15 +53,15 @@ namespace MailmanTest
             {
                 ListName = "calhoun-parents-mountwashingtonschool.org",
                 Password = "***REMOVED***",
-                BaseUrl = "http://lists.mountwashingtonschool.org"
+                BaseUrl = "http://lists.mountwashingtonschool.org/admin.cgi"
             };  //*/
 
             //*
             var list = new MailmanList()
             {
                 ListName = "test-sherber.com",
-                Password = "***REMOVED***",
-                BaseUrl = "http://lists.sherber.com"
+                AdminPassword = "***REMOVED***",
+                BaseAdminUrl = "http://lists.sherber.com"
             };  //*/
 
             list.Membership.Unsubscribe("jeremy@sherber.com", "bob@example.com", "jill@example.com");
