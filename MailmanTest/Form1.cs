@@ -42,7 +42,8 @@ namespace MailmanTest
             mm.ListName = "test-sherber.com";
             mm.AdminPassword = "***REMOVED***";
 
-            mm.Membership.Read();
+            mm.Membership.Unsubscribe("bob@dole.com", "djfnksfn");
+            //mm.Membership.Subscribe("bob@dole.com", "aaron@sherber.com", "jsdfn");
             
         }
 

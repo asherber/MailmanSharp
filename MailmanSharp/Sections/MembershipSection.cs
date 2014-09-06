@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace MailmanSharp.Sections
@@ -53,53 +54,91 @@ namespace MailmanSharp.Sections
             this.Client.ExecuteAdminRequest(_paths.Single(), req);
         }
 
-        public void Unsubscribe(string members)
+        public UnsubscribeResult Unsubscribe(string members)
         {
-            if (String.IsNullOrWhiteSpace(members))
-                return;
+            var result = new UnsubscribeResult();
 
-            var req = new RestRequest();
-            req.AddParameter("unsubscribees", members);
-            req.AddParameter("send_unsub_ack_to_this_batch", 0);
-            req.AddParameter("send_unsub_notifications_to_list_owner", 0);
+            if (!String.IsNullOrWhiteSpace(members))
+            {
+                var req = new RestRequest();
+                req.AddParameter("unsubscribees", members);
+                req.AddParameter("send_unsub_ack_to_this_batch", 0);
+                req.AddParameter("send_unsub_notifications_to_list_owner", 0);
 
-            this.Client.ExecuteAdminRequest(_removePage, req);
-            PopulateEmailList();
+                var resp = this.Client.ExecuteAdminRequest(_removePage, req);
+                var doc = new MailmanHtmlDocument();
+                doc.LoadHtml(resp.Content);
+
+                string xpath = "//h5[contains(translate(text(), 'SU', 'su'), 'successfully unsubscribed')]/following-sibling::ul[1]/li";
+                foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
+                    result.Unsubscribed.Add(node.InnerText.Trim());
+
+                xpath = "//h3[descendant::*[contains(translate(text(), 'CU', 'cu'), 'cannot unsubscribe')]]/following-sibling::ul[1]/li";
+                foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
+                    result.NonMembers.Add(node.InnerText.Trim());
+
+                PopulateEmailList();
+            }
+
+            return result;
         }
 
-        public void Unsubscribe(IEnumerable<string> members)
+        public UnsubscribeResult Unsubscribe(IEnumerable<string> members)
         {
-            Unsubscribe(String.Join("\n", members));
+            return Unsubscribe(String.Join("\n", members));
         }
 
-        public void Unsubscribe(params string[] members)
+        public UnsubscribeResult Unsubscribe(params string[] members)
         {
-            Unsubscribe(String.Join("\n", members));
+            return Unsubscribe(String.Join("\n", members));
         }
 
-        public void Subscribe(string members)
+        public SubscribeResult Subscribe(string members)
         {
-            if (String.IsNullOrWhiteSpace(members))
-                return;
+            var result = new SubscribeResult();
 
-            var req = new RestRequest();
-            req.AddParameter("subscribees", members);
-            req.AddParameter("subscribe_or_invite", 0);
-            req.AddParameter("send_welcome_msg_to_this_batch", 0);
-            req.AddParameter("send_notifications_to_list_owner", 0);
+            if (!String.IsNullOrWhiteSpace(members))
+            {
+                var req = new RestRequest();
+                req.AddParameter("subscribees", members);
+                req.AddParameter("subscribe_or_invite", 0);
+                req.AddParameter("send_welcome_msg_to_this_batch", 0);
+                req.AddParameter("send_notifications_to_list_owner", 0);
 
-            this.Client.ExecuteAdminRequest(_addPage, req);
-            PopulateEmailList();
+                var resp = this.Client.ExecuteAdminRequest(_addPage, req);
+                var doc = new MailmanHtmlDocument();
+                doc.LoadHtml(resp.Content);
+
+                string xpath = "//h5[contains(translate(text(), 'S', 's'), 'successfully subscribed')]/following-sibling::ul[1]/li";
+                foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
+                    result.Subscribed.Add(node.InnerText.Trim());
+
+                xpath = "//h5[contains(translate(text(), 'ES', 'es'),'error subscribing')]/following-sibling::ul[1]/li";
+                foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
+                {
+                    var match = Regex.Match(node.InnerText, "(.*) -- (.*)");
+                    var email = match.Groups[1].Value;
+                    var reason = match.Groups[2].Value;
+                    if (Regex.IsMatch(reason, "Already", RegexOptions.IgnoreCase))
+                        result.AlreadyMembers.Add(email);
+                    else if (Regex.IsMatch(reason, "Bad/Invalid", RegexOptions.IgnoreCase))
+                        result.BadEmails.Add(email);
+                }
+
+                PopulateEmailList();
+            }
+
+            return result;
         }
 
-        public void Subscribe(IEnumerable<string> members)
+        public SubscribeResult Subscribe(IEnumerable<string> members)
         {
-            Subscribe(String.Join("\n", members));
+            return Subscribe(String.Join("\n", members));
         }
 
-        public void Subscribe(params string[] members)
+        public SubscribeResult Subscribe(params string[] members)
         {
-            Subscribe(String.Join("\n", members));
+            return Subscribe(String.Join("\n", members));
         }
 
         public IList<Member> GetMembers(string search)

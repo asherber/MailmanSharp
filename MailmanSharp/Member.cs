@@ -24,12 +24,11 @@ namespace MailmanSharp
         public bool Plain { get; set; }
 
         protected string _encEmail;
-        protected static Regex _stripTag = new Regex("_\\w*$");
-
+        
         internal Member(HtmlNodeCollection nodes)
         {
             var firstNode = nodes.First();
-            _encEmail = _stripTag.Replace(firstNode.GetAttributeValue("name", null), "");
+            _encEmail = Regex.Replace(firstNode.GetAttributeValue("name", null), "_\\w*$", "");
             this.Email = HttpUtility.UrlDecode(_encEmail);
 
             foreach (var prop in this.GetType().GetProperties())
