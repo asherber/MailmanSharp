@@ -9,6 +9,7 @@ namespace MailmanSharp.Sections
     public enum ArchiveVolumeFrequencyOption { Yearly, Monthly, Quarterly, Weekly, Daily }
 
     [Path("archive")]
+    [Order(9)]
     public class ArchivingSection: SectionBase
     {
         public bool Archive { get; set; }

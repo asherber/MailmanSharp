@@ -8,6 +8,7 @@ namespace MailmanSharp.Sections
     public enum FilterActionOption { Discard, Reject, ForwardToListOwner, Preserve }
 
     [Path("contentfilter")]
+    [Order(12)]
     public class ContentFilteringSection: SectionBase
     {
         public bool FilterContent { get; set; }

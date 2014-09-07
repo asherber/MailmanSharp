@@ -8,6 +8,7 @@ namespace MailmanSharp.Sections
     public enum NewsModerationOption { None, OpenListModeratedGroup, Moderated }
 
     [Path("gateway")]
+    [Order(10)]
     public class MailNewsGatewaysSection: SectionBase
     {
         public string NntpHost { get; set; }

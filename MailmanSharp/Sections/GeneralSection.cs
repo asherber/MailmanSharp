@@ -11,6 +11,7 @@ namespace MailmanSharp.Sections
     public enum NewMemberOptions { None = 0, Hide = 1, Ack = 2, NotMeToo = 4, NoDupes = 8 }
 
     [Path("general")]
+    [Order(1)]
     public class GeneralSection: SectionBase
     {
         public string RealName { get { return _realName; } set { SetRealName(value); } }

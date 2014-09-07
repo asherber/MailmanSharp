@@ -119,7 +119,7 @@ namespace MailmanSharp.Sections
             return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
         }
 
-        internal string GetConfig()
+        internal virtual string GetConfig()
         {
             var result = new XElement(this.GetType().Name.Replace("Section", ""));
             var props = GetUnignoredProps(this.GetType());

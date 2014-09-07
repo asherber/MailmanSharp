@@ -11,6 +11,7 @@ namespace MailmanSharp.Sections
     public enum GenericNonmemberActionOption { Accept, Hold, Reject, Discard }
 
     [Path("privacy")]
+    [Order(7)]
     public class PrivacySection: SectionBase
     {
         [Path("subscribing")]

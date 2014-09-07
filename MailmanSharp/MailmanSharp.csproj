@@ -58,6 +58,7 @@
     <Compile Include="Member.cs" />
     <Compile Include="IgnoreAttribute.cs" />
     <Compile Include="MailmanHtmlDocument.cs" />
+    <Compile Include="OrderAttribute.cs" />
     <Compile Include="Sections\ArchivingSection.cs" />
     <Compile Include="Sections\AutoResponderSection.cs" />
     <Compile Include="Sections\BounceProcessingSection.cs" />

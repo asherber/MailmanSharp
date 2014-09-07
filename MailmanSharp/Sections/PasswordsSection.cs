@@ -7,6 +7,7 @@ using System.Text;
 namespace MailmanSharp.Sections
 {
     [Path("passwords")]
+    [Order(2)]
     public class PasswordsSection: SectionBase
     {
         public string Administrator { get; set; }
@@ -29,6 +30,12 @@ namespace MailmanSharp.Sections
 
             this.Client.ExecuteAdminRequest(_paths.Single(), req);
         }
+
+        internal override string GetConfig()
+        {
+            return null;
+        }
+
 
         private void SetParams(string tag, string property, RestRequest req)
         {

@@ -6,6 +6,7 @@ using System.Text;
 namespace MailmanSharp.Sections
 {
     [Path("bounce")]
+    [Order(8)]
     public class BounceProcessingSection: SectionBase
     {
         public bool BounceProcessing { get; set; }

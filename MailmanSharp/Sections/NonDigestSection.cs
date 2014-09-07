@@ -8,6 +8,7 @@ namespace MailmanSharp.Sections
     public enum PersonalizeOption { No, Yes, FullPersonalization }
     
     [Path("nondigest")]
+    [Order(5)]
     public class NonDigestSection: SectionBase
     {
         public bool Nondigestable { get; set; }

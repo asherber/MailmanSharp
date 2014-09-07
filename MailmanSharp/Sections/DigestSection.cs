@@ -10,6 +10,7 @@ namespace MailmanSharp.Sections
     public enum DigestVolumeFrequencyOption { Yearly, Monthly, Quarterly, Weekly, Daily }
 
     [Path("digest")]
+    [Order(6)]
     public class DigestSection: SectionBase
     {
         public bool Digestable { get; set; }

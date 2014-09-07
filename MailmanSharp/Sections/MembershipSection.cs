@@ -12,6 +12,7 @@ using System.Web;
 namespace MailmanSharp.Sections
 {
     [Path("members")]
+    [Order(4)]
     public class MembershipSection: SectionBase
     {
         public string Emails { get { return String.Join("\n", _emailList); } }
@@ -31,6 +32,11 @@ namespace MailmanSharp.Sections
         public override void Write()
         {
             // do nothing
+        }
+
+        internal override string GetConfig()
+        {
+            return null;
         }
 
         private void PopulateEmailList()

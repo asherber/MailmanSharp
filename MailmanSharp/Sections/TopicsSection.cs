@@ -7,6 +7,7 @@ using System.Text;
 namespace MailmanSharp.Sections
 {
     [Path("topics")]
+    [Order(13)]
     public class TopicsSection: SectionBase
     {
         public bool TopicsEnabled { get; set; }

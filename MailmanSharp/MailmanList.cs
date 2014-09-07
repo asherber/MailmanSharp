@@ -86,7 +86,7 @@ namespace MailmanSharp
         public string GetConfig()
         {
             var root = new XElement("MailmanList",
-                new XElement("BaseUrl", BaseAdminUrl),
+                new XElement("BaseAdminUrl", BaseAdminUrl),
                 new XElement("ListName", ListName),
                 new XElement("Password", AdminPassword)
             );
@@ -94,7 +94,8 @@ namespace MailmanSharp
             foreach (var prop in GetSectionProps())
             {
                 var xml = ((SectionBase)prop.GetValue(this, null)).GetConfig();
-                root.Add(XElement.Parse(xml));
+                if (!String.IsNullOrWhiteSpace(xml))
+                    root.Add(XElement.Parse(xml));
             }
             return root.ToString();
         }
@@ -102,14 +103,14 @@ namespace MailmanSharp
         public void MergeConfig(string xml)
         {
             var root = XElement.Parse(xml);
-            BaseAdminUrl = GetNodeValue(root, "BaseUrl") ?? BaseAdminUrl;
+            BaseAdminUrl = GetNodeValue(root, "BaseAdminUrl") ?? BaseAdminUrl;
             ListName = GetNodeValue(root, "ListName") ?? ListName;
             AdminPassword = GetNodeValue(root, "Password") ?? AdminPassword;
 
             foreach (var prop in GetSectionProps())
             {
                 var nodeName = prop.Name.Replace("Section", "");
-                var el = root.Element(nodeName);
+                var el = root.Element(prop.Name);
                 if (el != null)
                     ((SectionBase)prop.GetValue(this, null)).MergeConfig(el.ToString());
             }
@@ -150,7 +151,9 @@ namespace MailmanSharp
 
         private IEnumerable<PropertyInfo> GetSectionProps()
         {
-            return this.GetType().GetProperties().Where(p => p.PropertyType.IsSubclassOf(typeof(SectionBase)));
+            return this.GetType().GetProperties()
+                .Where(p => p.PropertyType.IsSubclassOf(typeof(SectionBase)))
+                .OrderBy(p => p.PropertyType.GetCustomAttributes(false).OfType<OrderAttribute>().First().Value);
         }
 
         

@@ -8,6 +8,7 @@ namespace MailmanSharp.Sections
     public enum AutorespondRequestsOption { No, YesWithDiscard, YesWithForward }
 
     [Path("autoreply")]
+    [Order(11)]
     public class AutoResponderSection: SectionBase
     {
         public bool AutorespondPostings { get; set; }

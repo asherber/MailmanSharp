@@ -62,10 +62,12 @@ namespace MailmanTest
             {
                 ListName = "test-sherber.com",
                 AdminPassword = "***REMOVED***",
-                BaseAdminUrl = "http://lists.sherber.com"
+                BaseAdminUrl = "http://lists.sherber.com/admin.cgi"
             };  //*/
 
-            list.Membership.Unsubscribe("jeremy@sherber.com", "bob@example.com", "jill@example.com");
+            list.Read();
+            var foo = list.GetConfig();
+            
 
 
         }
