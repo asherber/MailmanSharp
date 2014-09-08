@@ -35,15 +35,13 @@ namespace MailmanTest
         private void button2_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
-            
-            mm.Membership.Unsubscribe("bob@dole.com", "djfnksfn");
-            //mm.Membership.Subscribe("bob@dole.com", "aaron@sherber.com", "jsdfn");
-            
+            mm.Membership.Read();
+            mm.Membership.Read();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            //var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/annount-mountwashingtonschool.org", "***REMOVED***");
+            //var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/announce-mountwashingtonschool.org", "***REMOVED***");
             var mm = new MailmanList("http://lists.sherber.com/admin.cgi/default-sherber.com", "***REMOVED***");
             mm.Read();
             var config = mm.CurrentConfig;

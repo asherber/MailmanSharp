@@ -195,7 +195,7 @@ namespace MailmanSharp.Sections
         protected List<MailmanHtmlDocument> GetHtmlDocuments()
         {
             var result = new List<MailmanHtmlDocument>();
-            var client = this.Client;
+            var client = this.Client;  // to avoid unneccessary cloning
             foreach (var path in _paths)
             {
                 var resp = client.ExecuteAdminRequest(path);

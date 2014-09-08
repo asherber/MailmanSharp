@@ -32,8 +32,7 @@ namespace MailmanSharp
 
                 Authenticator = this.Authenticator,
                 //BaseUrl = this.BaseUrl,
-                ClientCertificates = this.ClientCertificates,
-                //CookieContainer
+                ClientCertificates = this.ClientCertificates,                
                 FollowRedirects = this.FollowRedirects,
                 MaxRedirects = this.MaxRedirects,
                 Proxy = this.Proxy,
@@ -42,6 +41,9 @@ namespace MailmanSharp
                 UseSynchronizationContext = this.UseSynchronizationContext,
             };
 
+            foreach (var cookie in this.CookieContainer.GetCookies(new Uri(BaseUrl)))
+                result.CookieContainer.Add((Cookie)cookie);
+            
             foreach (var param in this.DefaultParameters)
                 result.DefaultParameters.Add(param);
 
@@ -59,15 +61,13 @@ namespace MailmanSharp
             EnsureAdminPassword(req);
             
             var resp = this.Execute(req);
-            /*
             if (resp.StatusCode == HttpStatusCode.OK)
                 return resp;
             else
             {
                 string msg = String.Format("Request failed. {{Uri={0}, Message={1}}}", resp.ResponseUri, resp.StatusDescription);
                 throw new Exception(msg);
-            }  //*/
-            return resp;
+            }            
         }
 
         public IRestResponse ExecuteAdminRequest(string path, IEnumerable<Parameter> parms)
@@ -98,24 +98,20 @@ namespace MailmanSharp
 
         public IRestResponse ExecuteRosterRequest()
         {
-            if (!HasAdminCookie()) Login();
+            if (!HasAdminCookie())
+                ExecuteAdminRequest("");
             var resource = String.Format("{0}/{1}", RosterPath, ListName);
             var req = new RestRequest(resource, Method.POST);
             req.AddParameter("adminpw", this.AdminPassword);
             return this.Execute(req);
         }
 
-        public void Login()
-        {
-            ExecuteAdminRequest("");
-        }
-
-        private bool HasAdminCookie()
+        internal bool HasAdminCookie()
         {
             var cookies = CookieContainer.GetCookies(new Uri(BaseUrl));
             return cookies.Cast<Cookie>().Any(c => c.Name == String.Format("{0}+admin", ListName));
         }
-
+        
         private void EnsureAdminPassword(RestRequest req)
         {
             var parm = req.Parameters.FirstOrDefault(p => p.Name == "adminpw");

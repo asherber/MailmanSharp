@@ -15,9 +15,6 @@ using System.Windows.Forms;
 
 /**
  * Tested with Mailman 2.1.17
- * 
- * TODO: Require login to check RestResponse
- * 
  */
 
 namespace MailmanSharp
@@ -27,7 +24,7 @@ namespace MailmanSharp
         public String AdminUrl { get { return Client.AdminUrl; } set { Client.AdminUrl = value; } }
         public string AdminPassword { get { return Client.AdminPassword; } set { Client.AdminPassword = value; } }
         public string CurrentConfig { get { return GetCurrentConfig(); } }
-
+        
         public MembershipSection Membership { get; private set; }
         public PrivacySection Privacy { get; private set; }
         public GeneralSection General { get; private set; }
@@ -56,8 +53,8 @@ namespace MailmanSharp
 
         public MailmanList(string adminUrl, string adminPassword = null): this()
         {
-            AdminUrl = adminUrl;
-            AdminPassword = adminPassword;
+            this.AdminUrl = adminUrl;
+            this.AdminPassword = adminPassword;
         }
 
         /// <summary>
@@ -68,6 +65,7 @@ namespace MailmanSharp
             Cursor.Current = Cursors.WaitCursor;
             try
             {
+                TryLogin();
                 this.InvokeSectionMethod("Read");
             }
             finally
@@ -84,6 +82,7 @@ namespace MailmanSharp
             Cursor.Current = Cursors.WaitCursor;
             try
             {
+                TryLogin();
                 this.InvokeSectionMethod("Write");
             }
             finally
@@ -123,6 +122,12 @@ namespace MailmanSharp
             }
         }
 
+        private void TryLogin()
+        {
+            // This checks the URL and credentials before we get multi-threaded 
+            Client.ExecuteAdminRequest("");
+        }
+
         private string GetNodeValue(XElement root, string nodeName)
         {
             var el = root.Element(nodeName);
@@ -147,7 +152,7 @@ namespace MailmanSharp
                 if (section != null)
                     tasks.Add(Task.Factory.StartNew(() => method.Invoke(section, null)));                
             }
-            Task.WaitAll(tasks.ToArray());
+            Task.WaitAll(tasks.ToArray());             
         }
 
         private IEnumerable<PropertyInfo> GetSectionProps()
