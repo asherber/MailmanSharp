@@ -4,20 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace MailmanSharp
 {
     public class MailmanClient: RestClient
     {
-        /// <summary>
-        /// Should end in admin or admin.cgi; do not include list name.
-        /// </summary>        
-        public string BaseAdminUrl { get { return GetBaseAdminUrl(); } set { SetBaseAdminUrl(value); } }
-        public string ListName { get; set; }
+        public string AdminUrl { get { return GetAdminUrl(); } set { SetAdminUrl(value); } }
         public string AdminPassword { get; set; }
 
-        private string AdminSeg { get; set; }
-        private string RosterSeg { get { return AdminSeg.Replace("admin", "roster"); } }
+        private string ListName { get; set; }
+        private string AdminPath { get; set; }
+        private string RosterPath { get { return AdminPath.Replace("admin", "roster"); } }
 
         public MailmanClient()
         {
@@ -29,9 +27,8 @@ namespace MailmanSharp
         {
             var result = new MailmanClient()
             {
-                ListName = this.ListName,
+                AdminUrl = this.AdminUrl,
                 AdminPassword = this.AdminPassword,
-                BaseAdminUrl = this.BaseAdminUrl,
 
                 Authenticator = this.Authenticator,
                 //BaseUrl = this.BaseUrl,
@@ -57,11 +54,20 @@ namespace MailmanSharp
                 path = path.Trim('/');
 
             var req = request ?? new RestRequest();
-            req.Resource = String.Format("{0}/{1}/{2}", AdminSeg, ListName, path);;
+            req.Resource = String.Format("{0}/{1}/{2}", AdminPath, ListName, path);;
             req.Method = Method.POST;
             EnsureAdminPassword(req);
             
-            return this.Execute(req);
+            var resp = this.Execute(req);
+            /*
+            if (resp.StatusCode == HttpStatusCode.OK)
+                return resp;
+            else
+            {
+                string msg = String.Format("Request failed. {{Uri={0}, Message={1}}}", resp.ResponseUri, resp.StatusDescription);
+                throw new Exception(msg);
+            }  //*/
+            return resp;
         }
 
         public IRestResponse ExecuteAdminRequest(string path, IEnumerable<Parameter> parms)
@@ -93,7 +99,7 @@ namespace MailmanSharp
         public IRestResponse ExecuteRosterRequest()
         {
             if (!HasAdminCookie()) Login();
-            var resource = String.Format("{0}/{1}", RosterSeg, ListName);
+            var resource = String.Format("{0}/{1}", RosterPath, ListName);
             var req = new RestRequest(resource, Method.POST);
             req.AddParameter("adminpw", this.AdminPassword);
             return this.Execute(req);
@@ -118,22 +124,34 @@ namespace MailmanSharp
             else
                 parm.Value = this.AdminPassword;
         }
-        private void SetBaseAdminUrl(string value)
+        
+        private string GetAdminUrl()
         {
-            var uri = new Uri(value);
-            var sb = new StringBuilder();
-            sb.AppendFormat("{0}://{1}", uri.Scheme, uri.Host);
-            foreach (var seg in uri.Segments.Take(uri.Segments.Length - 1))
-                sb.Append(seg);
-            this.BaseUrl = sb.ToString();
-
-            AdminSeg = uri.Segments.Last().TrimEnd('/');
+            // We know these bits have no trailing slashes.
+            // BaseUrl gets trimmed by RestClient; the other two get trimmed in SetAdminUrl.
+            var url = String.Format("{0}/{1}/{2}", BaseUrl, AdminPath, ListName);
+            return Regex.IsMatch(url, "\\w") ? url : "";
         }
 
-        private string GetBaseAdminUrl()
+        private void SetAdminUrl(string value)
         {
-            var ub = new UriBuilder(this.BaseUrl) { Path = AdminSeg };
-            return ub.ToString();
-        }        
+            BaseUrl = "";
+            AdminPath = "";
+            ListName = "";
+
+            if (!String.IsNullOrWhiteSpace(value))
+            {
+                var uri = new Uri(value);
+                int numSegs = uri.Segments.Length;
+
+                if (numSegs < 3)
+                    throw new ArgumentException("AdminUrl must have at least 3 path segments.");
+
+                BaseUrl = uri.GetLeftPart(UriPartial.Authority)
+                    + String.Join("", uri.Segments.Take(numSegs - 2));
+                AdminPath = uri.Segments[numSegs - 2].TrimEnd('/');
+                ListName = uri.Segments.Last().TrimEnd('/');
+            }
+        }
     }
 }

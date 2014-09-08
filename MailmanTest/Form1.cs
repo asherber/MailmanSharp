@@ -23,10 +23,7 @@ namespace MailmanTest
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var mm = new MailmanList();
-            mm.BaseAdminUrl = "http://lists.sherber.com/admin.cgi";
-            mm.ListName = "test-sherber.com";
-            mm.AdminPassword = "***REMOVED***";
+            var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
             //mm.Login();
             var st = Stopwatch.StartNew();
             mm.Read();
@@ -37,11 +34,8 @@ namespace MailmanTest
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var mm = new MailmanList();
-            mm.BaseAdminUrl = "http://lists.sherber.com/admin.cgi/";
-            mm.ListName = "test-sherber.com";
-            mm.AdminPassword = "***REMOVED***";
-
+            var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
+            
             mm.Membership.Unsubscribe("bob@dole.com", "djfnksfn");
             //mm.Membership.Subscribe("bob@dole.com", "aaron@sherber.com", "jsdfn");
             
@@ -49,27 +43,20 @@ namespace MailmanTest
 
         private void button3_Click(object sender, EventArgs e)
         {
-            /*
-            var list = new MailmanList()
-            {
-                ListName = "calhoun-parents-mountwashingtonschool.org",
-                Password = "***REMOVED***",
-                BaseUrl = "http://lists.mountwashingtonschool.org/admin.cgi"
-            };  //*/
-
-            //*
-            var list = new MailmanList()
-            {
-                ListName = "test-sherber.com",
-                AdminPassword = "***REMOVED***",
-                BaseAdminUrl = "http://lists.sherber.com/admin.cgi"
-            };  //*/
-
-            list.Read();
-            var foo = list.GetConfig();
+            //var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/annount-mountwashingtonschool.org", "***REMOVED***");
+            var mm = new MailmanList("http://lists.sherber.com/admin.cgi/default-sherber.com", "***REMOVED***");
+            mm.Read();
+            var config = mm.CurrentConfig;
+            
+            
             
 
 
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 

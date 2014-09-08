@@ -31,7 +31,7 @@ namespace MailmanSharp.Sections
             this.Client.ExecuteAdminRequest(_paths.Single(), req);
         }
 
-        internal override string GetConfig()
+        internal override string GetCurrentConfig()
         {
             return null;
         }

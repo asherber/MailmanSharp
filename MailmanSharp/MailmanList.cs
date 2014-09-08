@@ -16,19 +16,17 @@ using System.Windows.Forms;
 /**
  * Tested with Mailman 2.1.17
  * 
- * TODO: Error checking on Subscribe/Unsubscribe
+ * TODO: Require login to check RestResponse
+ * 
  */
 
 namespace MailmanSharp
 {
     public class MailmanList
     {
-        /// <summary>
-        /// Should end in admin or admin.cgi; do not include list name.
-        /// </summary>
-        public string BaseAdminUrl { get { return Client.BaseAdminUrl; } set { Client.BaseAdminUrl = value; } }
-        public string ListName { get { return Client.ListName; } set { Client.ListName = value; } }
+        public String AdminUrl { get { return Client.AdminUrl; } set { Client.AdminUrl = value; } }
         public string AdminPassword { get { return Client.AdminPassword; } set { Client.AdminPassword = value; } }
+        public string CurrentConfig { get { return GetCurrentConfig(); } }
 
         public MembershipSection Membership { get; private set; }
         public PrivacySection Privacy { get; private set; }
@@ -44,7 +42,6 @@ namespace MailmanSharp
         public TopicsSection Topics { get; private set; }     
 
         //public LanguageSection Language { get; private set; }   // Won't implement
-         
 
         internal MailmanClient Client { get; private set; }
 
@@ -52,11 +49,20 @@ namespace MailmanSharp
         {
             this.Client = new MailmanClient();
             ThreadPool.SetMaxThreads(10, 10);
-            ThreadPool.SetMinThreads(10, 10);
+            ThreadPool.SetMinThreads(10, 10);            
 
             InitSections();
         }
 
+        public MailmanList(string adminUrl, string adminPassword = null): this()
+        {
+            AdminUrl = adminUrl;
+            AdminPassword = adminPassword;
+        }
+
+        /// <summary>
+        /// Read all list values from web site.
+        /// </summary>
         public void Read()
         {
             Cursor.Current = Cursors.WaitCursor;
@@ -70,6 +76,9 @@ namespace MailmanSharp
             }
         }
 
+        /// <summary>
+        /// Write all values to list.
+        /// </summary>
         public void Write()
         {
             Cursor.Current = Cursors.WaitCursor;
@@ -83,43 +92,35 @@ namespace MailmanSharp
             }
         }
 
-        public string GetConfig()
+        protected string GetCurrentConfig()
         {
             var root = new XElement("MailmanList",
-                new XElement("BaseAdminUrl", BaseAdminUrl),
-                new XElement("ListName", ListName),
-                new XElement("Password", AdminPassword)
+                new XAttribute("adminUrl", this.AdminUrl),
+                new XAttribute("dateCreated", DateTime.Now)
             );
 
             foreach (var prop in GetSectionProps())
             {
-                var xml = ((SectionBase)prop.GetValue(this, null)).GetConfig();
+                var xml = ((SectionBase)prop.GetValue(this, null)).GetCurrentConfig();
                 if (!String.IsNullOrWhiteSpace(xml))
                     root.Add(XElement.Parse(xml));
             }
             return root.ToString();
         }
 
-        public void MergeConfig(string xml)
-        {
-            var root = XElement.Parse(xml);
-            BaseAdminUrl = GetNodeValue(root, "BaseAdminUrl") ?? BaseAdminUrl;
-            ListName = GetNodeValue(root, "ListName") ?? ListName;
-            AdminPassword = GetNodeValue(root, "Password") ?? AdminPassword;
-
-            foreach (var prop in GetSectionProps())
-            {
-                var nodeName = prop.Name.Replace("Section", "");
-                var el = root.Element(prop.Name);
-                if (el != null)
-                    ((SectionBase)prop.GetValue(this, null)).MergeConfig(el.ToString());
-            }
-        }
-
+        /// <summary>
+        /// Overwrite current configuration with values from XML.
+        /// </summary>
+        /// <param name="xml">Config XML with values to load.</param>
         public void LoadConfig(string xml)
         {
-            InitSections();
-            MergeConfig(xml);
+            var root = XElement.Parse(xml);
+            foreach (var prop in GetSectionProps())
+            {                
+                var el = root.Element(prop.Name);
+                if (el != null)
+                    ((SectionBase)prop.GetValue(this, null)).LoadConfig(el.ToString());
+            }
         }
 
         private string GetNodeValue(XElement root, string nodeName)
@@ -155,9 +156,5 @@ namespace MailmanSharp
                 .Where(p => p.PropertyType.IsSubclassOf(typeof(SectionBase)))
                 .OrderBy(p => p.PropertyType.GetCustomAttributes(false).OfType<OrderAttribute>().First().Value);
         }
-
-        
-
-        
     }
 }

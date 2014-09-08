@@ -119,7 +119,7 @@ namespace MailmanSharp.Sections
             return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
         }
 
-        internal virtual string GetConfig()
+        internal virtual string GetCurrentConfig()
         {
             var result = new XElement(this.GetType().Name.Replace("Section", ""));
             var props = GetUnignoredProps(this.GetType());
@@ -135,7 +135,7 @@ namespace MailmanSharp.Sections
             return result.ToString();
         }
 
-        internal void MergeConfig(string xml)
+        internal void LoadConfig(string xml)
         {
             var root = XElement.Parse(xml);
             var props = GetUnignoredProps(this.GetType());

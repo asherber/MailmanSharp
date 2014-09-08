@@ -34,7 +34,7 @@ namespace MailmanSharp.Sections
             // do nothing
         }
 
-        internal override string GetConfig()
+        internal override string GetCurrentConfig()
         {
             return null;
         }

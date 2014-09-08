@@ -52,14 +52,13 @@ namespace MailmanSharp.Sections
         private void SetRealName(string value)
         {
             // Only allow case changes
-            if (!String.IsNullOrWhiteSpace(_realName) && value != _realName)
+            if (value != _realName)
             {
-                if (String.Compare(value, _realName, true) == 0)
-                    _realName = value;
+                if (!String.IsNullOrWhiteSpace(_realName) && String.Compare(value, _realName, true) != 0)
+                    throw new ArgumentOutOfRangeException("RealName", "RealName can only differ by case.");
                 else
-                    throw new ArgumentOutOfRangeException("RealName", "RealName can only differ by case");
+                    _realName = value;
             }
         }
-        
     }
 }
