@@ -17,7 +17,7 @@ namespace MailmanSharp.Sections
         public List<string> AutoresponseAdminText { get; set; }
         public AutorespondRequestsOption AutorespondRequests { get; set; }
         public List<string> AutoresponseRequestText { get; set; }
-        public int AutoresponseGraceperiod { get; set; }
+        public ushort AutoresponseGraceperiod { get; set; }
 
 
         public AutoResponderSection(MailmanList list) : base(list) { }

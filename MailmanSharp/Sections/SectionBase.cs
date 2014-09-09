@@ -146,7 +146,8 @@ namespace MailmanSharp.Sections
             foreach (var prop in props)
             {
                 var el = root.Element(prop.Name);
-                if (el != null && !String.IsNullOrEmpty(el.Value))
+                //if (el != null && !String.IsNullOrEmpty(el.Value))
+                if (el != null)
                 {
                     if (prop.PropertyType == typeof(bool))
                         prop.SetValue(this, Convert.ToBoolean(el.Value), null);

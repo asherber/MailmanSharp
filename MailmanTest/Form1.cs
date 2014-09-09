@@ -41,11 +41,12 @@ namespace MailmanTest
 
         private void button3_Click(object sender, EventArgs e)
         {
-            //var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/announce-mountwashingtonschool.org", "***REMOVED***");
-            var mm = new MailmanList("http://lists.sherber.com/admin.cgi/default-sherber.com", "***REMOVED***");
+            var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/sherber-parents-mountwashingtonschool.org", "***REMOVED***");
+            //var mm = new MailmanList("http://lists.sherber.com/admin.cgi/default-sherber.com", "***REMOVED***");
 
-            mm.General.Read();
-            mm.General.LoadConfig(Clipboard.GetText());
+            mm.Read();
+            var config = File.ReadAllText(@"P:\Web Sites\MWS\_collateral\discuss listserv config.xml");
+            mm.LoadConfig(config);
             
 
         }

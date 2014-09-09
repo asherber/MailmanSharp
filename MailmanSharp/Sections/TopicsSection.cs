@@ -11,7 +11,7 @@ namespace MailmanSharp.Sections
     public class TopicsSection: SectionBase
     {
         public bool TopicsEnabled { get; set; }
-        public int TopicsBodylinesLimit { get; set; }
+        public ushort TopicsBodylinesLimit { get; set; }
         [Ignore]
         public List<Topic> TopicList { get; set; }
 
