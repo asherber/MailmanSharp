@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace MailmanSharp
 {
@@ -30,6 +32,12 @@ namespace MailmanSharp
         {
             var result = node.SelectNodes(xpath);
             return result ?? new HtmlNodeCollection(null);
+        }
+
+        public static void CheckElementName(this XElement element, string expectedName)
+        {
+            if (element.Name != expectedName)
+                throw new XmlException("Incorrect root element name.", null, 1, 2);
         }
     }
 }

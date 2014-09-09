@@ -43,12 +43,10 @@ namespace MailmanTest
         {
             //var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/announce-mountwashingtonschool.org", "***REMOVED***");
             var mm = new MailmanList("http://lists.sherber.com/admin.cgi/default-sherber.com", "***REMOVED***");
-            mm.Read();
-            var config = mm.CurrentConfig;
-            
-            
-            
 
+            mm.General.Read();
+            mm.General.LoadConfig(Clipboard.GetText());
+            
 
         }
 

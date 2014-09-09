@@ -12,6 +12,8 @@ using System.Xml.Linq;
 using System.Collections.ObjectModel;
 using hap = HtmlAgilityPack;
 using System.Windows.Forms;
+using System.Xml.Schema;
+using System.Xml;
 
 /**
  * Tested with Mailman 2.1.17
@@ -95,7 +97,7 @@ namespace MailmanSharp
         {
             var root = new XElement("MailmanList",
                 new XAttribute("adminUrl", this.AdminUrl),
-                new XAttribute("dateCreated", DateTime.Now)
+                new XAttribute("dateCreated", DateTime.Now.ToString("s"))
             );
 
             foreach (var prop in GetSectionProps())
@@ -114,6 +116,8 @@ namespace MailmanSharp
         public void LoadConfig(string xml)
         {
             var root = XElement.Parse(xml);
+            root.CheckElementName("MailmanList");
+
             foreach (var prop in GetSectionProps())
             {                
                 var el = root.Element(prop.Name);

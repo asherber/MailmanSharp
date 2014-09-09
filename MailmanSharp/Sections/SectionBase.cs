@@ -15,6 +15,8 @@ namespace MailmanSharp.Sections
         protected MailmanList _list;
         protected HashSet<string> _paths = new HashSet<string>();
         protected MailmanClient Client { get { return _list.Client.Clone(); } }
+        [Ignore]
+        public string CurrentConfig { get { return GetCurrentConfig(); } }
         
         public SectionBase(MailmanList list)
         {
@@ -121,7 +123,7 @@ namespace MailmanSharp.Sections
 
         internal virtual string GetCurrentConfig()
         {
-            var result = new XElement(this.GetType().Name.Replace("Section", ""));
+            var result = new XElement(GetSectionName());
             var props = GetUnignoredProps(this.GetType());
 
             foreach (var prop in props)
@@ -135,9 +137,11 @@ namespace MailmanSharp.Sections
             return result.ToString();
         }
 
-        internal void LoadConfig(string xml)
+        public void LoadConfig(string xml)
         {
             var root = XElement.Parse(xml);
+            root.CheckElementName(GetSectionName());
+
             var props = GetUnignoredProps(this.GetType());
             foreach (var prop in props)
             {
@@ -161,6 +165,11 @@ namespace MailmanSharp.Sections
                         prop.SetValue(this, el.Value, null);
                 }
             }
+        }
+
+        private string GetSectionName()
+        {
+            return this.GetType().Name.Replace("Section", "");
         }
 
         private object GetPropertyObjectValue(PropertyInfo prop)
