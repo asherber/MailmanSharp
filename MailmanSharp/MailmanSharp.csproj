@@ -56,9 +56,9 @@
     <Compile Include="MailmanClient.cs" />
     <Compile Include="MailmanList.cs" />
     <Compile Include="Member.cs" />
-    <Compile Include="IgnoreAttribute.cs" />
+    <Compile Include="Attributes\IgnoreAttribute.cs" />
     <Compile Include="MailmanHtmlDocument.cs" />
-    <Compile Include="OrderAttribute.cs" />
+    <Compile Include="Attributes\OrderAttribute.cs" />
     <Compile Include="Sections\ArchivingSection.cs" />
     <Compile Include="Sections\AutoResponderSection.cs" />
     <Compile Include="Sections\BounceProcessingSection.cs" />
@@ -69,7 +69,7 @@
     <Compile Include="Sections\MembershipSection.cs" />
     <Compile Include="Sections\NonDigestSection.cs" />
     <Compile Include="Sections\PasswordsSection.cs" />
-    <Compile Include="PathAttribute.cs" />
+    <Compile Include="Attributes\PathAttribute.cs" />
     <Compile Include="Sections\PrivacySection.cs" />
     <Compile Include="Sections\SectionBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

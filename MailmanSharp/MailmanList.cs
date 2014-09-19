@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using RestSharp;
 using System.IO;
-using MailmanSharp.Sections;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;

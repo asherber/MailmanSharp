@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MailmanSharp.Sections
+namespace MailmanSharp
 {
     public enum DigestIsDefaultOptions { Regular, Digest }
     public enum MimeIsDefaultDigestOptions { Plain, Mime }

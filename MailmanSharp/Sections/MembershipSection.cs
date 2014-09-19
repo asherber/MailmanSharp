@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace MailmanSharp.Sections
+namespace MailmanSharp
 {
     [Path("members")]
     [Order(4)]

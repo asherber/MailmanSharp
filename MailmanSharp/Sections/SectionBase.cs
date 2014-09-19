@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
 
-namespace MailmanSharp.Sections
+namespace MailmanSharp
 {
     [Path("")]
     public abstract class SectionBase
