@@ -47,7 +47,7 @@ namespace MailmanTest
             //mm.Membership.GetMembers("^a.*$");
             //mm.Membership.Read();
             //var members = mm.Membership.GetMembers();
-            mm.Membership.GetMembers();
+            var foo = mm.Membership.GetMembers().First();
 
 
         }

@@ -34,7 +34,6 @@ namespace MailmanSharp
             _encEmail = Regex.Replace(firstNode.GetAttributeValue("name", null), "_\\w*$", "");
             this.Email = HttpUtility.UrlDecode(_encEmail);
 
-            // This will silently fail on NoMailReason
             foreach (var prop in this.GetType().GetProperties())
             {
                 var name = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
@@ -44,12 +43,11 @@ namespace MailmanSharp
                     var val = thisNode.GetAttributeValue("value", null);
                     if (prop.PropertyType == typeof(string))
                         prop.SetValue(this, val, null);
-                    else
+                    else if (prop.PropertyType == typeof(bool))
                         prop.SetValue(this, val == "on", null);
                 }
             }
 
-            // Now set NoMailReason explicitly
             if (this.NoMail)
             {
                 this.NoMailReason = NoMailReason.Unknown;
@@ -79,8 +77,11 @@ namespace MailmanSharp
             var req = new RestRequest();
 
             req.AddParameter("user", _encEmail);
-            foreach (var prop in this.GetType().GetProperties().Where(p => p.Name != "Email"))
+            foreach (var prop in this.GetType().GetProperties())
             {
+                if (prop.Name == "Email" || prop.Name == "NoMailReason")
+                    continue;
+
                 var parmName = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
                 object value = prop.GetValue(this, null);
                 if (value is bool)
