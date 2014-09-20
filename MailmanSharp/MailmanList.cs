@@ -13,6 +13,7 @@ using hap = HtmlAgilityPack;
 using System.Windows.Forms;
 using System.Xml.Schema;
 using System.Xml;
+using System.Xml.XPath;
 
 /**
  * Tested with Mailman 2.1.17
@@ -22,10 +23,23 @@ namespace MailmanSharp
 {
     public class MailmanList
     {
+        /// <summary>
+        /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
+        /// </summary>
         public String AdminUrl { get { return Client.AdminUrl; } set { Client.AdminUrl = value; } }
+        /// <summary>
+        /// Administrator password for list.
+        /// </summary>
         public string AdminPassword { get { return Client.AdminPassword; } set { Client.AdminPassword = value; } }
+        /// <summary>
+        /// Current configuration of object as XML.
+        /// </summary>
         public string CurrentConfig { get { return GetCurrentConfig(); } }
-        
+        /// <summary>
+        /// CurrentConfig with certain list-specific properties removed.
+        /// </summary>
+        public string SafeCurrentConfig { get { return GetSafeCurrentConfig(); } }
+
         public MembershipSection Membership { get; private set; }
         public PrivacySection Privacy { get; private set; }
         public GeneralSection General { get; private set; }
@@ -107,6 +121,39 @@ namespace MailmanSharp
             }
             return root.ToString();
         }
+
+        private string GetSafeCurrentConfig()
+        {
+            return SanitizeConfig(this.CurrentConfig);
+        }
+
+        /// <summary>
+        /// Remove list-specific properties from config XML.
+        /// </summary>
+        /// <param name="config">XML config to sanitize.</param>
+        /// <returns></returns>
+        public static string SanitizeConfig(string config)
+        {
+            var itemsToRemove = new List<string>()
+            {
+                "//General/RealName",
+                "//General/Description",
+                "//General/Info",
+                "//General/SubjectPrefix",
+                "//Privacy/AcceptableAliases",
+            };
+            var xml = XElement.Load(config);
+            foreach (var item in itemsToRemove)
+            {
+                var el = xml.XPathSelectElement(item);
+                if (el != null)
+                    el.Remove();
+            }
+
+            return xml.ToString();
+        }
+        
+        
 
         /// <summary>
         /// Overwrite current configuration with values from XML.

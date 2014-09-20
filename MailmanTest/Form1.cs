@@ -41,17 +41,17 @@ namespace MailmanTest
 
         private void button3_Click(object sender, EventArgs e)
         {
-            //var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/announce-mountwashingtonschool.org", "***REMOVED***");
-            var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
+            var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/calhoun-parents-mountwashingtonschool.org", "***REMOVED***");
+            //var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
 
             //mm.Membership.GetMembers("^a.*$");
             //mm.Membership.Read();
             //var members = mm.Membership.GetMembers();
-            var foo = mm.Membership.GetMembers().First();
-
-
+            //var foo = mm.Membership.GetMembers();
+            //var nomail = foo.Where(m => m.NoMail);
+            mm.Read();
+            var xml = mm.SafeCurrentConfig;
         }
-
         private void button4_Click(object sender, EventArgs e)
         {
             
