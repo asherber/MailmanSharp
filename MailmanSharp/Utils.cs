@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,17 @@ namespace MailmanSharp
         {
             if (element.Name != expectedName)
                 throw new XmlException("Incorrect root element name.", null, 1, 2);
+        }
+
+        public static IRestRequest AddOrSetParameter(this IRestRequest req, string name, object value)
+        {
+            var parms = req.Parameters.Where(p => String.Compare(p.Name, name, true) == 0);
+            if (parms.Any())
+                parms.First().Value = value;
+            else
+                req.AddParameter(name, value);
+
+            return req;
         }
     }
 }

@@ -57,7 +57,7 @@ namespace MailmanSharp
             var req = new RestRequest();
             req.AddParameter("allmodbit_val", moderate ? 1 : 0);
             req.AddParameter("allmodbit_btn", 1);
-            this.Client.ExecuteAdminRequest(_paths.Single(), req);
+            this.Client.PostAdminRequest(_paths.Single(), req);
         }
 
         public UnsubscribeResult Unsubscribe(string members)
@@ -71,7 +71,7 @@ namespace MailmanSharp
                 req.AddParameter("send_unsub_ack_to_this_batch", 0);
                 req.AddParameter("send_unsub_notifications_to_list_owner", 0);
 
-                var resp = this.Client.ExecuteAdminRequest(_removePage, req);
+                var resp = this.Client.PostAdminRequest(_removePage, req);
                 var doc = new MailmanHtmlDocument();
                 doc.LoadHtml(resp.Content);
 
@@ -111,7 +111,7 @@ namespace MailmanSharp
                 req.AddParameter("send_welcome_msg_to_this_batch", 0);
                 req.AddParameter("send_notifications_to_list_owner", 0);
 
-                var resp = this.Client.ExecuteAdminRequest(_addPage, req);
+                var resp = this.Client.PostAdminRequest(_addPage, req);
                 var doc = new MailmanHtmlDocument();
                 doc.LoadHtml(resp.Content);
 
@@ -147,6 +147,11 @@ namespace MailmanSharp
             return Subscribe(String.Join("\n", members));
         }
 
+        public IList<Member> GetMembers()
+        {
+            return GetMembers("");
+        }
+
         public IList<Member> GetMembers(string search)
         {
             var result = new List<Member>();
@@ -154,8 +159,62 @@ namespace MailmanSharp
             req.AddParameter("findmember", search);
             var resp = this.Client.ExecuteAdminRequest(_paths.Single(), req);
 
+            // Do we have multiple letters to look at?
             var doc = new HtmlDocument();
             doc.LoadHtml(resp.Content);
+            var letters = GetHrefValuesForParam(doc, "letter");
+
+            if (letters.Any())
+            {
+                foreach (var letter in letters)
+                    result.AddRange(GetMembersForLetter(letter, req));
+            }
+            else
+                result.AddRange(ExtractMembersFromPage(doc));
+            
+            return result;
+        }
+
+        private IEnumerable<Member> GetMembersForLetter(string letter, RestRequest req)
+        {
+            var result = new List<Member>();
+            int currentChunk = 0;
+            int maxChunk = 0;
+
+            while (currentChunk <= maxChunk)
+            {
+                req.AddOrSetParameter("letter", letter);
+                req.AddOrSetParameter("chunk", currentChunk);
+                var resp = this.Client.ExecuteAdminRequest(_paths.Single(), req);
+                var doc = new HtmlDocument();
+                doc.LoadHtml(resp.Content);
+
+                result.AddRange(ExtractMembersFromPage(doc));
+
+                // More chunks?
+                var nextChunk = GetHrefValuesForParam(doc, "chunk").SingleOrDefault();
+                if (nextChunk != null)
+                    maxChunk = Math.Max(maxChunk, Convert.ToInt32(nextChunk));
+                currentChunk++;
+            }
+
+            return result;
+        }
+
+        private static IEnumerable<string> GetHrefValuesForParam(HtmlDocument doc, string param)
+        {
+            string re = String.Format("(?<={0}=).", param);
+            var aNodes = doc.DocumentNode.SafeSelectNodes("//a[@href]");
+            var values = aNodes.Select(a => a.GetAttributeValue("href", ""))
+                .Where(h => h.Contains(param + "="))
+                .Select(h => Regex.Match(h, re).Value).Distinct();
+
+            return values;
+        }
+
+        private static IEnumerable<Member> ExtractMembersFromPage(HtmlDocument doc)
+        {
+            var result = new List<Member>();
 
             var userNodes = doc.DocumentNode.SafeSelectNodes("//input[@name='user']");
             var emails = userNodes.Select(n => n.GetAttributeValue("value", null));
@@ -179,7 +238,7 @@ namespace MailmanSharp
             foreach (var member in members)
                 req.Parameters.AddRange(member.ToParameters());
 
-            this.Client.ExecuteAdminRequest(_paths.Single(), req);
+            this.Client.PostAdminRequest(_paths.Single(), req);
         }
 
         public void SaveMembers(params Member[] members)
@@ -187,40 +246,6 @@ namespace MailmanSharp
             SaveMembers(members.ToList());
         }
 
-        public IEnumerable<Member> GetAllMembers()
-        {
-            var result = new List<Member>();
-
-            // Increase chunk size
-            var general = new GeneralSection(_list);
-            general.Read();
-            var chunkSize = general.AdminMemberChunksize;
-            general.AdminMemberChunksize = 10000;
-            general.Write();
-
-            try
-            {
-                // Get all user nodes
-                var doc = GetHtmlDocuments().Single();
-                var nodes = doc.DocumentNode.SafeSelectNodes("//input[@name='user']");
-
-                foreach (var node in nodes)
-                {
-                    var email = node.GetAttributeValue("value", null);
-                    var xpath = String.Format("//input[contains(@name, '{0}')]", email);
-                    var memberNodes = doc.DocumentNode.SafeSelectNodes(xpath);
-
-                    result.Add(new Member(memberNodes));
-                }
-            }
-            finally
-            {
-                // Reset chunk size
-                general.AdminMemberChunksize = chunkSize;
-                general.Write();
-            }
-
-            return result;
-        }
+        
     }
 }

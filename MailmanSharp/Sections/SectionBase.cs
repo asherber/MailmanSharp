@@ -103,7 +103,7 @@ namespace MailmanSharp
                 }
 
                 DoBeforeFinishWrite(req);
-                client.ExecuteAdminRequest(path, req);
+                client.PostAdminRequest(path, req);
             }
         }
 
