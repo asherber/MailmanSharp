@@ -60,9 +60,7 @@ namespace MailmanSharp
         public MailmanList()
         {
             this.Client = new MailmanClient();
-            ThreadPool.SetMaxThreads(10, 10);
-            ThreadPool.SetMinThreads(10, 10);            
-
+            
             InitSections();
         }
 
@@ -195,14 +193,12 @@ namespace MailmanSharp
         private void InvokeSectionMethod(string methodName)
         {
             var method = typeof(SectionBase).GetMethod(methodName);
-            var tasks = new List<Task>();
-            foreach (var prop in GetSectionProps())
+            Parallel.ForEach(GetSectionProps(), p =>
             {
-                var section = prop.GetValue(this, null);
+                var section = p.GetValue(this, null);
                 if (section != null)
-                    tasks.Add(Task.Factory.StartNew(() => method.Invoke(section, null)));                
-            }
-            Task.WaitAll(tasks.ToArray());             
+                    method.Invoke(section, null);
+            });
         }
 
         private IEnumerable<PropertyInfo> GetSectionProps()

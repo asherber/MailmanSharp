@@ -2,12 +2,15 @@
 using RestSharp;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
+using forms = System.Windows.Forms;
 
 namespace MailmanSharp
 {
@@ -167,14 +170,13 @@ namespace MailmanSharp
             return Invite(String.Join("\n", members));
         }
 
-        public IList<Member> GetMembers()
+        public IEnumerable<Member> GetMembers()
         {
             return GetMembers("");
         }
 
-        public IList<Member> GetMembers(string search)
+        public IEnumerable<Member> GetMembers(string search)
         {
-            var result = new List<Member>();
             var req = new RestRequest();
             req.AddParameter("findmember", search);
             var resp = this.Client.ExecuteAdminRequest(_paths.Single(), req);
@@ -187,20 +189,35 @@ namespace MailmanSharp
 
             if (letters.Any())
             {
-                foreach (var letter in letters)
-                    result.AddRange(GetMembersForLetter(letter, req));
+                forms.Cursor.Current = forms.Cursors.WaitCursor;
+                try
+                {
+                    var list = new List<Member>();
+                    Parallel.ForEach(letters, letter =>
+                    {
+                        var members = GetMembersForLetter(search, letter);
+                        lock (list) { list.AddRange(members); }
+                    });
+
+                    return list.OrderBy(m => m.Email);
+                }
+                finally
+                {
+                    forms.Cursor.Current = forms.Cursors.Default;
+                }
+                
             }
             else
-                result.AddRange(ExtractMembersFromPage(doc));
-            
-            return result;
+                return ExtractMembersFromPage(doc);            
         }
 
-        private IEnumerable<Member> GetMembersForLetter(string letter, RestRequest req)
+        private IEnumerable<Member> GetMembersForLetter(string search, string letter)
         {
             var result = new List<Member>();
             int currentChunk = 0;
             int maxChunk = 0;
+            var req = new RestRequest();
+            req.AddParameter("findmember", search);
 
             while (currentChunk <= maxChunk)
             {
