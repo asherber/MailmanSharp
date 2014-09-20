@@ -51,5 +51,10 @@ namespace MailmanSharp
 
             return req;
         }
+
+        public static int ToInt(this bool input)
+        {
+            return input ? 1 : 0;
+        }
     }
 }

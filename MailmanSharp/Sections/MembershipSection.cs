@@ -78,8 +78,8 @@ namespace MailmanSharp
             {
                 var req = new RestRequest();
                 req.AddParameter("unsubscribees", members);
-                req.AddParameter("send_unsub_ack_to_this_batch", 0);
-                req.AddParameter("send_unsub_notifications_to_list_owner", 0);
+                req.AddParameter("send_unsub_ack_to_this_batch", options.HasFlag(UnsubscribeOptions.SendAcknowledgement).ToInt());
+                req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.None).ToInt());
 
                 var resp = this.Client.PostAdminRequest(_removePage, req);
                 var doc = new MailmanHtmlDocument();
@@ -115,8 +115,8 @@ namespace MailmanSharp
                 var req = new RestRequest();
                 req.AddParameter("subscribees", members);
                 req.AddParameter("subscribe_or_invite", action == SubscribeAction.Subscribe ? 0 : 1);
-                req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOptions.SendWelcomeMessage) ? 1 : 0);
-                req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner) ? 1 : 0);
+                req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOptions.SendWelcomeMessage).ToInt());
+                req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt());
 
                 var resp = this.Client.PostAdminRequest(_addPage, req);
                 var doc = new MailmanHtmlDocument();
@@ -180,6 +180,7 @@ namespace MailmanSharp
             var resp = this.Client.ExecuteAdminRequest(_paths.Single(), req);
 
             // Do we have multiple letters to look at?
+            // General approach from http://www.msapiro.net/mailman-subscribers.py
             var doc = new HtmlDocument();
             doc.LoadHtml(resp.Content);
             var letters = GetHrefValuesForParam(doc, "letter");
