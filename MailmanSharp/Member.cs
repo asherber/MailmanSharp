@@ -10,6 +10,8 @@ using System.Web;
 
 namespace MailmanSharp
 {
+    public enum NoMailReason { None, Unknown, Bounce, User, Administrator }
+
     public class Member
     {
         public string Email { get; internal set; }
@@ -17,6 +19,7 @@ namespace MailmanSharp
         public bool Mod { get; set; }
         public bool Hide { get; set; }
         public bool NoMail { get; set; }
+        public NoMailReason NoMailReason { get; set; }
         public bool Ack { get; set; }
         public bool NotMeToo { get; set; }
         public bool NoDupes { get; set; }
@@ -31,6 +34,7 @@ namespace MailmanSharp
             _encEmail = Regex.Replace(firstNode.GetAttributeValue("name", null), "_\\w*$", "");
             this.Email = HttpUtility.UrlDecode(_encEmail);
 
+            // This will silently fail on NoMailReason
             foreach (var prop in this.GetType().GetProperties())
             {
                 var name = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
@@ -42,6 +46,30 @@ namespace MailmanSharp
                         prop.SetValue(this, val, null);
                     else
                         prop.SetValue(this, val == "on", null);
+                }
+            }
+
+            // Now set NoMailReason explicitly
+            if (this.NoMail)
+            {
+                this.NoMailReason = NoMailReason.Unknown;
+                string name = _encEmail + "_nomail";
+                var node = nodes.SingleOrDefault(n => n.GetAttributeValue("name", null) == name);
+                if (node != null)
+                {
+                    string reason = node.NextSibling.InnerText;
+                    switch (reason)
+                    {
+                        case "[A]": 
+                            this.NoMailReason = NoMailReason.Administrator;
+                            break;
+                        case "[B]":
+                            this.NoMailReason = NoMailReason.Bounce;
+                            break;
+                        case "[U]":
+                            this.NoMailReason = NoMailReason.User;
+                            break;
+                    }
                 }
             }
         }

@@ -47,9 +47,7 @@ namespace MailmanTest
             //mm.Membership.GetMembers("^a.*$");
             //mm.Membership.Read();
             //var members = mm.Membership.GetMembers();
-            mm.Membership.Subscribe("aaron+a@sherber.com");
-            mm.Membership.Read();
-            mm.Membership.Subscribe("aaron+b@sherber.com");
+            mm.Membership.GetMembers();
 
 
         }
