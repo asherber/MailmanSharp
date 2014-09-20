@@ -11,6 +11,12 @@ using System.Web;
 
 namespace MailmanSharp
 {
+    [Flags]
+    public enum SubscribeOptions { None = 0, SendWelcomeMessage = 1, NotifyOwner = 2 }
+    [Flags]
+    public enum UnsubscribeOptions { None = 0, SendAcknowledgement = 1, NotifyOwner = 2 }
+    
+
     [Path("members")]
     [Order(4)]
     public class MembershipSection: SectionBase
@@ -21,6 +27,8 @@ namespace MailmanSharp
         protected static string _addPage = "members/add";
         protected static string _removePage = "members/remove";
         protected List<string> _emailList = new List<string>();
+
+        private bool _emailListPopulated = false;
         
         public MembershipSection(MailmanList list) : base(list) { }
 
@@ -41,6 +49,7 @@ namespace MailmanSharp
 
         private void PopulateEmailList()
         {
+            _emailList.Clear();
             var resp = this.Client.ExecuteRosterRequest();
             var doc = new MailmanHtmlDocument();
             doc.LoadHtml(resp.Content);
@@ -50,6 +59,7 @@ namespace MailmanSharp
             {
                 _emailList.Add(addr.InnerText.Trim().Replace(" at ", "@"));
             }
+            _emailListPopulated = true;
         }
 
         public void ModerateAll(bool moderate)
@@ -60,7 +70,7 @@ namespace MailmanSharp
             this.Client.PostAdminRequest(_paths.Single(), req);
         }
 
-        public UnsubscribeResult Unsubscribe(string members)
+        public UnsubscribeResult Unsubscribe(string members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
             var result = new UnsubscribeResult();
 
@@ -83,23 +93,20 @@ namespace MailmanSharp
                 foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
                     result.NonMembers.Add(node.InnerText.Trim());
 
-                PopulateEmailList();
+                if (_emailListPopulated)
+                    PopulateEmailList();
             }
 
             return result;
         }
 
-        public UnsubscribeResult Unsubscribe(IEnumerable<string> members)
+        public UnsubscribeResult Unsubscribe(IEnumerable<string> members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
-            return Unsubscribe(String.Join("\n", members));
+            return Unsubscribe(String.Join("\n", members), options);
         }
 
-        public UnsubscribeResult Unsubscribe(params string[] members)
-        {
-            return Unsubscribe(String.Join("\n", members));
-        }
-
-        public SubscribeResult Subscribe(string members)
+        private enum SubscribeAction { Subscribe, Invite }
+        private SubscribeResult SubscribeOrInvite(string members, SubscribeAction action, SubscribeOptions options = SubscribeOptions.None)
         {
             var result = new SubscribeResult();
 
@@ -107,19 +114,21 @@ namespace MailmanSharp
             {
                 var req = new RestRequest();
                 req.AddParameter("subscribees", members);
-                req.AddParameter("subscribe_or_invite", 0);
-                req.AddParameter("send_welcome_msg_to_this_batch", 0);
-                req.AddParameter("send_notifications_to_list_owner", 0);
+                req.AddParameter("subscribe_or_invite", action == SubscribeAction.Subscribe ? 0 : 1);
+                req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOptions.SendWelcomeMessage) ? 1 : 0);
+                req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner) ? 1 : 0);
 
                 var resp = this.Client.PostAdminRequest(_addPage, req);
                 var doc = new MailmanHtmlDocument();
                 doc.LoadHtml(resp.Content);
 
-                string xpath = "//h5[contains(translate(text(), 'S', 's'), 'successfully subscribed')]/following-sibling::ul[1]/li";
+                string verb = action == SubscribeAction.Invite ? "invited" : "subscribed";
+                string xpath = String.Format("//h5[contains(translate(text(), 'SI', 'si'), 'successfully {0}')]/following-sibling::ul[1]/li", verb);
                 foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
                     result.Subscribed.Add(node.InnerText.Trim());
 
-                xpath = "//h5[contains(translate(text(), 'ES', 'es'),'error subscribing')]/following-sibling::ul[1]/li";
+                verb = action == SubscribeAction.Invite ? "inviting" : "subscribing";
+                xpath = String.Format("//h5[contains(translate(text(), 'ESI', 'esi'),'error {0}')]/following-sibling::ul[1]/li", verb);
                 foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
                 {
                     var match = Regex.Match(node.InnerText, "(.*) -- (.*)");
@@ -131,20 +140,31 @@ namespace MailmanSharp
                         result.BadEmails.Add(email);
                 }
 
-                PopulateEmailList();
+                if (action == SubscribeAction.Subscribe && _emailListPopulated)
+                    PopulateEmailList();
             }
 
             return result;
         }
 
-        public SubscribeResult Subscribe(IEnumerable<string> members)
+        public SubscribeResult Subscribe(string members, SubscribeOptions options = SubscribeOptions.None)
         {
-            return Subscribe(String.Join("\n", members));
+            return SubscribeOrInvite(members, SubscribeAction.Subscribe, options);
         }
 
-        public SubscribeResult Subscribe(params string[] members)
+        public SubscribeResult Subscribe(IEnumerable<string> members, SubscribeOptions options = SubscribeOptions.None)
         {
-            return Subscribe(String.Join("\n", members));
+            return Subscribe(String.Join("\n", members), options);
+        }
+
+        public SubscribeResult Invite(string members)
+        {
+            return SubscribeOrInvite(members, SubscribeAction.Invite);
+        }
+
+        public SubscribeResult Invite(IEnumerable<string> members)
+        {
+            return Invite(String.Join("\n", members));
         }
 
         public IList<Member> GetMembers()
