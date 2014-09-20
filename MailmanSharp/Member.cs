@@ -14,11 +14,13 @@ namespace MailmanSharp
 
     public class Member
     {
+        [Ignore]
         public string Email { get; internal set; }
         public string RealName { get; set; }
         public bool Mod { get; set; }
         public bool Hide { get; set; }
         public bool NoMail { get; set; }
+        [Ignore]
         public NoMailReason NoMailReason { get; set; }
         public bool Ack { get; set; }
         public bool NotMeToo { get; set; }
@@ -34,7 +36,7 @@ namespace MailmanSharp
             _encEmail = Regex.Replace(firstNode.GetAttributeValue("name", null), "_\\w*$", "");
             this.Email = HttpUtility.UrlDecode(_encEmail);
 
-            foreach (var prop in this.GetType().GetProperties())
+            foreach (var prop in this.GetType().GetUnignoredProps())
             {
                 var name = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
                 var thisNode = nodes.SingleOrDefault(n => n.GetAttributeValue("name", null) == name);
@@ -77,11 +79,8 @@ namespace MailmanSharp
             var req = new RestRequest();
 
             req.AddParameter("user", _encEmail);
-            foreach (var prop in this.GetType().GetProperties())
+            foreach (var prop in this.GetType().GetUnignoredProps())
             {
-                if (prop.Name == "Email" || prop.Name == "NoMailReason")
-                    continue;
-
                 var parmName = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
                 object value = prop.GetValue(this, null);
                 if (value is bool)

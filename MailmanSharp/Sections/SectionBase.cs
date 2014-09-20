@@ -56,7 +56,7 @@ namespace MailmanSharp
         public virtual void Read()
         {
             var docs = GetHtmlDocuments();
-            var props = GetUnignoredProps(this.GetType());
+            var props = this.GetType().GetUnignoredProps();
 
             foreach (var doc in docs)
             {
@@ -83,7 +83,7 @@ namespace MailmanSharp
 
         public virtual void Write()
         {
-            var props = GetUnignoredProps(this.GetType());
+            var props = this.GetType().GetUnignoredProps(); 
             var client = this.Client;
 
             foreach (var path in _paths)
@@ -115,16 +115,12 @@ namespace MailmanSharp
             return props.Where(p => p.GetCustomAttributes(false).OfType<PathAttribute>().Any(a => path.Contains(a.Value)));
         }
 
-        protected IEnumerable<PropertyInfo> GetUnignoredProps(Type type)
-        {
-            var props = type.GetProperties();
-            return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
-        }
+        
 
         internal virtual string GetCurrentConfig()
         {
             var result = new XElement(GetSectionName());
-            var props = GetUnignoredProps(this.GetType());
+            var props = this.GetType().GetUnignoredProps();
 
             foreach (var prop in props)
             {
@@ -142,7 +138,7 @@ namespace MailmanSharp
             var root = XElement.Parse(xml);
             root.CheckElementName(GetSectionName());
 
-            var props = GetUnignoredProps(this.GetType());
+            var props = this.GetType().GetUnignoredProps();
             foreach (var prop in props)
             {
                 var el = root.Element(prop.Name);

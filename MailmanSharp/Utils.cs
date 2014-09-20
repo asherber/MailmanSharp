@@ -3,6 +3,7 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -55,6 +56,12 @@ namespace MailmanSharp
         public static int ToInt(this bool input)
         {
             return input ? 1 : 0;
+        }
+
+        internal static IEnumerable<PropertyInfo> GetUnignoredProps(this Type type)
+        {
+            var props = type.GetProperties();
+            return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
         }
     }
 }
