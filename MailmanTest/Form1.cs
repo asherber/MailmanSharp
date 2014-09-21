@@ -21,22 +21,23 @@ namespace MailmanTest
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
             //mm.Login();
             var st = Stopwatch.StartNew();
-            mm.Read();
+            await mm.ReadAsync();
             st.Stop();
             MessageBox.Show(st.Elapsed.ToString());
             //mm.Write();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
-            mm.Membership.Read();
-            mm.Membership.Read();
+            var me = await mm.Membership.GetMembersAsync("sherber.com");
+            me.First().Ack = true;
+            mm.Membership.SaveMembers(me);
         }
 
         private async void button3_Click(object sender, EventArgs e)
