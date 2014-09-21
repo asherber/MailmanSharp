@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace MailmanSharp
@@ -105,6 +106,18 @@ namespace MailmanSharp
                 client.ExecutePostAdminRequest(path, req);
             }
         }
+
+#if ASYNC
+        public async Task ReadAsync()
+        {
+            await Task.Factory.StartNew(() => this.Read());
+        }
+
+        public async Task WriteAsync()
+        {
+            await Task.Factory.StartNew(() => this.Write());
+        }
+#endif
 
         protected virtual void DoAfterRead(List<MailmanHtmlDocument> docs) { }
         protected virtual void DoBeforeFinishWrite(RestRequest req) { }

@@ -39,12 +39,12 @@ namespace MailmanTest
             mm.Membership.Read();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private async void button3_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/announce-mountwashingtonschool.org", "***REMOVED***");
             //var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
 
-            mm.General.Read();
+            await mm.Membership.GetMembersAsync();
             
         }
         private void button4_Click(object sender, EventArgs e)

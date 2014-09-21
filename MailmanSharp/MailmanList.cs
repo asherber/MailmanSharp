@@ -70,6 +70,18 @@ namespace MailmanSharp
             this.InvokeSectionMethod("Read");
         }
 
+#if ASYNC
+        public async Task ReadAsync()
+        {
+            await Task.Factory.StartNew(() => this.Read());
+        }
+
+        public async Task WriteAsync()
+        {
+            await Task.Factory.StartNew(() => this.Write());
+        }
+#endif
+
         /// <summary>
         /// Write all values to list.
         /// </summary>

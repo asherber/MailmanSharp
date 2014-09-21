@@ -197,6 +197,18 @@ namespace MailmanSharp
                 return ExtractMembersFromPage(doc);            
         }
 
+#if ASYNC
+        public async Task<IEnumerable<Member>> GetMembersAsync(string search)
+        {
+            return await Task.Factory.StartNew(() => this.GetMembers(search));
+        }
+
+        public async Task<IEnumerable<Member>> GetMembersAsync()
+        {
+            return await GetMembersAsync("");
+        }
+#endif
+
         private IEnumerable<Member> GetMembersForLetter(string search, string letter)
         {
             var result = new List<Member>();
