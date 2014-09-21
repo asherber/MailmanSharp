@@ -1,16 +1,11 @@
 ﻿using HtmlAgilityPack;
 using RestSharp;
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
-using forms = System.Windows.Forms;
+
 
 namespace MailmanSharp
 {
@@ -70,7 +65,7 @@ namespace MailmanSharp
             var req = new RestRequest();
             req.AddParameter("allmodbit_val", moderate ? 1 : 0);
             req.AddParameter("allmodbit_btn", 1);
-            this.Client.PostAdminRequest(_paths.Single(), req);
+            this.Client.ExecutePostAdminRequest(_paths.Single(), req);
         }
 
         public UnsubscribeResult Unsubscribe(string members, UnsubscribeOptions options = UnsubscribeOptions.None)
@@ -84,7 +79,7 @@ namespace MailmanSharp
                 req.AddParameter("send_unsub_ack_to_this_batch", options.HasFlag(UnsubscribeOptions.SendAcknowledgement).ToInt());
                 req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.None).ToInt());
 
-                var resp = this.Client.PostAdminRequest(_removePage, req);
+                var resp = this.Client.ExecutePostAdminRequest(_removePage, req);
                 var doc = new MailmanHtmlDocument();
                 doc.LoadHtml(resp.Content);
 
@@ -121,7 +116,7 @@ namespace MailmanSharp
                 req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOptions.SendWelcomeMessage).ToInt());
                 req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt());
 
-                var resp = this.Client.PostAdminRequest(_addPage, req);
+                var resp = this.Client.ExecutePostAdminRequest(_addPage, req);
                 var doc = new MailmanHtmlDocument();
                 doc.LoadHtml(resp.Content);
 
@@ -179,33 +174,24 @@ namespace MailmanSharp
         {
             var req = new RestRequest();
             req.AddParameter("findmember", search);
-            var resp = this.Client.ExecuteAdminRequest(_paths.Single(), req);
+            var resp = this.Client.ExecuteGetAdminRequest(_paths.Single(), req);
 
             // Do we have multiple letters to look at?
             // General approach from http://www.msapiro.net/mailman-subscribers.py
-            var doc = new HtmlDocument();
+            var doc = new MailmanHtmlDocument();
             doc.LoadHtml(resp.Content);
             var letters = GetHrefValuesForParam(doc, "letter");
 
             if (letters.Any())
-            {
-                forms.Cursor.Current = forms.Cursors.WaitCursor;
-                try
+            {                
+                var list = new List<Member>();
+                Parallel.ForEach(letters, letter =>
                 {
-                    var list = new List<Member>();
-                    Parallel.ForEach(letters, letter =>
-                    {
-                        var members = GetMembersForLetter(search, letter);
-                        lock (list) { list.AddRange(members); }
-                    });
+                    var members = GetMembersForLetter(search, letter);
+                    lock (list) { list.AddRange(members); }
+                });
 
-                    return list.OrderBy(m => m.Email);
-                }
-                finally
-                {
-                    forms.Cursor.Current = forms.Cursors.Default;
-                }
-                
+                return list.OrderBy(m => m.Email);               
             }
             else
                 return ExtractMembersFromPage(doc);            
@@ -223,8 +209,8 @@ namespace MailmanSharp
             {
                 req.AddOrSetParameter("letter", letter);
                 req.AddOrSetParameter("chunk", currentChunk);
-                var resp = this.Client.ExecuteAdminRequest(_paths.Single(), req);
-                var doc = new HtmlDocument();
+                var resp = this.Client.ExecuteGetAdminRequest(_paths.Single(), req);
+                var doc = new MailmanHtmlDocument();
                 doc.LoadHtml(resp.Content);
 
                 result.AddRange(ExtractMembersFromPage(doc));
@@ -276,7 +262,7 @@ namespace MailmanSharp
             foreach (var member in members)
                 req.Parameters.AddRange(member.ToParameters());
 
-            this.Client.PostAdminRequest(_paths.Single(), req);
+            this.Client.ExecutePostAdminRequest(_paths.Single(), req);
         }
 
         public void SaveMembers(params Member[] members)

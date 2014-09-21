@@ -11,15 +11,17 @@ using System.Xml.Linq;
 
 namespace MailmanSharp
 {
-    static class Utils
+    public static class Utils
     {
         private static Regex _humpRegex = new Regex(@"(?<!_)\B[A-Z]");
+        // CamelCaseString -> camel_case_string
         public static string Decamel(this string input)
         {
             return _humpRegex.Replace(input, "_$0").ToLower();
         }
 
         private static Regex _underscoreRegex = new Regex("(^|_)([a-z])");
+        // underscore_string -> UnderscoreString
         public static string Encamel(this string input)
         {
             string result = _underscoreRegex.Replace(input, m => m.Groups[2].Value.ToUpper());
@@ -58,6 +60,7 @@ namespace MailmanSharp
             return input ? 1 : 0;
         }
 
+        // Get list of properties for type without [Ignore] attribute
         internal static IEnumerable<PropertyInfo> GetUnignoredProps(this Type type)
         {
             var props = type.GetProperties();

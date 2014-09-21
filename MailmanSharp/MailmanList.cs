@@ -1,18 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using RestSharp;
-using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Threading;
 using System.Xml.Linq;
-using System.Collections.ObjectModel;
-using hap = HtmlAgilityPack;
-using System.Windows.Forms;
-using System.Xml.Schema;
-using System.Xml;
 using System.Xml.XPath;
 
 /**
@@ -74,17 +65,9 @@ namespace MailmanSharp
         /// Read all list values from web site.
         /// </summary>
         public void Read()
-        {
-            Cursor.Current = Cursors.WaitCursor;
-            try
-            {
-                TryLogin();
-                this.InvokeSectionMethod("Read");
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
+        {            
+            TryLogin();
+            this.InvokeSectionMethod("Read");
         }
 
         /// <summary>
@@ -92,16 +75,8 @@ namespace MailmanSharp
         /// </summary>
         public void Write()
         {
-            Cursor.Current = Cursors.WaitCursor;
-            try
-            {
-                TryLogin();
-                this.InvokeSectionMethod("Write");
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
+            TryLogin();
+            this.InvokeSectionMethod("Write");
         }
 
         protected string GetCurrentConfig()
@@ -173,7 +148,7 @@ namespace MailmanSharp
         private void TryLogin()
         {
             // This checks the URL and credentials before we get multi-threaded 
-            Client.ExecuteAdminRequest("");
+            Client.ExecuteGetAdminRequest("");
         }
 
         private string GetNodeValue(XElement root, string nodeName)

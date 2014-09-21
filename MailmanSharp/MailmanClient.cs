@@ -1,16 +1,20 @@
 ﻿using RestSharp;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace MailmanSharp
 {
     public class MailmanClient: RestClient
     {
+        /// <summary>
+        /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
+        /// </summary>
         public string AdminUrl { get { return GetAdminUrl(); } set { SetAdminUrl(value); } }
+        /// <summary>
+        /// Administrator password for list.
+        /// </summary>
         public string AdminPassword { get; set; }
 
         private string ListName { get; set; }
@@ -23,6 +27,10 @@ namespace MailmanSharp
             this.CookieContainer = new System.Net.CookieContainer();            
         }
 
+        /// <summary>
+        /// Create a copy of a MailmanClient.
+        /// </summary>
+        /// <returns>New MailmanClient</returns>
         public MailmanClient Clone()
         {
             var result = new MailmanClient()
@@ -50,26 +58,26 @@ namespace MailmanSharp
             return result;
         }
 
-        public IRestResponse ExecuteAdminRequest(string path, IRestRequest request)
+        public IRestResponse ExecuteGetAdminRequest(string path, IRestRequest request)
         {
             return DoAdminRequest(path, request, Method.GET);
         }
 
-        public IRestResponse ExecuteAdminRequest(string path, params object[] parms)
+        public IRestResponse ExecuteGetAdminRequest(string path, params object[] parms)
         {
             var req = BuildRequestFromParms(parms);
-            return this.ExecuteAdminRequest(path, req);
+            return this.ExecuteGetAdminRequest(path, req);
         }
 
-        public IRestResponse PostAdminRequest(string path, IRestRequest request)
+        public IRestResponse ExecutePostAdminRequest(string path, IRestRequest request)
         {
             return DoAdminRequest(path, request, Method.POST);
         }
 
-        public IRestResponse PostAdminRequest(string path, params object[] parms)
+        public IRestResponse ExecutePostAdminRequest(string path, params object[] parms)
         {
             var req = BuildRequestFromParms(parms);
-            return this.PostAdminRequest(path, req);
+            return this.ExecutePostAdminRequest(path, req);
         }
 
         private IRestResponse DoAdminRequest(string path, IRestRequest request, Method method)
@@ -108,7 +116,7 @@ namespace MailmanSharp
         public IRestResponse ExecuteRosterRequest()
         {
             if (!HasAdminCookie())
-                ExecuteAdminRequest("");
+                ExecuteGetAdminRequest("");
             var resource = String.Format("{0}/{1}", RosterPath, ListName);
             var req = new RestRequest(resource);
             req.AddParameter("adminpw", this.AdminPassword);

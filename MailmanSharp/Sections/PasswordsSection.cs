@@ -28,7 +28,7 @@ namespace MailmanSharp
             SetParams("mod", this.Moderator, req);
             SetParams("post", this.Poster, req);
 
-            this.Client.ExecuteAdminRequest(_paths.Single(), req);
+            this.Client.ExecuteGetAdminRequest(_paths.Single(), req);
         }
 
         internal override string GetCurrentConfig()

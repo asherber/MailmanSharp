@@ -20,7 +20,7 @@ namespace MailmanSharp
         
         public void MassCatchup()
         {
-            this.Client.PostAdminRequest(_paths.First(), "_mass_catchup", 1);
+            this.Client.ExecutePostAdminRequest(_paths.First(), "_mass_catchup", 1);
         }
 
         public MailNewsGatewaysSection(MailmanList list) : base(list) { }

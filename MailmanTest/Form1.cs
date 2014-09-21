@@ -45,13 +45,13 @@ namespace MailmanTest
             //var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
 
             var st = Stopwatch.StartNew();
-            mm.Membership.GetMembers("^a.*$");
+            //var foo = mm.Membership.GetMembers("^a.*$");
             //mm.Membership.Read();
-            //var members = mm.Membership.GetMembers();
+            var members = mm.Membership.GetMembers();
             st.Stop();
             MessageBox.Show(st.Elapsed.ToString());
             //var foo = mm.Membership.GetMembers();
-            //var nomail = foo.Where(m => m.NoMail);
+            var nomail = members.Where(m => m.NoMail);
             
         }
         private void button4_Click(object sender, EventArgs e)

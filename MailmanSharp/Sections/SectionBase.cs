@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Xml.Linq;
 
 namespace MailmanSharp
@@ -103,7 +102,7 @@ namespace MailmanSharp
                 }
 
                 DoBeforeFinishWrite(req);
-                client.PostAdminRequest(path, req);
+                client.ExecutePostAdminRequest(path, req);
             }
         }
 
@@ -204,7 +203,7 @@ namespace MailmanSharp
             var client = this.Client;  // to avoid unneccessary cloning
             foreach (var path in _paths)
             {
-                var resp = client.ExecuteAdminRequest(path);
+                var resp = client.ExecuteGetAdminRequest(path);
                 var doc = new MailmanHtmlDocument(path);
                 doc.LoadHtml(resp.Content);
                 result.Add(doc);
