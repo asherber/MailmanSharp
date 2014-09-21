@@ -31,16 +31,16 @@ namespace MailmanSharp
         internal Member(HtmlNodeCollection nodes)
         {
             var firstNode = nodes.First();
-            _encEmail = Regex.Replace(firstNode.GetAttributeValue("name", null), "_\\w*$", "");
+            _encEmail = Regex.Replace(firstNode.Attributes["name"].Value, "_\\w*$", "");
             this.Email = HttpUtility.UrlDecode(_encEmail);
 
             foreach (var prop in this.GetType().GetUnignoredProps())
             {
                 var name = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
-                var thisNode = nodes.SingleOrDefault(n => n.GetAttributeValue("name", null) == name);
+                var thisNode = nodes.SingleOrDefault(n => n.Attributes["name"].Value == name);
                 if (thisNode != null)
                 {
-                    var val = thisNode.GetAttributeValue("value", null);
+                    var val = thisNode.Attributes["value"].Value;
                     if (prop.PropertyType == typeof(string))
                         prop.SetValue(this, val, null);
                     else if (prop.PropertyType == typeof(bool))
@@ -52,7 +52,7 @@ namespace MailmanSharp
             {
                 this.NoMailReason = NoMailReason.Unknown;
                 string name = _encEmail + "_nomail";
-                var node = nodes.SingleOrDefault(n => n.GetAttributeValue("name", null) == name);
+                var node = nodes.SingleOrDefault(n => n.Attributes["name"].Value == name);
                 if (node != null)
                 {
                     string reason = node.NextSibling.InnerText;

@@ -27,7 +27,7 @@ namespace MailmanSharp
             {
                 this.TopicList.Add(new Topic()
                 {
-                    Name = GetNode(doc, "input", "box", i).GetAttributeValue("value", ""),
+                    Name = GetNode(doc, "input", "box", i).Attributes["value"].Value,
                     Regex = GetNode(doc, "textarea", "rebox", i).InnerText,
                     Description = GetNode(doc, "textarea", "desc", i).InnerText,
                 });

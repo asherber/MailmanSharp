@@ -115,7 +115,7 @@ namespace MailmanSharp
                 "//General/SubjectPrefix",
                 "//Privacy/AcceptableAliases",
             };
-            var xml = XElement.Load(config);
+            var xml = XElement.Parse(config);
             foreach (var item in itemsToRemove)
             {
                 var el = xml.XPathSelectElement(item);

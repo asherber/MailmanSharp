@@ -224,7 +224,7 @@ namespace MailmanSharp
             string xpath = String.Format("//input[@name='{0}']", dname);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
 
-            return node != null ? node.GetAttributeValue("value", null) : null;
+            return node != null ? node.Attributes["value"].Value : null;
         }
 
         protected object GetNodeStringValue(HtmlDocument doc, PropertyInfo prop)
@@ -266,7 +266,7 @@ namespace MailmanSharp
             string xpath = String.Format("//input[@name='{0}' and @checked]", dname);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).SingleOrDefault();
 
-            return node != null ? (object)Convert.ToBoolean(node.GetAttributeValue("value", 0)) : null;
+            return node != null ? (object)(node.Attributes["value"].Value == "1") : null;
         }
 
         protected object GetNodeEnumValue(HtmlDocument doc, PropertyInfo prop)
@@ -280,7 +280,7 @@ namespace MailmanSharp
                 int result = 0;
                 foreach (var node in nodes)
                 {
-                    var val = node.GetAttributeValue("value", null);
+                    var val = node.Attributes["value"].Value;
                     var enumVal = Enum.Parse(prop.PropertyType, val, true);
                     result |= (int)enumVal;
                 }

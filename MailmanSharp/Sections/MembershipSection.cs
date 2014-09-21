@@ -229,7 +229,7 @@ namespace MailmanSharp
         {
             string re = String.Format("(?<={0}=).", param);
             var aNodes = doc.DocumentNode.SafeSelectNodes("//a[@href]");
-            var values = aNodes.Select(a => a.GetAttributeValue("href", ""))
+            var values = aNodes.Select(a => a.Attributes["href"].Value)
                 .Where(h => h.Contains(param + "="))
                 .Select(h => Regex.Match(h, re).Value).Distinct();
 
@@ -241,7 +241,7 @@ namespace MailmanSharp
             var result = new List<Member>();
 
             var userNodes = doc.DocumentNode.SafeSelectNodes("//input[@name='user']");
-            var emails = userNodes.Select(n => n.GetAttributeValue("value", null));
+            var emails = userNodes.Select(n => n.Attributes["value"].Value);
 
             foreach (var email in emails)
             {

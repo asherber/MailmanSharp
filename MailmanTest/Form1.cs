@@ -44,14 +44,7 @@ namespace MailmanTest
             var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/announce-mountwashingtonschool.org", "***REMOVED***");
             //var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
 
-            var st = Stopwatch.StartNew();
-            //var foo = mm.Membership.GetMembers("^a.*$");
-            //mm.Membership.Read();
-            var members = mm.Membership.GetMembers();
-            st.Stop();
-            MessageBox.Show(st.Elapsed.ToString());
-            //var foo = mm.Membership.GetMembers();
-            var nomail = members.Where(m => m.NoMail);
+            mm.General.Read();
             
         }
         private void button4_Click(object sender, EventArgs e)
