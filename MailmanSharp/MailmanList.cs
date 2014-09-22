@@ -1,18 +1,29 @@
-﻿using System;
+﻿/**
+ * Copyright 2014 Aaron Sherber
+ * 
+ * This file is part of MailmanSharp.
+ *
+ * MailmanSharp is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MailmanSharp is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using RestSharp;
-using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Threading;
 using System.Xml.Linq;
-using System.Collections.ObjectModel;
-using hap = HtmlAgilityPack;
-using System.Windows.Forms;
-using System.Xml.Schema;
-using System.Xml;
+using System.Xml.XPath;
 
 /**
  * Tested with Mailman 2.1.17
@@ -22,10 +33,23 @@ namespace MailmanSharp
 {
     public class MailmanList
     {
+        /// <summary>
+        /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
+        /// </summary>
         public String AdminUrl { get { return Client.AdminUrl; } set { Client.AdminUrl = value; } }
+        /// <summary>
+        /// Administrator password for list.
+        /// </summary>
         public string AdminPassword { get { return Client.AdminPassword; } set { Client.AdminPassword = value; } }
+        /// <summary>
+        /// Current configuration of object as XML.
+        /// </summary>
         public string CurrentConfig { get { return GetCurrentConfig(); } }
-        
+        /// <summary>
+        /// CurrentConfig with certain list-specific properties removed.
+        /// </summary>
+        public string SafeCurrentConfig { get { return GetSafeCurrentConfig(); } }
+
         public MembershipSection Membership { get; private set; }
         public PrivacySection Privacy { get; private set; }
         public GeneralSection General { get; private set; }
@@ -46,9 +70,7 @@ namespace MailmanSharp
         public MailmanList()
         {
             this.Client = new MailmanClient();
-            ThreadPool.SetMaxThreads(10, 10);
-            ThreadPool.SetMinThreads(10, 10);            
-
+            
             InitSections();
         }
 
@@ -62,34 +84,30 @@ namespace MailmanSharp
         /// Read all list values from web site.
         /// </summary>
         public void Read()
-        {
-            Cursor.Current = Cursors.WaitCursor;
-            try
-            {
-                TryLogin();
-                this.InvokeSectionMethod("Read");
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
+        {            
+            TryLogin();
+            this.InvokeSectionMethod("Read");
         }
+
+#if ASYNC
+        public async Task ReadAsync()
+        {
+            await Task.Factory.StartNew(() => this.Read());
+        }
+
+        public async Task WriteAsync()
+        {
+            await Task.Factory.StartNew(() => this.Write());
+        }
+#endif
 
         /// <summary>
         /// Write all values to list.
         /// </summary>
         public void Write()
         {
-            Cursor.Current = Cursors.WaitCursor;
-            try
-            {
-                TryLogin();
-                this.InvokeSectionMethod("Write");
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
+            TryLogin();
+            this.InvokeSectionMethod("Write");
         }
 
         protected string GetCurrentConfig()
@@ -107,6 +125,39 @@ namespace MailmanSharp
             }
             return root.ToString();
         }
+
+        private string GetSafeCurrentConfig()
+        {
+            return SanitizeConfig(this.CurrentConfig);
+        }
+
+        /// <summary>
+        /// Remove list-specific properties from config XML.
+        /// </summary>
+        /// <param name="config">XML config to sanitize.</param>
+        /// <returns></returns>
+        public static string SanitizeConfig(string config)
+        {
+            var itemsToRemove = new List<string>()
+            {
+                "//General/RealName",
+                "//General/Description",
+                "//General/Info",
+                "//General/SubjectPrefix",
+                "//Privacy/AcceptableAliases",
+            };
+            var xml = XElement.Parse(config);
+            foreach (var item in itemsToRemove)
+            {
+                var el = xml.XPathSelectElement(item);
+                if (el != null)
+                    el.Remove();
+            }
+
+            return xml.ToString();
+        }
+        
+        
 
         /// <summary>
         /// Overwrite current configuration with values from XML.
@@ -128,7 +179,7 @@ namespace MailmanSharp
         private void TryLogin()
         {
             // This checks the URL and credentials before we get multi-threaded 
-            Client.ExecuteAdminRequest("");
+            Client.ExecuteGetAdminRequest("");
         }
 
         private string GetNodeValue(XElement root, string nodeName)
@@ -148,14 +199,12 @@ namespace MailmanSharp
         private void InvokeSectionMethod(string methodName)
         {
             var method = typeof(SectionBase).GetMethod(methodName);
-            var tasks = new List<Task>();
-            foreach (var prop in GetSectionProps())
+            Parallel.ForEach(GetSectionProps(), p =>
             {
-                var section = prop.GetValue(this, null);
+                var section = p.GetValue(this, null);
                 if (section != null)
-                    tasks.Add(Task.Factory.StartNew(() => method.Invoke(section, null)));                
-            }
-            Task.WaitAll(tasks.ToArray());             
+                    method.Invoke(section, null);
+            });
         }
 
         private IEnumerable<PropertyInfo> GetSectionProps()

@@ -1,10 +1,29 @@
-﻿using HtmlAgilityPack;
+﻿/**
+ * Copyright 2014 Aaron Sherber
+ * 
+ * This file is part of MailmanSharp.
+ *
+ * MailmanSharp is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MailmanSharp is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using HtmlAgilityPack;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace MailmanSharp
@@ -56,7 +75,7 @@ namespace MailmanSharp
         public virtual void Read()
         {
             var docs = GetHtmlDocuments();
-            var props = GetUnignoredProps(this.GetType());
+            var props = this.GetType().GetUnignoredProps();
 
             foreach (var doc in docs)
             {
@@ -83,7 +102,7 @@ namespace MailmanSharp
 
         public virtual void Write()
         {
-            var props = GetUnignoredProps(this.GetType());
+            var props = this.GetType().GetUnignoredProps(); 
             var client = this.Client;
 
             foreach (var path in _paths)
@@ -103,9 +122,21 @@ namespace MailmanSharp
                 }
 
                 DoBeforeFinishWrite(req);
-                client.ExecuteAdminRequest(path, req);
+                client.ExecutePostAdminRequest(path, req);
             }
         }
+
+#if ASYNC
+        public async Task ReadAsync()
+        {
+            await Task.Factory.StartNew(() => this.Read());
+        }
+
+        public async Task WriteAsync()
+        {
+            await Task.Factory.StartNew(() => this.Write());
+        }
+#endif
 
         protected virtual void DoAfterRead(List<MailmanHtmlDocument> docs) { }
         protected virtual void DoBeforeFinishWrite(RestRequest req) { }
@@ -115,16 +146,12 @@ namespace MailmanSharp
             return props.Where(p => p.GetCustomAttributes(false).OfType<PathAttribute>().Any(a => path.Contains(a.Value)));
         }
 
-        protected IEnumerable<PropertyInfo> GetUnignoredProps(Type type)
-        {
-            var props = type.GetProperties();
-            return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
-        }
+        
 
         internal virtual string GetCurrentConfig()
         {
             var result = new XElement(GetSectionName());
-            var props = GetUnignoredProps(this.GetType());
+            var props = this.GetType().GetUnignoredProps();
 
             foreach (var prop in props)
             {
@@ -142,7 +169,7 @@ namespace MailmanSharp
             var root = XElement.Parse(xml);
             root.CheckElementName(GetSectionName());
 
-            var props = GetUnignoredProps(this.GetType());
+            var props = this.GetType().GetUnignoredProps();
             foreach (var prop in props)
             {
                 var el = root.Element(prop.Name);
@@ -208,7 +235,7 @@ namespace MailmanSharp
             var client = this.Client;  // to avoid unneccessary cloning
             foreach (var path in _paths)
             {
-                var resp = client.ExecuteAdminRequest(path);
+                var resp = client.ExecuteGetAdminRequest(path);
                 var doc = new MailmanHtmlDocument(path);
                 doc.LoadHtml(resp.Content);
                 result.Add(doc);
@@ -229,7 +256,7 @@ namespace MailmanSharp
             string xpath = String.Format("//input[@name='{0}']", dname);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
 
-            return node != null ? node.GetAttributeValue("value", null) : null;
+            return node != null ? node.Attributes["value"].Value : null;
         }
 
         protected object GetNodeStringValue(HtmlDocument doc, PropertyInfo prop)
@@ -271,7 +298,7 @@ namespace MailmanSharp
             string xpath = String.Format("//input[@name='{0}' and @checked]", dname);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).SingleOrDefault();
 
-            return node != null ? (object)Convert.ToBoolean(node.GetAttributeValue("value", 0)) : null;
+            return node != null ? (object)(node.Attributes["value"].Value == "1") : null;
         }
 
         protected object GetNodeEnumValue(HtmlDocument doc, PropertyInfo prop)
@@ -285,7 +312,7 @@ namespace MailmanSharp
                 int result = 0;
                 foreach (var node in nodes)
                 {
-                    var val = node.GetAttributeValue("value", null);
+                    var val = node.Attributes["value"].Value;
                     var enumVal = Enum.Parse(prop.PropertyType, val, true);
                     result |= (int)enumVal;
                 }

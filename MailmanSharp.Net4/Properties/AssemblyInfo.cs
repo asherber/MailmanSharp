@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MailmanSharp")]
-[assembly: AssemblyDescription("C# library for configuration and manipulation of a Mailman mailing list by controlling the admin web interface")]
+[assembly: AssemblyTitle("MailmanSharp.Net4")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Aaron Sherber")]
-[assembly: AssemblyProduct("MailmanSharp")]
-[assembly: AssemblyCopyright("Copyright © Aaron Sherber 2014")]
+[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyProduct("MailmanSharp.Net4")]
+[assembly: AssemblyCopyright("Copyright © Microsoft 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f6aef2d0-43fa-43ba-baa3-3b680edeee84")]
+[assembly: Guid("a80c4cef-4b16-4bd5-a559-4582fb8f73fb")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -1,16 +1,39 @@
-﻿using HtmlAgilityPack;
+﻿/**
+ * Copyright 2014 Aaron Sherber
+ * 
+ * This file is part of MailmanSharp.
+ *
+ * MailmanSharp is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MailmanSharp is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using HtmlAgilityPack;
 using RestSharp;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
+using System.Threading.Tasks;
+
 
 namespace MailmanSharp
 {
+    [Flags]
+    public enum SubscribeOptions { None = 0, SendWelcomeMessage = 1, NotifyOwner = 2 }
+    [Flags]
+    public enum UnsubscribeOptions { None = 0, SendAcknowledgement = 1, NotifyOwner = 2 }
+    
+
     [Path("members")]
     [Order(4)]
     public class MembershipSection: SectionBase
@@ -21,6 +44,8 @@ namespace MailmanSharp
         protected static string _addPage = "members/add";
         protected static string _removePage = "members/remove";
         protected List<string> _emailList = new List<string>();
+
+        private bool _emailListPopulated = false;
         
         public MembershipSection(MailmanList list) : base(list) { }
 
@@ -41,6 +66,7 @@ namespace MailmanSharp
 
         private void PopulateEmailList()
         {
+            _emailList.Clear();
             var resp = this.Client.ExecuteRosterRequest();
             var doc = new MailmanHtmlDocument();
             doc.LoadHtml(resp.Content);
@@ -50,6 +76,7 @@ namespace MailmanSharp
             {
                 _emailList.Add(addr.InnerText.Trim().Replace(" at ", "@"));
             }
+            _emailListPopulated = true;
         }
 
         public void ModerateAll(bool moderate)
@@ -57,10 +84,10 @@ namespace MailmanSharp
             var req = new RestRequest();
             req.AddParameter("allmodbit_val", moderate ? 1 : 0);
             req.AddParameter("allmodbit_btn", 1);
-            this.Client.ExecuteAdminRequest(_paths.Single(), req);
+            this.Client.ExecutePostAdminRequest(_paths.Single(), req);
         }
 
-        public UnsubscribeResult Unsubscribe(string members)
+        public UnsubscribeResult Unsubscribe(string members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
             var result = new UnsubscribeResult();
 
@@ -68,10 +95,10 @@ namespace MailmanSharp
             {
                 var req = new RestRequest();
                 req.AddParameter("unsubscribees", members);
-                req.AddParameter("send_unsub_ack_to_this_batch", 0);
-                req.AddParameter("send_unsub_notifications_to_list_owner", 0);
+                req.AddParameter("send_unsub_ack_to_this_batch", options.HasFlag(UnsubscribeOptions.SendAcknowledgement).ToInt());
+                req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.None).ToInt());
 
-                var resp = this.Client.ExecuteAdminRequest(_removePage, req);
+                var resp = this.Client.ExecutePostAdminRequest(_removePage, req);
                 var doc = new MailmanHtmlDocument();
                 doc.LoadHtml(resp.Content);
 
@@ -83,23 +110,20 @@ namespace MailmanSharp
                 foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
                     result.NonMembers.Add(node.InnerText.Trim());
 
-                PopulateEmailList();
+                if (_emailListPopulated)
+                    PopulateEmailList();
             }
 
             return result;
         }
 
-        public UnsubscribeResult Unsubscribe(IEnumerable<string> members)
+        public UnsubscribeResult Unsubscribe(IEnumerable<string> members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
-            return Unsubscribe(String.Join("\n", members));
+            return Unsubscribe(String.Join("\n", members), options);
         }
 
-        public UnsubscribeResult Unsubscribe(params string[] members)
-        {
-            return Unsubscribe(String.Join("\n", members));
-        }
-
-        public SubscribeResult Subscribe(string members)
+        private enum SubscribeAction { Subscribe, Invite }
+        private SubscribeResult SubscribeOrInvite(string members, SubscribeAction action, SubscribeOptions options = SubscribeOptions.None)
         {
             var result = new SubscribeResult();
 
@@ -107,19 +131,21 @@ namespace MailmanSharp
             {
                 var req = new RestRequest();
                 req.AddParameter("subscribees", members);
-                req.AddParameter("subscribe_or_invite", 0);
-                req.AddParameter("send_welcome_msg_to_this_batch", 0);
-                req.AddParameter("send_notifications_to_list_owner", 0);
+                req.AddParameter("subscribe_or_invite", action == SubscribeAction.Subscribe ? 0 : 1);
+                req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOptions.SendWelcomeMessage).ToInt());
+                req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt());
 
-                var resp = this.Client.ExecuteAdminRequest(_addPage, req);
+                var resp = this.Client.ExecutePostAdminRequest(_addPage, req);
                 var doc = new MailmanHtmlDocument();
                 doc.LoadHtml(resp.Content);
 
-                string xpath = "//h5[contains(translate(text(), 'S', 's'), 'successfully subscribed')]/following-sibling::ul[1]/li";
+                string verb = action == SubscribeAction.Invite ? "invited" : "subscribed";
+                string xpath = String.Format("//h5[contains(translate(text(), 'SI', 'si'), 'successfully {0}')]/following-sibling::ul[1]/li", verb);
                 foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
                     result.Subscribed.Add(node.InnerText.Trim());
 
-                xpath = "//h5[contains(translate(text(), 'ES', 'es'),'error subscribing')]/following-sibling::ul[1]/li";
+                verb = action == SubscribeAction.Invite ? "inviting" : "subscribing";
+                xpath = String.Format("//h5[contains(translate(text(), 'ESI', 'esi'),'error {0}')]/following-sibling::ul[1]/li", verb);
                 foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
                 {
                     var match = Regex.Match(node.InnerText, "(.*) -- (.*)");
@@ -131,34 +157,122 @@ namespace MailmanSharp
                         result.BadEmails.Add(email);
                 }
 
-                PopulateEmailList();
+                if (action == SubscribeAction.Subscribe && _emailListPopulated)
+                    PopulateEmailList();
             }
 
             return result;
         }
 
-        public SubscribeResult Subscribe(IEnumerable<string> members)
+        public SubscribeResult Subscribe(string members, SubscribeOptions options = SubscribeOptions.None)
         {
-            return Subscribe(String.Join("\n", members));
+            return SubscribeOrInvite(members, SubscribeAction.Subscribe, options);
         }
 
-        public SubscribeResult Subscribe(params string[] members)
+        public SubscribeResult Subscribe(IEnumerable<string> members, SubscribeOptions options = SubscribeOptions.None)
         {
-            return Subscribe(String.Join("\n", members));
+            return Subscribe(String.Join("\n", members), options);
         }
 
-        public IList<Member> GetMembers(string search)
+        public SubscribeResult Invite(string members)
         {
-            var result = new List<Member>();
+            return SubscribeOrInvite(members, SubscribeAction.Invite);
+        }
+
+        public SubscribeResult Invite(IEnumerable<string> members)
+        {
+            return Invite(String.Join("\n", members));
+        }
+
+        public IEnumerable<Member> GetMembers()
+        {
+            return GetMembers("");
+        }
+
+        public IEnumerable<Member> GetMembers(string search)
+        {
             var req = new RestRequest();
             req.AddParameter("findmember", search);
-            var resp = this.Client.ExecuteAdminRequest(_paths.Single(), req);
+            var resp = this.Client.ExecuteGetAdminRequest(_paths.Single(), req);
 
-            var doc = new HtmlDocument();
+            // Do we have multiple letters to look at?
+            // General approach from http://www.msapiro.net/mailman-subscribers.py
+            var doc = new MailmanHtmlDocument();
             doc.LoadHtml(resp.Content);
+            var letters = GetHrefValuesForParam(doc, "letter");
+
+            if (letters.Any())
+            {                
+                var list = new List<Member>();
+                Parallel.ForEach(letters, letter =>
+                {
+                    var members = GetMembersForLetter(search, letter);
+                    lock (list) { list.AddRange(members); }
+                });
+
+                return list.OrderBy(m => m.Email);               
+            }
+            else
+                return ExtractMembersFromPage(doc);            
+        }
+
+#if ASYNC
+        public async Task<IEnumerable<Member>> GetMembersAsync(string search)
+        {
+            return await Task.Factory.StartNew(() => this.GetMembers(search));
+        }
+
+        public async Task<IEnumerable<Member>> GetMembersAsync()
+        {
+            return await GetMembersAsync("");
+        }
+#endif
+
+        private IEnumerable<Member> GetMembersForLetter(string search, string letter)
+        {
+            var result = new List<Member>();
+            int currentChunk = 0;
+            int maxChunk = 0;
+            var req = new RestRequest();
+            req.AddParameter("findmember", search);
+
+            while (currentChunk <= maxChunk)
+            {
+                req.AddOrSetParameter("letter", letter);
+                req.AddOrSetParameter("chunk", currentChunk);
+                var resp = this.Client.ExecuteGetAdminRequest(_paths.Single(), req);
+                var doc = new MailmanHtmlDocument();
+                doc.LoadHtml(resp.Content);
+
+                result.AddRange(ExtractMembersFromPage(doc));
+
+                // More chunks?
+                var nextChunk = GetHrefValuesForParam(doc, "chunk").SingleOrDefault();
+                if (nextChunk != null)
+                    maxChunk = Math.Max(maxChunk, Convert.ToInt32(nextChunk));
+                currentChunk++;
+            }
+
+            return result;
+        }
+
+        private static IEnumerable<string> GetHrefValuesForParam(HtmlDocument doc, string param)
+        {
+            string re = String.Format("(?<={0}=).", param);
+            var aNodes = doc.DocumentNode.SafeSelectNodes("//a[@href]");
+            var values = aNodes.Select(a => a.Attributes["href"].Value)
+                .Where(h => h.Contains(param + "="))
+                .Select(h => Regex.Match(h, re).Value).Distinct();
+
+            return values;
+        }
+
+        private static IEnumerable<Member> ExtractMembersFromPage(HtmlDocument doc)
+        {
+            var result = new List<Member>();
 
             var userNodes = doc.DocumentNode.SafeSelectNodes("//input[@name='user']");
-            var emails = userNodes.Select(n => n.GetAttributeValue("value", null));
+            var emails = userNodes.Select(n => n.Attributes["value"].Value);
 
             foreach (var email in emails)
             {
@@ -179,7 +293,7 @@ namespace MailmanSharp
             foreach (var member in members)
                 req.Parameters.AddRange(member.ToParameters());
 
-            this.Client.ExecuteAdminRequest(_paths.Single(), req);
+            this.Client.ExecutePostAdminRequest(_paths.Single(), req);
         }
 
         public void SaveMembers(params Member[] members)
@@ -187,40 +301,6 @@ namespace MailmanSharp
             SaveMembers(members.ToList());
         }
 
-        public IEnumerable<Member> GetAllMembers()
-        {
-            var result = new List<Member>();
-
-            // Increase chunk size
-            var general = new GeneralSection(_list);
-            general.Read();
-            var chunkSize = general.AdminMemberChunksize;
-            general.AdminMemberChunksize = 10000;
-            general.Write();
-
-            try
-            {
-                // Get all user nodes
-                var doc = GetHtmlDocuments().Single();
-                var nodes = doc.DocumentNode.SafeSelectNodes("//input[@name='user']");
-
-                foreach (var node in nodes)
-                {
-                    var email = node.GetAttributeValue("value", null);
-                    var xpath = String.Format("//input[contains(@name, '{0}')]", email);
-                    var memberNodes = doc.DocumentNode.SafeSelectNodes(xpath);
-
-                    result.Add(new Member(memberNodes));
-                }
-            }
-            finally
-            {
-                // Reset chunk size
-                general.AdminMemberChunksize = chunkSize;
-                general.Write();
-            }
-
-            return result;
-        }
+        
     }
 }

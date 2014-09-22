@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"> 
+   <Target Name="PrepareNuGetFiles" Condition="  '$(Configuration)'=='Release'  "> 
+      <PropertyGroup>
+         <!-- Make sure this is correct, relative to project dir -->
+         <NuGetBuildDir>..\NuGet\</NuGetBuildDir>
+         <NuGetTargetFramework>$(TargetFrameworkVersion.Replace("v", "net").Replace(".", ""))</NuGetTargetFramework>         
+      </PropertyGroup>
+      <Message Importance="high" Text="  Copying to NuGet directory." />
+      <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(NuGetBuildDir)lib\$(NuGetTargetFramework)" />
+      <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+         <Output TaskParameter="Assemblies" ItemName="TargetAssemblyInfo"/>
+      </GetAssemblyIdentity>
+      <Message Importance="high" Text="  Adding assembly version to .nuspec file." />   
+      <XmlPoke XmlInputPath="$(NuGetBuildDir)$(TargetName).nuspec" 
+             Query="/ns:package/ns:metadata/ns:version" 
+             Value="%(TargetAssemblyInfo.Version)" 
+             Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd' /&gt;"/>
+   </Target> 
+</Project>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MailmanSharp</id>
+    <version>2.1.1.0</version>
+    <title>MailmanSharp</title>
+    <authors>Aaron Sherber</authors>
+    <owners>Aaron Sherber</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A C# library for configuration and manipulation of Mailman mailing lists by controlling the admin web interface.
+
+Features include: all Mailman settings available as object properties, bulk subscribe/unsubscribe, change settings for individual members or groups of members, save or load list configuration from XML, and async methods for longer-running operations (.NET 4.5 only).</description>
+    <summary>A C# library for configuration and manipulation of Mailman mailing lists.</summary>
+    <iconUrl>https://dl.dropboxusercontent.com/u/5308234/MailmanSharpNugetLarge.png</iconUrl>
+    <releaseNotes>Initial release.</releaseNotes>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.txt</licenseUrl>
+    <projectUrl>http://mailmansharp.codeplex.com</projectUrl>
+    <copyright>Copyright 2014</copyright>
+    <tags>Mailman listserv</tags>
+    <dependencies>
+      <dependency id="RestSharp" version="104.4.0" />
+      <dependency id="HtmlAgilityPack" version="1.4.9" />
+    </dependencies>
+  </metadata>
+</package>
