@@ -90,7 +90,4 @@
   </Target>
   -->
   <Import Project="..\NuGet\NuGet.Custom.targets" />
-  <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release' ">
-    <CallTarget Targets="PrepareNuGetFiles" />
-  </Target>
 </Project>
