@@ -45,7 +45,7 @@ namespace MailmanTest
             var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/announce-mountwashingtonschool.org", "***REMOVED***");
             //var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
 
-            await mm.Membership.GetMembersAsync();
+            var members = await mm.Membership.GetMembersAsync();
             //var foo = mm.Membership.GetType().GetCustomAttributes(false);
             
         }

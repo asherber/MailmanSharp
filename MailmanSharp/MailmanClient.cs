@@ -36,12 +36,15 @@ namespace MailmanSharp
         /// </summary>
         internal string AdminPassword { get; set; }
 
-        private string ListName { get; set; }
-        private string AdminPath { get; set; }
-        private string RosterPath { get { return AdminPath.Replace("admin", "roster"); } }
+        private string _listName;
+        private string _adminPath;
+        private MailmanList _list;
 
-        internal MailmanClient()
+        internal MailmanClient(MailmanList list)
         {
+            if (list == null)
+                throw new ArgumentNullException("list");
+            _list = list;
             this.FollowRedirects = true;
             this.CookieContainer = new System.Net.CookieContainer();            
         }
@@ -52,7 +55,7 @@ namespace MailmanSharp
         /// <returns>New MailmanClient</returns>
         internal MailmanClient Clone()
         {
-            var result = new MailmanClient()
+            var result = new MailmanClient(_list)
             {
                 AdminUrl = this.AdminUrl,
                 AdminPassword = this.AdminPassword,
@@ -105,13 +108,16 @@ namespace MailmanSharp
                 path = path.Trim('/');
 
             var req = request ?? new RestRequest();
-            req.Resource = String.Format("{0}/{1}/{2}", AdminPath, ListName, path); ;
+            req.Resource = String.Format("{0}/{1}/{2}", _adminPath, _listName, path); ;
             req.Method = method;
             req.AddOrSetParameter("adminpw", this.AdminPassword);
 
             var resp = this.Execute(req);
             if (resp.StatusCode == HttpStatusCode.OK)
+            {
+                _list.MailmanVersion = Regex.Match(resp.Content, @"(?<=Delivered by Mailman.*version )[\d.-]+").Value;
                 return resp;
+            }
             else
             {
                 string msg = String.Format("Request failed. {{Uri={0}, Message={1}}}", resp.ResponseUri, resp.StatusDescription);
@@ -132,11 +138,17 @@ namespace MailmanSharp
             return result;
         }
 
+        private string GetRosterPath() 
+        { 
+            return _adminPath.Replace("admin", "roster"); 
+        }
+        
+
         public IRestResponse ExecuteRosterRequest()
         {
             if (!HasAdminCookie())
                 ExecuteGetAdminRequest("");
-            var resource = String.Format("{0}/{1}", RosterPath, ListName);
+            var resource = String.Format("{0}/{1}", this.GetRosterPath(), _listName);
             var req = new RestRequest(resource);
             req.AddParameter("adminpw", this.AdminPassword);
             return this.Execute(req);
@@ -145,22 +157,22 @@ namespace MailmanSharp
         internal bool HasAdminCookie()
         {
             var cookies = CookieContainer.GetCookies(new Uri(BaseUrl));
-            return cookies.Cast<Cookie>().Any(c => c.Name == String.Format("{0}+admin", ListName));
+            return cookies.Cast<Cookie>().Any(c => c.Name == String.Format("{0}+admin", _listName));
         }
         
         private string GetAdminUrl()
         {
             // We know these bits have no trailing slashes.
             // BaseUrl gets trimmed by RestClient; the other two get trimmed in SetAdminUrl.
-            var url = String.Format("{0}/{1}/{2}", BaseUrl, AdminPath, ListName);
+            var url = String.Format("{0}/{1}/{2}", BaseUrl, _adminPath, _listName);
             return Regex.IsMatch(url, "\\w") ? url : "";
         }
 
         private void SetAdminUrl(string value)
         {
             BaseUrl = "";
-            AdminPath = "";
-            ListName = "";
+            _adminPath = "";
+            _listName = "";
 
             if (!String.IsNullOrWhiteSpace(value))
             {
@@ -172,8 +184,8 @@ namespace MailmanSharp
 
                 BaseUrl = uri.GetLeftPart(UriPartial.Authority)
                     + String.Join("", uri.Segments.Take(numSegs - 2));
-                AdminPath = uri.Segments[numSegs - 2].TrimEnd('/');
-                ListName = uri.Segments.Last().TrimEnd('/');
+                _adminPath = uri.Segments[numSegs - 2].TrimEnd('/');
+                _listName = uri.Segments.Last().TrimEnd('/');
             }
         }
     }

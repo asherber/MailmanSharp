@@ -36,7 +36,7 @@ namespace MailmanSharp
         /// <summary>
         /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
         /// </summary>
-        public String AdminUrl { get { return Client.AdminUrl; } set { Client.AdminUrl = value; } }
+        public String AdminUrl { get { return Client.AdminUrl; } set { MailmanVersion = null;  Client.AdminUrl = value; } }
         /// <summary>
         /// Administrator password for list.
         /// </summary>
@@ -49,6 +49,10 @@ namespace MailmanSharp
         /// CurrentConfig with certain list-specific properties removed.
         /// </summary>
         public string SafeCurrentConfig { get { return GetSafeCurrentConfig(); } }
+        /// <summary>
+        /// Gets version of Mailman that this list is running on.
+        /// </summary>
+        public string MailmanVersion { get { return _mailmanVersion; } internal set { SetMailmanVersion(value); } }
 
         public MembershipSection Membership { get; private set; }
         public PrivacySection Privacy { get; private set; }
@@ -67,9 +71,11 @@ namespace MailmanSharp
 
         public MailmanClient Client { get; private set; }
 
+        private string _mailmanVersion = null;
+
         public MailmanList()
         {
-            this.Client = new MailmanClient();
+            this.Client = new MailmanClient(this);
             
             InitSections();
         }
@@ -217,5 +223,17 @@ namespace MailmanSharp
                 .Where(p => p.PropertyType.IsSubclassOf(typeof(SectionBase)))
                 .OrderBy(p => p.PropertyType.GetCustomAttributes(false).OfType<OrderAttribute>().First().Value);
         }
+
+        private object _versionLocker = new object();
+        private void SetMailmanVersion(string value)
+        {
+            lock (_versionLocker)
+            {
+                if (value != _mailmanVersion)
+                    _mailmanVersion = value;
+            }
+        }
+
+        
     }
 }
