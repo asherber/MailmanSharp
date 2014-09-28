@@ -36,10 +36,10 @@ namespace MailmanSharp
 
         public TopicsSection(MailmanList list) : base(list) { }
 
-        protected override void DoAfterRead(List<MailmanHtmlDocument> docs)
+        protected override void DoAfterRead(Dictionary<string, HtmlDocument> docs)
         {
             // read topics
-            var doc = docs.Single();
+            var doc = docs.Single().Value;
 
             int i = 0;
             while (doc.DocumentNode.SafeSelectNodes(String.Format("//input[@name='topic_delete_{0:D2}']", ++i)).Any())

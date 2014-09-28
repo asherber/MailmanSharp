@@ -74,12 +74,13 @@ namespace MailmanSharp
 
         public virtual void Read()
         {
-            var docs = GetHtmlDocuments();
+            var docs = FetchHtmlDocuments();
             var props = this.GetType().GetUnignoredProps();
 
-            foreach (var doc in docs)
+            foreach (var kvp in docs)
             {
-                var propsToRead = docs.Count == 1 ? props : GetPropsForPath(props, doc.Path);
+                var propsToRead = docs.Count == 1 ? props : GetPropsForPath(props, kvp.Key);
+                var doc = kvp.Value;
                 foreach (var prop in propsToRead)
                 {
                     if (prop.PropertyType == typeof(string))
@@ -138,7 +139,7 @@ namespace MailmanSharp
         }
 #endif
 
-        protected virtual void DoAfterRead(List<MailmanHtmlDocument> docs) { }
+        protected virtual void DoAfterRead(Dictionary<string, HtmlDocument> docs) { }
         protected virtual void DoBeforeFinishWrite(RestRequest req) { }
 
         protected IEnumerable<PropertyInfo> GetPropsForPath(IEnumerable<PropertyInfo> props, string path)
@@ -229,18 +230,29 @@ namespace MailmanSharp
             return result;
         }
 
-        protected List<MailmanHtmlDocument> GetHtmlDocuments()
+        protected Dictionary<string, HtmlDocument> FetchHtmlDocuments()
         {
-            var result = new List<MailmanHtmlDocument>();
+            var result = new Dictionary<string, HtmlDocument>();
             var client = this.Client;  // to avoid unneccessary cloning
             foreach (var path in _paths)
             {
                 var resp = client.ExecuteGetAdminRequest(path);
-                var doc = new MailmanHtmlDocument(path);
-                doc.LoadHtml(resp.Content);
-                result.Add(doc);
+                var doc = GetHtmlDocument(resp.Content);
+                result.Add(path, doc);
             }
             return result;
+        }
+
+        protected static HtmlDocument GetHtmlDocument(string content = null)
+        {
+            var doc = new HtmlDocument()
+            {
+                OptionFixNestedTags = true
+            };
+
+            if (!String.IsNullOrEmpty(content))
+                doc.LoadHtml(content);
+            return doc;
         }
 
         #region Reading helpers

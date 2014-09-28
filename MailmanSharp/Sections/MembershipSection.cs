@@ -68,9 +68,8 @@ namespace MailmanSharp
         {
             _emailList.Clear();
             var resp = this.Client.ExecuteRosterRequest();
-            var doc = new MailmanHtmlDocument();
-            doc.LoadHtml(resp.Content);
-
+            var doc = GetHtmlDocument(resp.Content);
+            
             var addrs = doc.DocumentNode.SafeSelectNodes("//li");
             foreach (var addr in addrs)
             {
@@ -99,9 +98,8 @@ namespace MailmanSharp
                 req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.None).ToInt());
 
                 var resp = this.Client.ExecutePostAdminRequest(_removePage, req);
-                var doc = new MailmanHtmlDocument();
-                doc.LoadHtml(resp.Content);
-
+                var doc = GetHtmlDocument(resp.Content);
+                
                 string xpath = "//h5[contains(translate(text(), 'SU', 'su'), 'successfully unsubscribed')]/following-sibling::ul[1]/li";
                 foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
                     result.Unsubscribed.Add(node.InnerText.Trim());
@@ -136,9 +134,8 @@ namespace MailmanSharp
                 req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt());
 
                 var resp = this.Client.ExecutePostAdminRequest(_addPage, req);
-                var doc = new MailmanHtmlDocument();
-                doc.LoadHtml(resp.Content);
-
+                var doc = GetHtmlDocument(resp.Content);
+                
                 string verb = action == SubscribeAction.Invite ? "invited" : "subscribed";
                 string xpath = String.Format("//h5[contains(translate(text(), 'SI', 'si'), 'successfully {0}')]/following-sibling::ul[1]/li", verb);
                 foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
@@ -197,8 +194,7 @@ namespace MailmanSharp
 
             // Do we have multiple letters to look at?
             // General approach from http://www.msapiro.net/mailman-subscribers.py
-            var doc = new MailmanHtmlDocument();
-            doc.LoadHtml(resp.Content);
+            var doc = GetHtmlDocument(resp.Content);
             var letters = GetHrefValuesForParam(doc, "letter");
 
             if (letters.Any())
@@ -241,9 +237,8 @@ namespace MailmanSharp
                 req.AddOrSetParameter("letter", letter);
                 req.AddOrSetParameter("chunk", currentChunk);
                 var resp = this.Client.ExecuteGetAdminRequest(_paths.Single(), req);
-                var doc = new MailmanHtmlDocument();
-                doc.LoadHtml(resp.Content);
-
+                var doc = GetHtmlDocument(resp.Content);
+                
                 result.AddRange(ExtractMembersFromPage(doc));
 
                 // More chunks?

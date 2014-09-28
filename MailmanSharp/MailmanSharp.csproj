@@ -56,7 +56,6 @@
     <Compile Include="MailmanList.cs" />
     <Compile Include="Member.cs" />
     <Compile Include="Attributes\IgnoreAttribute.cs" />
-    <Compile Include="MailmanHtmlDocument.cs" />
     <Compile Include="Attributes\OrderAttribute.cs" />
     <Compile Include="Sections\ArchivingSection.cs" />
     <Compile Include="Sections\AutoResponderSection.cs" />
@@ -81,7 +80,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" /> 
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

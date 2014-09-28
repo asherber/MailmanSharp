@@ -61,9 +61,6 @@
     <Compile Include="..\MailmanSharp\MailmanClient.cs">
       <Link>MailmanClient.cs</Link>
     </Compile>
-    <Compile Include="..\MailmanSharp\MailmanHtmlDocument.cs">
-      <Link>MailmanHtmlDocument.cs</Link>
-    </Compile>
     <Compile Include="..\MailmanSharp\MailmanList.cs">
       <Link>MailmanList.cs</Link>
     </Compile>
