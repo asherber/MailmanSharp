@@ -115,7 +115,7 @@ namespace MailmanSharp
             var resp = this.Execute(req);
             if (resp.StatusCode == HttpStatusCode.OK)
             {
-                _list.MailmanVersion = Regex.Match(resp.Content, @"(?<=Delivered by Mailman.*version )[\d.-]+").Value;
+                _list.MailmanVersion = Regex.Match(resp.Content, @"(?<=Delivered by Mailman.*version ).*(?=<)").Value;
                 return resp;
             }
             else
