@@ -35,6 +35,6 @@ namespace MailmanSharp
         public ArchivePrivateOption ArchivePrivate { get; set; }
         public ArchiveVolumeFrequencyOption ArchiveVolumeFrequency { get; set; }
 
-        public ArchivingSection(MailmanList list) : base(list) { }
+        internal ArchivingSection(MailmanList list) : base(list) { }
     }
 }

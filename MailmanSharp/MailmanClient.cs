@@ -30,17 +30,17 @@ namespace MailmanSharp
         /// <summary>
         /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
         /// </summary>
-        public string AdminUrl { get { return GetAdminUrl(); } set { SetAdminUrl(value); } }
+        internal string AdminUrl { get { return GetAdminUrl(); } set { SetAdminUrl(value); } }
         /// <summary>
         /// Administrator password for list.
         /// </summary>
-        public string AdminPassword { get; set; }
+        internal string AdminPassword { get; set; }
 
         private string ListName { get; set; }
         private string AdminPath { get; set; }
         private string RosterPath { get { return AdminPath.Replace("admin", "roster"); } }
 
-        public MailmanClient()
+        internal MailmanClient()
         {
             this.FollowRedirects = true;
             this.CookieContainer = new System.Net.CookieContainer();            
@@ -50,7 +50,7 @@ namespace MailmanSharp
         /// Create a copy of a MailmanClient.
         /// </summary>
         /// <returns>New MailmanClient</returns>
-        public MailmanClient Clone()
+        internal MailmanClient Clone()
         {
             var result = new MailmanClient()
             {
@@ -119,7 +119,7 @@ namespace MailmanSharp
             }        
         }
 
-        private IRestRequest BuildRequestFromParms(params object[] parms)
+        private static IRestRequest BuildRequestFromParms(params object[] parms)
         {
             if (parms.Length % 2 != 0)
                 throw new ArgumentException("Argument 'parms' must have even number of values");

@@ -34,7 +34,7 @@ namespace MailmanSharp
         [Ignore]
         public List<Topic> TopicList { get; set; }
 
-        public TopicsSection(MailmanList list) : base(list) { }
+        internal TopicsSection(MailmanList list) : base(list) { }
 
         protected override void DoAfterRead(Dictionary<string, HtmlDocument> docs)
         {

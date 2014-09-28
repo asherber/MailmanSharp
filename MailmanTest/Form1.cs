@@ -46,6 +46,7 @@ namespace MailmanTest
             //var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
 
             await mm.Membership.GetMembersAsync();
+            //var foo = mm.Membership.GetType().GetCustomAttributes(false);
             
         }
         private void button4_Click(object sender, EventArgs e)

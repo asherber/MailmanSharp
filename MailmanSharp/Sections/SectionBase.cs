@@ -33,12 +33,15 @@ namespace MailmanSharp
     {
         protected MailmanList _list;
         protected HashSet<string> _paths = new HashSet<string>();
-        protected MailmanClient Client { get { return _list.Client.Clone(); } }
+        
         [Ignore]
         public string CurrentConfig { get { return GetCurrentConfig(); } }
         
-        public SectionBase(MailmanList list)
+        internal SectionBase(MailmanList list)
         {
+            if (list == null)
+                throw new ArgumentNullException("list");
+
             _list = list;
             
             // Start with path on the class
@@ -63,7 +66,11 @@ namespace MailmanSharp
                 else if (prop.PropertyType == typeof(string))
                     prop.SetValue(this, "", null);
             }
+        }
 
+        protected MailmanClient GetClient()
+        {
+            return _list.Client.Clone();
         }
 
         private string GetPathValue(object[] attributes)
@@ -103,8 +110,8 @@ namespace MailmanSharp
 
         public virtual void Write()
         {
-            var props = this.GetType().GetUnignoredProps(); 
-            var client = this.Client;
+            var props = this.GetType().GetUnignoredProps();
+            var client = this.GetClient();
 
             foreach (var path in _paths)
             {
@@ -130,12 +137,12 @@ namespace MailmanSharp
 #if ASYNC
         public async Task ReadAsync()
         {
-            await Task.Factory.StartNew(() => this.Read());
+            await Task.Run(() => this.Read());
         }
 
         public async Task WriteAsync()
         {
-            await Task.Factory.StartNew(() => this.Write());
+            await Task.Run(() => this.Write());
         }
 #endif
 
@@ -233,7 +240,7 @@ namespace MailmanSharp
         protected Dictionary<string, HtmlDocument> FetchHtmlDocuments()
         {
             var result = new Dictionary<string, HtmlDocument>();
-            var client = this.Client;  // to avoid unneccessary cloning
+            var client = this.GetClient();  // to avoid unneccessary cloning
             foreach (var path in _paths)
             {
                 var resp = client.ExecuteGetAdminRequest(path);

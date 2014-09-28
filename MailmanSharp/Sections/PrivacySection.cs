@@ -76,6 +76,6 @@ namespace MailmanSharp
 
         // Spam page -- will not implement
 
-        public PrivacySection(MailmanList list) : base(list) { }
+        internal PrivacySection(MailmanList list) : base(list) { }
     }
 }

@@ -65,7 +65,7 @@ namespace MailmanSharp
 
         //public LanguageSection Language { get; private set; }   // Won't implement
 
-        internal MailmanClient Client { get; private set; }
+        public MailmanClient Client { get; private set; }
 
         public MailmanList()
         {
@@ -92,12 +92,12 @@ namespace MailmanSharp
 #if ASYNC
         public async Task ReadAsync()
         {
-            await Task.Factory.StartNew(() => this.Read());
+            await Task.Run(() => this.Read());
         }
 
         public async Task WriteAsync()
         {
-            await Task.Factory.StartNew(() => this.Write());
+            await Task.Run(() => this.Write());
         }
 #endif
 
@@ -110,7 +110,7 @@ namespace MailmanSharp
             this.InvokeSectionMethod("Write");
         }
 
-        protected string GetCurrentConfig()
+        private string GetCurrentConfig()
         {
             var root = new XElement("MailmanList",
                 new XAttribute("adminUrl", this.AdminUrl),
@@ -190,9 +190,13 @@ namespace MailmanSharp
 
         private void InitSections()
         {
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var args = new object[] { this };
+
             foreach (var prop in GetSectionProps())
             {
-                prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, this), null);
+                var section = Activator.CreateInstance(prop.PropertyType, flags, null, args, null);
+                prop.SetValue(this, section, null);
             }
         }
 

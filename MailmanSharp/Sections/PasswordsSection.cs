@@ -33,7 +33,7 @@ namespace MailmanSharp
         public string Moderator { get; set; }
         public string Poster { get; set; }
 
-        public PasswordsSection(MailmanList list) : base(list) { }
+        internal PasswordsSection(MailmanList list) : base(list) { }
 
         public override void Read()
         {
@@ -47,7 +47,7 @@ namespace MailmanSharp
             SetParams("mod", this.Moderator, req);
             SetParams("post", this.Poster, req);
 
-            this.Client.ExecuteGetAdminRequest(_paths.Single(), req);
+            this.GetClient().ExecuteGetAdminRequest(_paths.Single(), req);
         }
 
         internal override string GetCurrentConfig()
