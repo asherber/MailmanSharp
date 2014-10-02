@@ -80,6 +80,11 @@ namespace MailmanSharp
             return result;
         }
 
+        public void Reset()
+        {
+            _list.ResetClient();
+        }
+
         public IRestResponse ExecuteGetAdminRequest(string path, IRestRequest request)
         {
             return DoAdminRequest(path, request, Method.GET);

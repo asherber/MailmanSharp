@@ -75,9 +75,7 @@ namespace MailmanSharp
 
         public MailmanList()
         {
-            this.Client = new MailmanClient(this);
-            
-            InitSections();
+            this.Reset();
         }
 
         public MailmanList(string adminUrl, string adminPassword = null): this()
@@ -120,7 +118,9 @@ namespace MailmanSharp
         {
             var root = new XElement("MailmanList",
                 new XAttribute("adminUrl", this.AdminUrl),
-                new XAttribute("dateCreated", DateTime.Now.ToString("s"))
+                new XAttribute("dateCreated", DateTime.Now.ToString("s")),
+                new XAttribute("mailmanVersion", this.MailmanVersion),
+                new XAttribute("mailmanSharpVersion", Assembly.GetExecutingAssembly().GetName().Version)
             );
 
             foreach (var prop in GetSectionProps())
@@ -234,6 +234,16 @@ namespace MailmanSharp
             }
         }
 
-        
+        public void Reset()
+        {
+            this.ResetClient();
+            InitSections();
+            this.MailmanVersion = null;
+        }
+
+        internal void ResetClient()
+        {
+            this.Client = new MailmanClient(this);
+        }
     }
 }
