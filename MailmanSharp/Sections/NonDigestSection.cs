@@ -39,6 +39,6 @@ namespace MailmanSharp
         public bool RegularExcludeIgnore { get; set; }
         public List<string> RegularIncludeLists { get; set; }
 
-        public NonDigestSection(MailmanList list) : base(list) { }
+        internal NonDigestSection(MailmanList list) : base(list) { }
     }
 }

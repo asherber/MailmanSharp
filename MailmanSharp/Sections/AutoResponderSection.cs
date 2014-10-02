@@ -39,6 +39,6 @@ namespace MailmanSharp
         public ushort AutoresponseGraceperiod { get; set; }
 
 
-        public AutoResponderSection(MailmanList list) : base(list) { }
+        internal AutoResponderSection(MailmanList list) : base(list) { }
     }
 }

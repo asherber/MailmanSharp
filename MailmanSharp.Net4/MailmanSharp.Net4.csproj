@@ -58,11 +58,11 @@
     <Compile Include="..\MailmanSharp\Attributes\PathAttribute.cs">
       <Link>Attributes\PathAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\MailmanSharp\HeaderFilter.cs">
+      <Link>HeaderFilter.cs</Link>
+    </Compile>
     <Compile Include="..\MailmanSharp\MailmanClient.cs">
       <Link>MailmanClient.cs</Link>
-    </Compile>
-    <Compile Include="..\MailmanSharp\MailmanHtmlDocument.cs">
-      <Link>MailmanHtmlDocument.cs</Link>
     </Compile>
     <Compile Include="..\MailmanSharp\MailmanList.cs">
       <Link>MailmanList.cs</Link>
@@ -134,7 +134,4 @@
   </Target>  
   -->
   <Import Project="..\NuGet\NuGet.Custom.targets" />
-  <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release' ">
-    <CallTarget Targets="PrepareNuGetFiles" />
-  </Target>
 </Project>

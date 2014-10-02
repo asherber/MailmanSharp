@@ -26,9 +26,9 @@ namespace MailmanSharp
 {
     public class SubscribeResult
     {
-        public IList<string> Subscribed { get; set; }
-        public IList<string> AlreadyMembers { get; set; }
-        public IList<string> BadEmails { get; set; }
+        public IList<string> Subscribed { get; internal set; }
+        public IList<string> AlreadyMembers { get; internal set; }
+        public IList<string> BadEmails { get; internal set; }
 
         public SubscribeResult()
         {

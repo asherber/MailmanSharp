@@ -27,15 +27,15 @@ namespace MailmanSharp
     public class Topic
     {
         public string Name { get; set; }
-        public string Regex { get; set; }
+        public List<string> Regexes { get; set; }
         public string Description { get; set; }
 
         public Topic() { }
 
-        public Topic(string name, string regex, string description)
+        public Topic(string name, List<string> regexes, string description)
         {
             this.Name = name;
-            this.Regex = regex;
+            this.Regexes = regexes;
             this.Description = description;
         }
     }

@@ -39,6 +39,6 @@ namespace MailmanSharp
         public bool ConvertHtmlToPlaintext { get; set; }
         public FilterActionOption FilterAction { get; set; }
 
-        public ContentFilteringSection(MailmanList list) : base(list) { }
+        internal ContentFilteringSection(MailmanList list) : base(list) { }
     }
 }

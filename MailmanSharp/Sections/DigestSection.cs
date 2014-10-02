@@ -43,14 +43,14 @@ namespace MailmanSharp
         
         public void NewVolume()
         {
-            this.Client.ExecutePostAdminRequest(_paths.First(), "_new_volume", 1);
+            this.GetClient().ExecutePostAdminRequest(_paths.First(), "_new_volume", 1);
         }
 
         public void SendDigestNow()
         {
-            this.Client.ExecutePostAdminRequest(_paths.First(), "_send_digest_now", 1);
+            this.GetClient().ExecutePostAdminRequest(_paths.First(), "_send_digest_now", 1);
         }
-    
-        public DigestSection(MailmanList list) : base(list) { }
+
+        internal DigestSection(MailmanList list) : base(list) { }
     }
 }

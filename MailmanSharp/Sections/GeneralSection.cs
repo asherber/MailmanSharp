@@ -66,7 +66,7 @@ namespace MailmanSharp
 
         private string _realName;
 
-        public GeneralSection(MailmanList list) : base(list) { }
+        internal GeneralSection(MailmanList list) : base(list) { }
 
         private void SetRealName(string value)
         {

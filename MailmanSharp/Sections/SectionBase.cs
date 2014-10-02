@@ -33,12 +33,15 @@ namespace MailmanSharp
     {
         protected MailmanList _list;
         protected HashSet<string> _paths = new HashSet<string>();
-        protected MailmanClient Client { get { return _list.Client.Clone(); } }
+        
         [Ignore]
         public string CurrentConfig { get { return GetCurrentConfig(); } }
         
-        public SectionBase(MailmanList list)
+        internal SectionBase(MailmanList list)
         {
+            if (list == null)
+                throw new ArgumentNullException("list");
+
             _list = list;
             
             // Start with path on the class
@@ -63,7 +66,11 @@ namespace MailmanSharp
                 else if (prop.PropertyType == typeof(string))
                     prop.SetValue(this, "", null);
             }
+        }
 
+        protected MailmanClient GetClient()
+        {
+            return _list.Client.Clone();
         }
 
         private string GetPathValue(object[] attributes)
@@ -74,12 +81,13 @@ namespace MailmanSharp
 
         public virtual void Read()
         {
-            var docs = GetHtmlDocuments();
+            var docs = FetchHtmlDocuments();
             var props = this.GetType().GetUnignoredProps();
 
-            foreach (var doc in docs)
+            foreach (var kvp in docs)
             {
-                var propsToRead = docs.Count == 1 ? props : GetPropsForPath(props, doc.Path);
+                var propsToRead = docs.Count == 1 ? props : GetPropsForPath(props, kvp.Key);
+                var doc = kvp.Value;
                 foreach (var prop in propsToRead)
                 {
                     if (prop.PropertyType == typeof(string))
@@ -102,8 +110,8 @@ namespace MailmanSharp
 
         public virtual void Write()
         {
-            var props = this.GetType().GetUnignoredProps(); 
-            var client = this.Client;
+            var props = this.GetType().GetUnignoredProps();
+            var client = this.GetClient();
 
             foreach (var path in _paths)
             {
@@ -129,16 +137,16 @@ namespace MailmanSharp
 #if ASYNC
         public async Task ReadAsync()
         {
-            await Task.Factory.StartNew(() => this.Read());
+            await Task.Run(() => this.Read());
         }
 
         public async Task WriteAsync()
         {
-            await Task.Factory.StartNew(() => this.Write());
+            await Task.Run(() => this.Write());
         }
 #endif
 
-        protected virtual void DoAfterRead(List<MailmanHtmlDocument> docs) { }
+        protected virtual void DoAfterRead(Dictionary<string, HtmlDocument> docs) { }
         protected virtual void DoBeforeFinishWrite(RestRequest req) { }
 
         protected IEnumerable<PropertyInfo> GetPropsForPath(IEnumerable<PropertyInfo> props, string path)
@@ -157,7 +165,7 @@ namespace MailmanSharp
             {
                 var val = prop.GetValue(this, null);
                 if (val is List<string>)
-                    val = String.Join("\n", (List<string>)val);                    
+                    val = ((List<string>)val).Cat();
                     
                 result.Add(new XElement(prop.Name, val));
             }
@@ -206,7 +214,7 @@ namespace MailmanSharp
             if (prop.PropertyType == typeof(bool))
                 return Convert.ToInt32(val);
             else if (prop.PropertyType == typeof(List<string>))
-                return String.Join("\n", (List<string>)val);
+                return ((List<string>)val).Cat();
             else
                 return val;
         }
@@ -229,18 +237,29 @@ namespace MailmanSharp
             return result;
         }
 
-        protected List<MailmanHtmlDocument> GetHtmlDocuments()
+        protected Dictionary<string, HtmlDocument> FetchHtmlDocuments()
         {
-            var result = new List<MailmanHtmlDocument>();
-            var client = this.Client;  // to avoid unneccessary cloning
+            var result = new Dictionary<string, HtmlDocument>();
+            var client = this.GetClient();  // to avoid unneccessary cloning
             foreach (var path in _paths)
             {
                 var resp = client.ExecuteGetAdminRequest(path);
-                var doc = new MailmanHtmlDocument(path);
-                doc.LoadHtml(resp.Content);
-                result.Add(doc);
+                var doc = GetHtmlDocument(resp.Content);
+                result.Add(path, doc);
             }
             return result;
+        }
+
+        protected static HtmlDocument GetHtmlDocument(string content = null)
+        {
+            var doc = new HtmlDocument()
+            {
+                OptionFixNestedTags = true
+            };
+
+            if (!String.IsNullOrEmpty(content))
+                doc.LoadHtml(content);
+            return doc;
         }
 
         #region Reading helpers
@@ -252,8 +271,12 @@ namespace MailmanSharp
 
         protected object GetNodeValue(HtmlDocument doc, PropertyInfo prop)
         {
-            var dname = prop.Name.Decamel();
-            string xpath = String.Format("//input[@name='{0}']", dname);
+            return GetNodeValue(doc, prop.Name.Decamel());
+        }
+
+        protected object GetNodeValue(HtmlDocument doc, string name)
+        {
+            string xpath = String.Format("//input[@name='{0}']", name);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
 
             return node != null ? node.Attributes["value"].Value : null;
@@ -278,8 +301,12 @@ namespace MailmanSharp
 
         protected List<string> GetNodeListValue(HtmlDocument doc, PropertyInfo prop)
         {
-            var dname = prop.Name.Decamel();
-            string xpath = String.Format("//textarea[@name='{0}']", dname);
+            return GetNodeListValue(doc, prop.Name.Decamel());           
+        }
+
+        protected List<string> GetNodeListValue(HtmlDocument doc, string name)
+        {
+            string xpath = String.Format("//textarea[@name='{0}']", name);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
 
             if (node != default(HtmlNode))
@@ -303,8 +330,12 @@ namespace MailmanSharp
 
         protected object GetNodeEnumValue(HtmlDocument doc, PropertyInfo prop)
         {
-            var dname = prop.Name.Decamel();
-            string xpath = String.Format("//input[@name='{0}' and @checked]", dname);
+            return GetNodeEnumValue(doc, prop.Name.Decamel(), prop.PropertyType);
+        }
+
+        protected object GetNodeEnumValue(HtmlDocument doc, string name, Type enumType)
+        {
+            string xpath = String.Format("//input[@name='{0}' and @checked]", name);
             var nodes = doc.DocumentNode.SafeSelectNodes(xpath);
 
             if (nodes.Any())
@@ -313,13 +344,23 @@ namespace MailmanSharp
                 foreach (var node in nodes)
                 {
                     var val = node.Attributes["value"].Value;
-                    var enumVal = Enum.Parse(prop.PropertyType, val, true);
+                    var enumVal = Enum.Parse(enumType, val, true);
                     result |= (int)enumVal;
                 }
-                return Enum.ToObject(prop.PropertyType, result);
+                return Enum.ToObject(enumType, result);
             }
             else
                 return null;
+        }
+
+        protected T GetNodeEnumValue<T>(HtmlDocument doc, string name) where T: struct, IConvertible 
+        {
+            if (!typeof(T).IsEnum) throw new ArgumentException("T must be an enumerated type");
+            var obj = GetNodeEnumValue(doc, name, typeof(T));
+            if (obj != null)
+                return (T)obj;
+            else
+                throw new Exception(String.Format("Value {0} not found", name));
         }
         #endregion
 

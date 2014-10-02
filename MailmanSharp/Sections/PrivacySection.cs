@@ -17,6 +17,8 @@
  * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using HtmlAgilityPack;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,8 +76,43 @@ namespace MailmanSharp
         [Path("recipient")]
         public ushort MaxNumRecipients { get; set; }
 
-        // Spam page -- will not implement
+        [Path("spam")]
+        public List<string> BounceMatchingHeaders { get; set; }
+        [Path("spam")]
+        [Ignore]
+        public List<HeaderFilter> FilterList { get; set; }
 
-        public PrivacySection(MailmanList list) : base(list) { }
+        internal PrivacySection(MailmanList list) : base(list) { }
+
+        private static readonly string _regexTag = "hdrfilter_rebox_";
+        private static readonly string _actionTag = "hdrfilter_action_";
+
+        protected override void DoAfterRead(Dictionary<string, HtmlDocument> docs)
+        {
+            var doc = docs.Single(d => d.Key == "privacy/spam").Value;
+            
+            int i = 0;
+            while (doc.DocumentNode.SafeSelectNodes(String.Format("//input[@name='hdrfilter_delete_{0:D2}']", ++i)).Any())
+            {
+                string index = i.ToString("D2");
+
+                this.FilterList.Add(new HeaderFilter()
+                {
+                    Regexes = GetNodeListValue(doc, _regexTag + index),
+                    Action = GetNodeEnumValue<FilterAction>(doc, _actionTag + index)
+                });
+            }
+        }
+
+        protected override void DoBeforeFinishWrite(RestRequest req)
+        {
+            for (int i = 0; i < this.FilterList.Count; ++i)
+            {
+                var filter = this.FilterList[i];
+                string index = (i + 1).ToString("D2");
+                req.AddParameter(_regexTag + index, filter.Regexes.Cat());
+                req.AddParameter(_actionTag + index, (int)filter.Action);
+            }
+        }
     }
 }

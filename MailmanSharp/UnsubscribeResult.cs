@@ -26,8 +26,8 @@ namespace MailmanSharp
 {
     public class UnsubscribeResult
     {
-        public IList<string> Unsubscribed { get; set; }
-        public IList<string> NonMembers { get; set; }
+        public IList<string> Unsubscribed { get; internal set; }
+        public IList<string> NonMembers { get; internal set; }
 
         public UnsubscribeResult()
         {

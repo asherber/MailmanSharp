@@ -36,7 +36,7 @@ namespace MailmanSharp
         /// <summary>
         /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
         /// </summary>
-        public String AdminUrl { get { return Client.AdminUrl; } set { Client.AdminUrl = value; } }
+        public String AdminUrl { get { return Client.AdminUrl; } set { MailmanVersion = null;  Client.AdminUrl = value; } }
         /// <summary>
         /// Administrator password for list.
         /// </summary>
@@ -49,6 +49,10 @@ namespace MailmanSharp
         /// CurrentConfig with certain list-specific properties removed.
         /// </summary>
         public string SafeCurrentConfig { get { return GetSafeCurrentConfig(); } }
+        /// <summary>
+        /// Gets version of Mailman that this list is running on.
+        /// </summary>
+        public string MailmanVersion { get { return _mailmanVersion; } internal set { SetMailmanVersion(value); } }
 
         public MembershipSection Membership { get; private set; }
         public PrivacySection Privacy { get; private set; }
@@ -65,13 +69,13 @@ namespace MailmanSharp
 
         //public LanguageSection Language { get; private set; }   // Won't implement
 
-        internal MailmanClient Client { get; private set; }
+        public MailmanClient Client { get; private set; }
+
+        private string _mailmanVersion = null;
 
         public MailmanList()
         {
-            this.Client = new MailmanClient();
-            
-            InitSections();
+            this.Reset();
         }
 
         public MailmanList(string adminUrl, string adminPassword = null): this()
@@ -92,12 +96,12 @@ namespace MailmanSharp
 #if ASYNC
         public async Task ReadAsync()
         {
-            await Task.Factory.StartNew(() => this.Read());
+            await Task.Run(() => this.Read());
         }
 
         public async Task WriteAsync()
         {
-            await Task.Factory.StartNew(() => this.Write());
+            await Task.Run(() => this.Write());
         }
 #endif
 
@@ -110,11 +114,13 @@ namespace MailmanSharp
             this.InvokeSectionMethod("Write");
         }
 
-        protected string GetCurrentConfig()
+        private string GetCurrentConfig()
         {
             var root = new XElement("MailmanList",
                 new XAttribute("adminUrl", this.AdminUrl),
-                new XAttribute("dateCreated", DateTime.Now.ToString("s"))
+                new XAttribute("dateCreated", DateTime.Now.ToString("s")),
+                new XAttribute("mailmanVersion", this.MailmanVersion),
+                new XAttribute("mailmanSharpVersion", Assembly.GetExecutingAssembly().GetName().Version)
             );
 
             foreach (var prop in GetSectionProps())
@@ -190,9 +196,13 @@ namespace MailmanSharp
 
         private void InitSections()
         {
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var args = new object[] { this };
+
             foreach (var prop in GetSectionProps())
             {
-                prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, this), null);
+                var section = Activator.CreateInstance(prop.PropertyType, flags, null, args, null);
+                prop.SetValue(this, section, null);
             }
         }
 
@@ -212,6 +222,28 @@ namespace MailmanSharp
             return this.GetType().GetProperties()
                 .Where(p => p.PropertyType.IsSubclassOf(typeof(SectionBase)))
                 .OrderBy(p => p.PropertyType.GetCustomAttributes(false).OfType<OrderAttribute>().First().Value);
+        }
+
+        private object _versionLocker = new object();
+        private void SetMailmanVersion(string value)
+        {
+            lock (_versionLocker)
+            {
+                if (value != _mailmanVersion)
+                    _mailmanVersion = value;
+            }
+        }
+
+        public void Reset()
+        {
+            this.ResetClient();
+            InitSections();
+            this.MailmanVersion = null;
+        }
+
+        internal void ResetClient()
+        {
+            this.Client = new MailmanClient(this);
         }
     }
 }

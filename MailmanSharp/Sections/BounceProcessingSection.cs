@@ -37,6 +37,6 @@ namespace MailmanSharp
         public bool BounceNotifyOwnerOnDisable { get; set; }
         public bool BounceNotifyOwnerOnRemoval { get; set; }
 
-        public BounceProcessingSection(MailmanList list) : base(list) { }
+        internal BounceProcessingSection(MailmanList list) : base(list) { }
     }
 }

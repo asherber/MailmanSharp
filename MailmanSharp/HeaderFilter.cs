@@ -21,23 +21,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
-    // Use this instead of the base class to make sure
-    // that we always fix nested tags and can store a path.
-    public class MailmanHtmlDocument: HtmlAgilityPack.HtmlDocument
+    public enum FilterAction { Defer = 0, Hold = 7, Reject = 2, Discard = 3, Accept = 6 }
+
+    public class HeaderFilter
     {
-        public string Path { get; set; }
+        public List<string> Regexes { get; set; }
+        public FilterAction Action { get; set; }
 
-        public MailmanHtmlDocument()
-        {
-            OptionFixNestedTags = true;
-        }
+        public HeaderFilter() { }
 
-        public MailmanHtmlDocument(string path): this()
+        public HeaderFilter(List<string> regexes, FilterAction action)
         {
-            this.Path = path;
+            this.Regexes = regexes;
+            this.Action = action;
         }
     }
 }
