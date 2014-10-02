@@ -35,9 +35,7 @@ namespace MailmanTest
         private async void button2_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
-            await mm.ReadAsync();
-            var xml = mm.CurrentConfig;
-            mm.LoadConfig(xml);
+            mm.Read();
         }
 
         private async void button3_Click(object sender, EventArgs e)

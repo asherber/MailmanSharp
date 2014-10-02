@@ -38,7 +38,7 @@ namespace MailmanSharp
     [Order(4)]
     public class MembershipSection: SectionBase
     {
-        public string Emails { get { return String.Join("\n", _emailList); } }
+        public string Emails { get { return _emailList.Cat(); } }
         public IEnumerable<string> EmailList { get { return _emailList; } }
 
         protected static string _addPage = "members/add";
@@ -117,7 +117,7 @@ namespace MailmanSharp
 
         public UnsubscribeResult Unsubscribe(IEnumerable<string> members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
-            return Unsubscribe(String.Join("\n", members), options);
+            return Unsubscribe(members.Cat(), options);
         }
 
         private enum SubscribeAction { Subscribe, Invite }
@@ -168,7 +168,7 @@ namespace MailmanSharp
 
         public SubscribeResult Subscribe(IEnumerable<string> members, SubscribeOptions options = SubscribeOptions.None)
         {
-            return Subscribe(String.Join("\n", members), options);
+            return Subscribe(members.Cat(), options);
         }
 
         public SubscribeResult Invite(string members)
@@ -178,7 +178,7 @@ namespace MailmanSharp
 
         public SubscribeResult Invite(IEnumerable<string> members)
         {
-            return Invite(String.Join("\n", members));
+            return Invite(members.Cat());
         }
 
         public IEnumerable<Member> GetMembers()

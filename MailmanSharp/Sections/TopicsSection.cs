@@ -36,6 +36,10 @@ namespace MailmanSharp
 
         internal TopicsSection(MailmanList list) : base(list) { }
 
+        private static readonly string _nameTag = "topic_box_";
+        private static readonly string _regexTag = "topic_rebox_";
+        private static readonly string _descTag = "topic_desc_";
+
         protected override void DoAfterRead(Dictionary<string, HtmlDocument> docs)
         {
             // read topics
@@ -44,11 +48,12 @@ namespace MailmanSharp
             int i = 0;
             while (doc.DocumentNode.SafeSelectNodes(String.Format("//input[@name='topic_delete_{0:D2}']", ++i)).Any())
             {
+                string index = i.ToString("D2");
                 this.TopicList.Add(new Topic()
                 {
-                    Name = GetNode(doc, "input", "box", i).Attributes["value"].Value,
-                    Regex = GetNode(doc, "textarea", "rebox", i).InnerText,
-                    Description = GetNode(doc, "textarea", "desc", i).InnerText,
+                    Name = (string)GetNodeValue(doc, _nameTag + index),
+                    Regexes = GetNodeListValue(doc, _regexTag + index),
+                    Description = GetNodeListValue(doc, _descTag + index).Cat(),
                 });
             }
 
@@ -60,18 +65,10 @@ namespace MailmanSharp
             {
                 var topic = this.TopicList[i];
                 string index = (i + 1).ToString("D2");
-                req.AddParameter("topic_box_" + index, topic.Name);
-                req.AddParameter("topic_rebox_" + index, topic.Regex);
-                req.AddParameter("topic_desc_" + index, topic.Description);
+                req.AddParameter(_nameTag + index, topic.Name);
+                req.AddParameter(_regexTag + index, topic.Regexes.Cat());
+                req.AddParameter(_descTag + index, topic.Description);
             }
         }
-
-        private HtmlNode GetNode(HtmlDocument doc, string type, string tag, int index)
-        {
-            string xpath = String.Format("//{0}[@name='topic_{1}_{2:D2}']", type, tag, index);
-            return doc.DocumentNode.SafeSelectNodes(xpath).Single();
-        }
-
-        
     }
 }

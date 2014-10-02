@@ -58,6 +58,9 @@
     <Compile Include="..\MailmanSharp\Attributes\PathAttribute.cs">
       <Link>Attributes\PathAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\MailmanSharp\HeaderFilter.cs">
+      <Link>HeaderFilter.cs</Link>
+    </Compile>
     <Compile Include="..\MailmanSharp\MailmanClient.cs">
       <Link>MailmanClient.cs</Link>
     </Compile>

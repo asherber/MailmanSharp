@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HeaderFilter.cs" />
     <Compile Include="MailmanClient.cs" />
     <Compile Include="MailmanList.cs" />
     <Compile Include="Member.cs" />

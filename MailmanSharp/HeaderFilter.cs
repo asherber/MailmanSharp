@@ -21,22 +21,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
-    public class Topic
+    public enum FilterAction { Defer = 0, Hold = 7, Reject = 2, Discard = 3, Accept = 6 }
+
+    public class HeaderFilter
     {
-        public string Name { get; set; }
         public List<string> Regexes { get; set; }
-        public string Description { get; set; }
+        public FilterAction Action { get; set; }
 
-        public Topic() { }
+        public HeaderFilter() { }
 
-        public Topic(string name, List<string> regexes, string description)
+        public HeaderFilter(List<string> regexes, FilterAction action)
         {
-            this.Name = name;
             this.Regexes = regexes;
-            this.Description = description;
+            this.Action = action;
         }
     }
 }

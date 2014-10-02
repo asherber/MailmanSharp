@@ -85,5 +85,10 @@ namespace MailmanSharp
             var props = type.GetProperties();
             return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
         }
+
+        public static string Cat(this IEnumerable<string> strings)
+        {
+            return String.Join("\n", strings); 
+        }
     }
 }
