@@ -73,7 +73,10 @@ namespace MailmanSharp
             var addrs = doc.DocumentNode.SafeSelectNodes("//li");
             foreach (var addr in addrs)
             {
-                _emailList.Add(addr.InnerText.Trim().Replace(" at ", "@"));
+                _emailList.Add(addr.InnerText
+                    .Trim()
+                    .Trim('(', ')')
+                    .Replace(" at ", "@"));
             }
             _emailListPopulated = true;
         }
@@ -95,7 +98,7 @@ namespace MailmanSharp
                 var req = new RestRequest();
                 req.AddParameter("unsubscribees", members);
                 req.AddParameter("send_unsub_ack_to_this_batch", options.HasFlag(UnsubscribeOptions.SendAcknowledgement).ToInt());
-                req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.None).ToInt());
+                req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.NotifyOwner).ToInt());
 
                 var resp = this.GetClient().ExecutePostAdminRequest(_removePage, req);
                 var doc = GetHtmlDocument(resp.Content);
