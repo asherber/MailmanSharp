@@ -24,12 +24,9 @@ namespace MailmanTest
         private async void button1_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
-            //mm.Login();
-            var st = Stopwatch.StartNew();
-            await mm.ReadAsync();
-            st.Stop();
-            MessageBox.Show(st.Elapsed.ToString());
-            //mm.Write();
+            mm.Membership.Read();
+            
+            mm.Membership.Unsubscribe("aaron@sherber.com");
         }
 
         private async void button2_Click(object sender, EventArgs e)
