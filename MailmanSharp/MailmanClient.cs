@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014 Aaron Sherber
+ * Copyright 2014-5 Aaron Sherber
  * 
  * This file is part of MailmanSharp.
  *
@@ -71,7 +71,7 @@ namespace MailmanSharp
                 UseSynchronizationContext = this.UseSynchronizationContext,
             };
 
-            foreach (var cookie in this.CookieContainer.GetCookies(new Uri(BaseUrl)))
+            foreach (var cookie in this.CookieContainer.GetCookies(BaseUrl))
                 result.CookieContainer.Add((Cookie)cookie);
             
             foreach (var param in this.DefaultParameters)
@@ -161,7 +161,7 @@ namespace MailmanSharp
 
         internal bool HasAdminCookie()
         {
-            var cookies = CookieContainer.GetCookies(new Uri(BaseUrl));
+            var cookies = CookieContainer.GetCookies(BaseUrl);
             return cookies.Cast<Cookie>().Any(c => c.Name == String.Format("{0}+admin", _listName));
         }
         
@@ -175,7 +175,7 @@ namespace MailmanSharp
 
         private void SetAdminUrl(string value)
         {
-            BaseUrl = "";
+            BaseUrl = null;
             _adminPath = "";
             _listName = "";
 
@@ -187,8 +187,8 @@ namespace MailmanSharp
                 if (numSegs < 3)
                     throw new ArgumentException("AdminUrl must have at least 3 path segments.");
 
-                BaseUrl = uri.GetLeftPart(UriPartial.Authority)
-                    + String.Join("", uri.Segments.Take(numSegs - 2));
+                BaseUrl = new Uri(uri.GetLeftPart(UriPartial.Authority)
+                    + String.Join("", uri.Segments.Take(numSegs - 2)));
                 _adminPath = uri.Segments[numSegs - 2].TrimEnd('/');
                 _listName = uri.Segments.Last().TrimEnd('/');
             }
