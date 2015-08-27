@@ -28,7 +28,7 @@ myList.Membership.Subscribe(newMembers);
 List<string> currentMembers = myList.Membership.EmailList;  
 
 // Change a member's settings
-Member bob = myList.Membership.GetMembers("bob@example.com");
+Member bob = myList.Membership.GetMembers("bob@example.com").Single();
 bob.NoMail = true;
 myList.Membership.SaveMembers(bob);
 
