@@ -82,7 +82,7 @@ namespace MailmanSharp.Tests
             var el = new XElement("foo");
 
             Action act = () => el.CheckElementName("Bar");
-            act.ShouldThrow<XmlException>();
+            act.Should().Throw<XmlException>();
         }
 
         [Fact]
