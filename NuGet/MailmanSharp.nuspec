@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>MailmanSharp</id>
-    <version>2.2.0.0</version>
+    <version>2.3.0.0</version>
     <title>MailmanSharp</title>
     <authors>Aaron Sherber</authors>
     <owners>Aaron Sherber</owners>
@@ -11,7 +11,7 @@
 
 Features include: all Mailman settings available as object properties, bulk subscribe/unsubscribe, change settings for individual members or groups of members, save or load list configuration from XML, and async methods for longer-running operations (.NET 4.5 only).</description>
     <summary>A C# library for configuration and manipulation of Mailman mailing lists.</summary>
-    <iconUrl>https://dl.dropboxusercontent.com/u/5308234/MailmanSharpNugetLarge.png</iconUrl>
+    <iconUrl>https://github.com/asherber/MailmanSharp/raw/master/NuGet/xunit-priority-64.png</iconUrl>
     <releaseNotes>* BREAKING CHANGE: Topic.Regex (string) has been replaced by Topic.Regexes (List&lt;string&gt;)
 * The visibility modifiers on several items have been changed. This shouldn't break any code if the library has been used as intended.
 * Added MailmanVersion property to MailmanList. This will have a value after any Read operation is completed.
@@ -23,8 +23,8 @@ Features include: all Mailman settings available as object properties, bulk subs
     <copyright>Copyright 2014</copyright>
     <tags>Mailman listserv</tags>
     <dependencies>
-      <dependency id="RestSharp" version="104.4.0" />
-      <dependency id="HtmlAgilityPack" version="1.4.9" />
+      <dependency id="RestSharp" version="[104.4.0,105)" />
+      <dependency id="HtmlAgilityPack" version="[1.4.9,2.0)" />
     </dependencies>
   </metadata>
   <files>
