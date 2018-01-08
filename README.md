@@ -1,8 +1,6 @@
-![Icon](https://github.com/asherber/MailmanSharp/raw/master/NuGet/xunit-priority-64.png)
+![Icon](https://github.com/asherber/MailmanSharp/raw/master/MailmanSharp-64.png)
 
-[![NuGet](https://img.shields.io/nuget/v/MailmanSharp.svg)](https://nuget.org/packages/MailmanSharp)
-
-# MailmanSharp
+# MailmanSharp [![NuGet](https://img.shields.io/nuget/v/MailmanSharp.svg)](https://nuget.org/packages/MailmanSharp)
 
 A C# library for configuration and manipulation of Mailman mailing lists by controlling the admin web interface.
 
