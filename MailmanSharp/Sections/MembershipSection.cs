@@ -215,15 +215,15 @@ namespace MailmanSharp
                 return ExtractMembersFromPage(doc);            
         }
 
-#if ASYNC
-        public async Task<IEnumerable<Member>> GetMembersAsync(string search)
+#if NET45
+        public Task<IEnumerable<Member>> GetMembersAsync(string search)
         {
-            return await Task.Run(() => this.GetMembers(search));
+            return Task.Run(() => this.GetMembers(search));
         }
 
-        public async Task<IEnumerable<Member>> GetMembersAsync()
+        public Task<IEnumerable<Member>> GetMembersAsync()
         {
-            return await GetMembersAsync("");
+            return GetMembersAsync("");
         }
 #endif
 

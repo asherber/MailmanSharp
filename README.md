@@ -1,4 +1,9 @@
+![Icon](https://github.com/asherber/MailmanSharp/raw/master/NuGet/xunit-priority-64.png)
+
+[![NuGet](https://img.shields.io/nuget/v/MailmanSharp.svg)](https://nuget.org/packages/MailmanSharp)
+
 # MailmanSharp
+
 A C# library for configuration and manipulation of Mailman mailing lists by controlling the admin web interface.
 
 I wrote this library to solve the problem of trying to configure a new Mailman list to be just like another list I have. I got tired of going back and forth between list admin pages comparing settings; I wanted a way to save the configuration from one list and use it as a template to configure other lists.
@@ -28,7 +33,7 @@ myList.Membership.Subscribe(newMembers);
 List<string> currentMembers = myList.Membership.EmailList;  
 
 // Change a member's settings
-Member bob = myList.Membership.GetMembers("bob@example.com");
+Member bob = myList.Membership.GetMembers("bob@example.com").Single();
 bob.NoMail = true;
 myList.Membership.SaveMembers(bob);
 

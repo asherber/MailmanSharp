@@ -93,15 +93,15 @@ namespace MailmanSharp
             this.InvokeSectionMethod("Read");
         }
 
-#if ASYNC
-        public async Task ReadAsync()
+#if NET45
+        public Task ReadAsync()
         {
-            await Task.Run(() => this.Read());
+            return Task.Run(() => this.Read());
         }
 
-        public async Task WriteAsync()
+        public Task WriteAsync()
         {
-            await Task.Run(() => this.Write());
+            return Task.Run(() => this.Write());
         }
 #endif
 

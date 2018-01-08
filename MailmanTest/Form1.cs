@@ -23,7 +23,7 @@ namespace MailmanTest
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
+            var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "");
             mm.Membership.Read();
             
             mm.Membership.Unsubscribe("aaron@sherber.com");
@@ -31,14 +31,14 @@ namespace MailmanTest
 
         private async void button2_Click(object sender, EventArgs e)
         {
-            var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
+            var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "");
             mm.Read();
         }
 
         private async void button3_Click(object sender, EventArgs e)
         {
-            var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/announce-mountwashingtonschool.org", "***REMOVED***");
-            //var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "***REMOVED***");
+            var mm = new MailmanList("http://lists.mountwashingtonschool.org/admin.cgi/announce-mountwashingtonschool.org", "");
+            //var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "");
 
             var members = await mm.Membership.GetMembersAsync();
             //var foo = mm.Membership.GetType().GetCustomAttributes(false);
