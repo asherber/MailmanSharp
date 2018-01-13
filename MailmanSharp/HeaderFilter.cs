@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace MailmanSharp
 {
     public enum FilterAction { Defer = 0, Hold = 7, Reject = 2, Discard = 3, Accept = 6 }
 
+    [DebuggerDisplay("Action = {Action}")]
     public class HeaderFilter
     {
         public List<string> Regexes { get; set; }

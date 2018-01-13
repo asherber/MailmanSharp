@@ -19,11 +19,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
 namespace MailmanSharp
 {
+    [DebuggerDisplay("Name = {Name}")]
     public class Topic
     {
         public string Name { get; set; }

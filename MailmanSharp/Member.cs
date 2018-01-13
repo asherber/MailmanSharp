@@ -21,6 +21,7 @@ using HtmlAgilityPack;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -29,6 +30,7 @@ namespace MailmanSharp
 {
     public enum NoMailReason { None, Unknown, Bounce, User, Administrator }
 
+    [DebuggerDisplay("Email = {Email}, RealName = {RealName}")]
     public class Member
     {
         [Ignore]
