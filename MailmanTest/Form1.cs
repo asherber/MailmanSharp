@@ -26,7 +26,7 @@ namespace MailmanTest
             var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "");
             mm.Membership.Read();
             
-            mm.Membership.Unsubscribe("aaron@sherber.com");
+            //mm.Membership.Unsubscribe("aaron@sherber.com");
         }
 
         private async void button2_Click(object sender, EventArgs e)

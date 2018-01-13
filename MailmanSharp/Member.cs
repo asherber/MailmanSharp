@@ -19,11 +19,11 @@
 
 using HtmlAgilityPack;
 using RestSharp;
-using RestSharp.Extensions.MonoHttp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace MailmanSharp
 {
