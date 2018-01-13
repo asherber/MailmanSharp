@@ -93,7 +93,6 @@ namespace MailmanSharp
             this.InvokeSectionMethod("Read");
         }
 
-#if NET45
         public Task ReadAsync()
         {
             return Task.Run(() => this.Read());
@@ -103,7 +102,6 @@ namespace MailmanSharp
         {
             return Task.Run(() => this.Write());
         }
-#endif
 
         /// <summary>
         /// Write all values to list.

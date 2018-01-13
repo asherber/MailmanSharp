@@ -134,7 +134,6 @@ namespace MailmanSharp
             }
         }
 
-#if NET45
         public Task ReadAsync()
         {
             return Task.Run(() => this.Read());
@@ -144,7 +143,6 @@ namespace MailmanSharp
         {
             return Task.Run(() => this.Write());
         }
-#endif
 
         protected virtual void DoAfterRead(Dictionary<string, HtmlDocument> docs) { }
         protected virtual void DoBeforeFinishWrite(RestRequest req) { }

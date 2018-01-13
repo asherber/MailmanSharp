@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40;net45</TargetFrameworks>
+    <TargetFramework>net462</TargetFramework>
     <Authors>Aaron Sherber</Authors>
     <Product>MailmanSharp</Product>
     <Company />

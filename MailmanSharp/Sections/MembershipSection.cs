@@ -215,7 +215,6 @@ namespace MailmanSharp
                 return ExtractMembersFromPage(doc);            
         }
 
-#if NET45
         public Task<IEnumerable<Member>> GetMembersAsync(string search)
         {
             return Task.Run(() => this.GetMembers(search));
@@ -225,7 +224,7 @@ namespace MailmanSharp
         {
             return GetMembersAsync("");
         }
-#endif
+
 
         private IEnumerable<Member> GetMembersForLetter(string search, string letter)
         {
