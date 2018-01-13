@@ -90,7 +90,7 @@ namespace MailmanSharp
         public async Task ReadAsync()
         {            
             await TryLoginAsync().ConfigureAwait(false);
-            await this.InvokeSectionMethodAsync("ReadAsync").ConfigureAwait(false);
+            await this.InvokeSectionMethodAsync(s => s.ReadAsync()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace MailmanSharp
         public async Task WriteAsync()
         {
             await TryLoginAsync().ConfigureAwait(false);
-            await this.InvokeSectionMethodAsync("WriteAsync").ConfigureAwait(false);
+            await this.InvokeSectionMethodAsync(s => s.WriteAsync()).ConfigureAwait(false);
         }
 
         private string GetCurrentConfig()
@@ -194,16 +194,16 @@ namespace MailmanSharp
             }
         }
 
-        private Task InvokeSectionMethodAsync(string methodName)
+        private Task InvokeSectionMethodAsync(Func<SectionBase, Task> func)
         {
-            var method = typeof(SectionBase).GetMethod(methodName);
-            Parallel.ForEach(GetSectionProps(), p =>
+            var tasks = GetSectionProps().Select(p =>
             {
-                var section = p.GetValue(this, null);
-                if (section != null)
-                    method.Invoke(section, null);
+                if (p.GetValue(this, null) is SectionBase section)
+                    return func(section);
+                else
+                    return Task.CompletedTask;
             });
-            return Task.CompletedTask;
+            return Task.WhenAll(tasks);
         }
 
         private IEnumerable<PropertyInfo> GetSectionProps()

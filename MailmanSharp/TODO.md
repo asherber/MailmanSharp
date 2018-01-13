@@ -1,5 +1,5 @@
 ﻿# ToDo
 
-- `InvokeSectionMethod()`
-- Section initializers for properties
-- Parallel
+- [x] `InvokeSectionMethod()`
+- [ ] Section initializers for properties
+- [ ] Parallel
