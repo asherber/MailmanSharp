@@ -344,7 +344,7 @@ namespace MailmanSharp
             if (obj != null)
                 return (T)obj;
             else
-                throw new Exception(String.Format("Value {0} not found", name));
+                throw new ArgumentOutOfRangeException(String.Format("Value {0} not found", name));
         }
         #endregion
 

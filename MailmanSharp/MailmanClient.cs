@@ -135,16 +135,15 @@ namespace MailmanSharp
             req.AddOrSetParameter("adminpw", this.AdminPassword);
 
             var resp = await _client.ExecuteTaskAsync(req).ConfigureAwait(false);
-            if (resp.StatusCode == HttpStatusCode.OK)
+
+            resp.EnsureSuccessStatusCode();
+            if (resp.ErrorException != null)
+                throw resp.ErrorException;
+            else 
             {
                 _list.MailmanVersion = Regex.Match(resp.Content, @"(?<=Delivered by Mailman.*version ).*(?=<)").Value;
                 return resp;
-            }
-            else
-            {
-                string msg = String.Format("Request failed. {{Uri={0}, Message={1}}}", resp.ResponseUri, resp.StatusDescription);
-                throw new Exception(msg);
-            }        
+            }     
         }
 
         private static IRestRequest BuildRequestFromParms(params object[] parms)

@@ -22,9 +22,11 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -88,6 +90,19 @@ namespace MailmanSharp
         public static string Cat(this IEnumerable<string> strings)
         {
             return String.Join("\n", strings); 
+        }
+
+        public static bool IsSuccessStatusCode(this HttpStatusCode statusCode)
+        {
+            return ((int)statusCode >= 200) && ((int)statusCode <= 299);
+        }
+
+        public static void EnsureSuccessStatusCode(this IRestResponse response)
+        {
+            if (!response.StatusCode.IsSuccessStatusCode())
+            {
+                throw new MailmanHttpException(response.StatusCode, $"{(int)response.StatusCode}: {response.StatusDescription}");
+            }
         }
     }
 }
