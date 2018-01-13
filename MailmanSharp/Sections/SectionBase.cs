@@ -20,6 +20,7 @@
 using HtmlAgilityPack;
 using RestSharp;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -33,23 +34,27 @@ namespace MailmanSharp
     {
         protected MailmanList _list;
         protected HashSet<string> _paths = new HashSet<string>();
+
+        protected static IDictionary<Type, IEnumerable<PropertyInfo>> _propsDict = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
+        protected IEnumerable<PropertyInfo> _props => _propsDict[this.GetType()];
         
         [Ignore]
         public string CurrentConfig { get { return GetCurrentConfig(); } }
         
         internal SectionBase(MailmanList list)
         {
-            if (list == null)
-                throw new ArgumentNullException("list");
-
-            _list = list;
+            _list = list ?? throw new ArgumentNullException("list");
+            
+            if (!_propsDict.ContainsKey(this.GetType()))
+            {
+                _propsDict[this.GetType()] = this.GetType().GetProperties();
+            }
             
             // Start with path on the class
             var basePath = GetPathValue(this.GetType().GetCustomAttributes(false));
 
             // Now see if we have subpaths on properties
-            var props = this.GetType().GetProperties();
-            foreach (var prop in props)
+            foreach (var prop in _props)
             {
                 var subPath = GetPathValue(prop.GetCustomAttributes(false));
                 if (subPath != null)
@@ -67,17 +72,17 @@ namespace MailmanSharp
         private string GetPathValue(object[] attributes)
         {
             var att = attributes.OfType<PathAttribute>().FirstOrDefault();
-            return att != null ? att.Value : null;
+            return att?.Value;
         }
 
         public virtual async Task ReadAsync()
         {
             var docs = await FetchHtmlDocumentsAsync().ConfigureAwait(false);
-            var props = this.GetType().GetUnignoredProps();
+            var unignoredProps = _props.GetUnignoredProps();
 
             foreach (var kvp in docs)
             {
-                var propsToRead = docs.Count == 1 ? props : GetPropsForPath(props, kvp.Key);
+                var propsToRead = docs.Count == 1 ? unignoredProps : GetPropsForPath(unignoredProps, kvp.Key);
                 var doc = kvp.Value;
                 foreach (var prop in propsToRead)
                 {
@@ -101,13 +106,13 @@ namespace MailmanSharp
 
         public virtual async Task WriteAsync()
         {
-            var props = this.GetType().GetUnignoredProps();
+            var unignoredProps = _props.GetUnignoredProps();
             var client = this.GetClient();
 
             foreach (var path in _paths)
             {
                 var req = new RestRequest();
-                var propsToWrite = _paths.Count == 1 ? props : GetPropsForPath(props, path);
+                var propsToWrite = _paths.Count == 1 ? unignoredProps : GetPropsForPath(unignoredProps, path);
                     
                 foreach (var prop in propsToWrite)
                 {
@@ -138,9 +143,9 @@ namespace MailmanSharp
         internal virtual string GetCurrentConfig()
         {
             var result = new XElement(GetSectionName());
-            var props = this.GetType().GetUnignoredProps();
+            var unignoredProps = _props.GetUnignoredProps();
 
-            foreach (var prop in props)
+            foreach (var prop in unignoredProps)
             {
                 var val = prop.GetValue(this, null);
                 if (val is List<string>)
@@ -156,8 +161,8 @@ namespace MailmanSharp
             var root = XElement.Parse(xml);
             root.CheckElementName(GetSectionName());
 
-            var props = this.GetType().GetUnignoredProps();
-            foreach (var prop in props)
+            var unignoredProps = _props.GetUnignoredProps();
+            foreach (var prop in unignoredProps)
             {
                 var el = root.Element(prop.Name);
                 //if (el != null && !String.IsNullOrEmpty(el.Value))

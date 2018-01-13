@@ -73,6 +73,16 @@ namespace MailmanSharp
 
         private string _mailmanVersion = null;
 
+        private static IEnumerable<PropertyInfo> _sectionProperties;
+
+        static MailmanList()
+        {
+            _sectionProperties = typeof(MailmanList).GetProperties()
+                .Where(p => p.PropertyType.IsSubclassOf(typeof(SectionBase)))
+                .OrderBy(p => p.PropertyType.GetCustomAttributes(false).OfType<OrderAttribute>().First().Value)
+                .ToList();
+        }
+
         public MailmanList()
         {
             this.Reset();
@@ -111,7 +121,7 @@ namespace MailmanSharp
                 new XAttribute("mailmanSharpVersion", Assembly.GetExecutingAssembly().GetName().Version)
             );
 
-            foreach (var prop in GetSectionProps())
+            foreach (var prop in _sectionProperties)
             {
                 var xml = ((SectionBase)prop.GetValue(this, null)).GetCurrentConfig();
                 if (!String.IsNullOrWhiteSpace(xml))
@@ -162,7 +172,7 @@ namespace MailmanSharp
             var root = XElement.Parse(xml);
             root.CheckElementName("MailmanList");
 
-            foreach (var prop in GetSectionProps())
+            foreach (var prop in _sectionProperties)
             {                
                 var el = root.Element(prop.Name);
                 if (el != null)
@@ -187,7 +197,7 @@ namespace MailmanSharp
             var flags = BindingFlags.Instance | BindingFlags.NonPublic;
             var args = new object[] { this };
 
-            foreach (var prop in GetSectionProps())
+            foreach (var prop in _sectionProperties)
             {
                 var section = Activator.CreateInstance(prop.PropertyType, flags, null, args, null);
                 prop.SetValue(this, section, null);
@@ -196,7 +206,7 @@ namespace MailmanSharp
 
         private Task InvokeSectionMethodAsync(Func<SectionBase, Task> func)
         {
-            var tasks = GetSectionProps().Select(p =>
+            var tasks = _sectionProperties.Select(p =>
             {
                 if (p.GetValue(this, null) is SectionBase section)
                     return func(section);
@@ -204,13 +214,6 @@ namespace MailmanSharp
                     return Task.CompletedTask;
             });
             return Task.WhenAll(tasks);
-        }
-
-        private IEnumerable<PropertyInfo> GetSectionProps()
-        {
-            return this.GetType().GetProperties()
-                .Where(p => p.PropertyType.IsSubclassOf(typeof(SectionBase)))
-                .OrderBy(p => p.PropertyType.GetCustomAttributes(false).OfType<OrderAttribute>().First().Value);
         }
 
         private object _versionLocker = new object();

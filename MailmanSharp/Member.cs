@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -48,6 +49,13 @@ namespace MailmanSharp
         public bool Plain { get; set; }
 
         protected string _encEmail;
+
+        protected static IEnumerable<PropertyInfo> _props;
+
+        static Member()
+        {
+            _props = typeof(Member).GetProperties();
+        }
         
         internal Member(HtmlNodeCollection nodes)
         {
@@ -55,7 +63,7 @@ namespace MailmanSharp
             _encEmail = Regex.Replace(firstNode.Attributes["name"].Value, "_\\w*$", "");
             this.Email = HttpUtility.UrlDecode(_encEmail);
 
-            foreach (var prop in this.GetType().GetUnignoredProps())
+            foreach (var prop in _props.GetUnignoredProps())
             {
                 var name = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
                 var thisNode = nodes.SingleOrDefault(n => n.Attributes["name"].Value == name);
@@ -98,7 +106,7 @@ namespace MailmanSharp
             var req = new RestRequest();
 
             req.AddParameter("user", _encEmail);
-            foreach (var prop in this.GetType().GetUnignoredProps())
+            foreach (var prop in _props.GetUnignoredProps())
             {
                 var parmName = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
                 object value = prop.GetValue(this, null);

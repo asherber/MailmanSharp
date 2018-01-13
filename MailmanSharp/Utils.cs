@@ -80,9 +80,8 @@ namespace MailmanSharp
         }
 
         // Get list of properties for type without [Ignore] attribute
-        internal static IEnumerable<PropertyInfo> GetUnignoredProps(this Type type)
+        internal static IEnumerable<PropertyInfo> GetUnignoredProps(this IEnumerable<PropertyInfo> props)
         {
-            var props = type.GetProperties();
             return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
         }
 
