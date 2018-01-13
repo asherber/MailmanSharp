@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014-5 Aaron Sherber
+ * Copyright 2014-2018 Aaron Sherber
  * 
  * This file is part of MailmanSharp.
  *
