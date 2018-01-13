@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
-    public class MailmanClient
+    public class MailmanClient: IMailmanClient
     {
         /// <summary>
         /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).

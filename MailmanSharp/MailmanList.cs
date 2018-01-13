@@ -31,16 +31,16 @@ using System.Xml.XPath;
 
 namespace MailmanSharp
 {
-    public class MailmanList
+    public class MailmanList: IMailmanList
     {
         /// <summary>
         /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
         /// </summary>
-        public String AdminUrl { get { return Client.AdminUrl; } set { MailmanVersion = null;  Client.AdminUrl = value; } }
+        public string AdminUrl { get { return InternalClient.AdminUrl; } set { MailmanVersion = null; InternalClient.AdminUrl = value; } }
         /// <summary>
         /// Administrator password for list.
         /// </summary>
-        public string AdminPassword { get { return Client.AdminPassword; } set { Client.AdminPassword = value; } }
+        public string AdminPassword { get { return InternalClient.AdminPassword; } set { InternalClient.AdminPassword = value; } }
         /// <summary>
         /// Current configuration of object as XML.
         /// </summary>
@@ -69,7 +69,8 @@ namespace MailmanSharp
 
         //public LanguageSection Language { get; private set; }   // Won't implement
 
-        public MailmanClient Client { get; private set; }
+        public IMailmanClient Client { get; private set; }
+        internal MailmanClient InternalClient => Client as MailmanClient;
 
         private string _mailmanVersion = null;
 

@@ -31,7 +31,7 @@ using System.Xml.Linq;
 namespace MailmanSharp
 {
     [Path("")]
-    public abstract class SectionBase
+    public abstract class SectionBase: ISectionBase
     {
         protected MailmanList _list;
         protected HashSet<string> _paths = new HashSet<string>();
@@ -68,9 +68,9 @@ namespace MailmanSharp
                 _paths.Add(basePath);
         }
 
-        protected MailmanClient GetClient()
+        protected IMailmanClient GetClient()
         {
-            return _list.Client.Clone();
+            return _list.InternalClient.Clone();
         }
 
         private string GetPathValue(object[] attributes)
@@ -197,10 +197,5 @@ namespace MailmanSharp
             }
             return result;
         }
-
-        #region Reading helpers
-        
-        #endregion
-
     }
 }
