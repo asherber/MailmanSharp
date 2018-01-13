@@ -17,6 +17,7 @@
  * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using MailmanSharp.Extensions;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;

@@ -18,6 +18,7 @@
  */
 
 using HtmlAgilityPack;
+using MailmanSharp.Extensions;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -98,8 +99,8 @@ namespace MailmanSharp
 
                 this.FilterList.Add(new HeaderFilter()
                 {
-                    Regexes = GetNodeListValue(doc, _regexTag + index),
-                    Action = GetNodeEnumValue<FilterAction>(doc, _actionTag + index)
+                    Regexes = doc.GetNodeListValue(_regexTag + index),
+                    Action = doc.GetNodeEnumValue<FilterAction>(_actionTag + index)
                 });
             }
         }

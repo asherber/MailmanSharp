@@ -13,7 +13,7 @@ using RestSharp;
 
 namespace MailmanSharp.Tests
 {
-    public class UtilsTests
+    public class MiscellaneousExtensionsTests
     {
         public static IEnumerable<object[]> CamelData =>
             new List<object[]>()
@@ -40,32 +40,7 @@ namespace MailmanSharp.Tests
             output.Should().Be(expected);
         }
 
-        [Fact]
-        public void SafeSelectNodes_ValidPath_Should_Work()
-        {
-            var doc = new HtmlDocument()
-            {
-                OptionFixNestedTags = true
-            };
-            doc.Load("html/general.html");
-
-            var safeNodes = doc.DocumentNode.SafeSelectNodes("//td");
-            var nodes = doc.DocumentNode.SelectNodes("//td");
-            safeNodes.Should().BeEquivalentTo(nodes);
-        }
-
-        [Fact]
-        public void SafeSelectNodes_BadPath_Should_Return_Empty()
-        {
-            var doc = new HtmlDocument()
-            {
-                OptionFixNestedTags = true
-            };
-            doc.Load("html/general.html");
-
-            var safeNodes = doc.DocumentNode.SafeSelectNodes("//tdxxx");
-            safeNodes.Should().NotBeNull().And.BeEmpty();
-        }
+        
 
         [Fact]
         public void CheckElementName_MatchingName_Should_Work()
@@ -85,26 +60,6 @@ namespace MailmanSharp.Tests
             act.Should().Throw<XmlException>();
         }
 
-        [Fact]
-        public void AddOrSetParameter_NotExisting_Should_Add()
-        {
-            var req = new RestRequest();
-            req.AddOrSetParameter("foo", "bar");
-
-            req.Parameters.Should().HaveCount(1);
-            req.Parameters.Single().Value.Should().Be("bar");
-        }
-        [Fact]
-        public void AddOrSetParameter_Existing_Should_Set()
-        {
-            var req = new RestRequest();
-            req.AddParameter("foo", "bar");
-            req.AddOrSetParameter("foo", "baz");
-
-            req.Parameters.Should().HaveCount(1);
-            req.Parameters.Single().Value.Should().Be("baz");
-        }
-
         [Theory]
         [InlineData(true, 1)]
         [InlineData(false, 0)]
@@ -120,7 +75,7 @@ namespace MailmanSharp.Tests
         [InlineData(typeof(TwoUnignored), 2)]
         public void GetUnignoredProperties_Should_Work(Type type, int expectedCount)
         {
-            var output = type.GetProperties().GetUnignoredProps();
+            var output = type.GetProperties().GetUnignored();
             output.Should().HaveCount(expectedCount);
         }
     

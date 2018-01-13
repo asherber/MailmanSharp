@@ -63,7 +63,7 @@ namespace MailmanSharp
             _encEmail = Regex.Replace(firstNode.Attributes["name"].Value, "_\\w*$", "");
             this.Email = HttpUtility.UrlDecode(_encEmail);
 
-            foreach (var prop in _props.GetUnignoredProps())
+            foreach (var prop in _props.GetUnignored())
             {
                 var name = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
                 var thisNode = nodes.SingleOrDefault(n => n.Attributes["name"].Value == name);
@@ -106,7 +106,7 @@ namespace MailmanSharp
             var req = new RestRequest();
 
             req.AddParameter("user", _encEmail);
-            foreach (var prop in _props.GetUnignoredProps())
+            foreach (var prop in _props.GetUnignored())
             {
                 var parmName = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
                 object value = prop.GetValue(this);

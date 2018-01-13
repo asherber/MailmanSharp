@@ -17,6 +17,7 @@
  * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,25 +25,32 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MailmanSharp
+namespace MailmanSharp.Extensions
 {
-
-    [Serializable]
-    public class MailmanHttpException : Exception
+    public static class RestSharpExtensions
     {
-        public HttpStatusCode StatusCode { get; set; }
-
-        public MailmanHttpException(HttpStatusCode statusCode): this(statusCode, "", null)
+        public static IRestRequest AddOrSetParameter(this IRestRequest req, string name, object value)
         {
+            var parms = req.Parameters.Where(p => String.Compare(p.Name, name, true) == 0);
+            if (parms.Any())
+                parms.First().Value = value;
+            else
+                req.AddParameter(name, value);
+
+            return req;
         }
 
-        public MailmanHttpException(HttpStatusCode statusCode, string message): this(statusCode, message, null)
+        public static bool IsSuccessStatusCode(this HttpStatusCode statusCode)
         {
+            return ((int)statusCode >= 200) && ((int)statusCode <= 299);
         }
 
-        public MailmanHttpException(HttpStatusCode statusCode, string message, Exception inner): base(message, inner)
+        public static void EnsureSuccessStatusCode(this IRestResponse response)
         {
-            this.StatusCode = statusCode;
+            if (!response.StatusCode.IsSuccessStatusCode())
+            {
+                throw new MailmanHttpException(response.StatusCode, $"{(int)response.StatusCode}: {response.StatusDescription}");
+            }
         }
     }
 }

@@ -18,6 +18,7 @@
  */
 
 using HtmlAgilityPack;
+using MailmanSharp.Extensions;
 using RestSharp;
 using System;
 using System.Collections.Concurrent;
@@ -70,7 +71,7 @@ namespace MailmanSharp
         {
             _emailList.Clear();
             var resp = await this.GetClient().ExecuteRosterRequestAsync().ConfigureAwait(false);
-            var doc = GetHtmlDocument(resp.Content);
+            var doc = resp.Content.GetHtmlDocument();
             
             var addrs = doc.DocumentNode.SafeSelectNodes("//li");
             foreach (var addr in addrs)
@@ -103,7 +104,7 @@ namespace MailmanSharp
                 req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.NotifyOwner).ToInt());
 
                 var resp = await this.GetClient().ExecutePostAdminRequestAsync(_removePage, req).ConfigureAwait(false);
-                var doc = GetHtmlDocument(resp.Content);
+                var doc = resp.Content.GetHtmlDocument();
                 
                 string xpath = "//h5[contains(translate(text(), 'SU', 'su'), 'successfully unsubscribed')]/following-sibling::ul[1]/li";
                 foreach (var node in doc.DocumentNode.SafeSelectNodes(xpath))
@@ -139,7 +140,7 @@ namespace MailmanSharp
                 req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt());
 
                 var resp = await this.GetClient().ExecutePostAdminRequestAsync(_addPage, req).ConfigureAwait(false);
-                var doc = GetHtmlDocument(resp.Content);
+                var doc = resp.Content.GetHtmlDocument();
                 
                 string verb = action == SubscribeAction.Invite ? "invited" : "subscribed";
                 string xpath = String.Format("//h5[contains(translate(text(), 'SI', 'si'), 'successfully {0}')]/following-sibling::ul[1]/li", verb);
@@ -194,7 +195,7 @@ namespace MailmanSharp
 
             // Do we have multiple letters to look at?
             // General approach from http://www.msapiro.net/mailman-subscribers.py
-            var doc = GetHtmlDocument(resp.Content);
+            var doc = resp.Content.GetHtmlDocument();
             var letters = GetHrefValuesForParam(doc, "letter");
 
             if (letters.Any())
@@ -230,7 +231,7 @@ namespace MailmanSharp
                 req.AddOrSetParameter("letter", letter);
                 req.AddOrSetParameter("chunk", currentChunk);
                 var resp = await this.GetClient().ExecuteGetAdminRequestAsync(_paths.Single(), req).ConfigureAwait(false);
-                var doc = GetHtmlDocument(resp.Content);
+                var doc = resp.Content.GetHtmlDocument();
                 
                 result.AddRange(ExtractMembersFromPage(doc));
 

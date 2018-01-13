@@ -7,6 +7,7 @@ using Xunit;
 using FluentAssertions;
 using HtmlAgilityPack;
 using RestSharp;
+using MailmanSharp.Extensions;
 
 namespace MailmanSharp.Tests
 {

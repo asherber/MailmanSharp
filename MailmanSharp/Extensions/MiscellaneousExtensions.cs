@@ -32,7 +32,7 @@ using System.Xml.Linq;
 
 namespace MailmanSharp
 {
-    public static class Utils
+    public static class MiscellaneousExtensions
     {
         private static Regex _humpRegex = new Regex(@"(?<!_)\B[A-Z]");
         // CamelCaseString -> camel_case_string
@@ -51,29 +51,10 @@ namespace MailmanSharp
             return result;
         }
 
-        // SelectNodes will return null if nothing is found, which kills further 
-        // LINQ queries. So this returns an empty collection instead.
-        public static HtmlNodeCollection SafeSelectNodes(this HtmlNode node, string xpath)
-        {
-            var result = node.SelectNodes(xpath);
-            return result ?? new HtmlNodeCollection(null);
-        }
-
         public static void CheckElementName(this XElement element, string expectedName)
         {
             if (element.Name != expectedName)
                 throw new XmlException("Incorrect root element name.", null, 1, 2);
-        }
-
-        public static IRestRequest AddOrSetParameter(this IRestRequest req, string name, object value)
-        {
-            var parms = req.Parameters.Where(p => String.Compare(p.Name, name, true) == 0);
-            if (parms.Any())
-                parms.First().Value = value;
-            else
-                req.AddParameter(name, value);
-
-            return req;
         }
 
         public static int ToInt(this bool input)
@@ -81,10 +62,14 @@ namespace MailmanSharp
             return input ? 1 : 0;
         }
 
-        // Get list of properties for type without [Ignore] attribute
-        internal static IEnumerable<PropertyInfo> GetUnignoredProps(this IEnumerable<PropertyInfo> props)
+        public static IEnumerable<PropertyInfo> GetUnignored(this IEnumerable<PropertyInfo> props)
         {
             return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
+        }
+
+        public static IEnumerable<PropertyInfo> GetForPath(this IEnumerable<PropertyInfo> props, string path)
+        {
+            return props.Where(p => p.GetCustomAttributes(false).OfType<PathAttribute>().Any(a => path.Contains(a.Value)));
         }
 
         public static string Cat(this IEnumerable<string> strings)
@@ -92,17 +77,41 @@ namespace MailmanSharp
             return String.Join("\n", strings); 
         }
 
-        public static bool IsSuccessStatusCode(this HttpStatusCode statusCode)
+        public static object GetObjectValue(this PropertyInfo prop, object obj)
         {
-            return ((int)statusCode >= 200) && ((int)statusCode <= 299);
+            var val = prop.GetValue(obj);
+            if (prop.PropertyType == typeof(bool))
+                return Convert.ToInt32(val);
+            else if (prop.PropertyType == typeof(List<string>))
+                return ((List<string>)val).Cat();
+            else
+                return val;
         }
 
-        public static void EnsureSuccessStatusCode(this IRestResponse response)
+        public static IEnumerable<object> GetEnumValues(this PropertyInfo prop, object obj)
         {
-            if (!response.StatusCode.IsSuccessStatusCode())
+            var result = new List<object>();
+            var val = prop.GetValue(obj);
+
+            if (prop.PropertyType.GetCustomAttributes(typeof(FlagsAttribute), false).Any())
             {
-                throw new MailmanHttpException(response.StatusCode, $"{(int)response.StatusCode}: {response.StatusDescription}");
+                var vals = val.ToString().ToLower().Split(new string[] { ", " }, StringSplitOptions.None);
+                result.AddRange(vals);
             }
+            else
+            {
+                result.Add((int)val);
+            }
+
+            return result;
         }
+
+        public static void SetValueIfNotNull(this PropertyInfo prop, object obj, object value)
+        {
+            if (value != null)
+                prop.SetValue(obj, value);
+        }
+
+
     }
 }

@@ -18,6 +18,7 @@
  */
 
 using HtmlAgilityPack;
+using MailmanSharp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,9 +52,9 @@ namespace MailmanSharp
                 string index = i.ToString("D2");
                 this.TopicList.Add(new Topic()
                 {
-                    Name = (string)GetNodeValue(doc, _nameTag + index),
-                    Regexes = GetNodeListValue(doc, _regexTag + index),
-                    Description = GetNodeListValue(doc, _descTag + index).Cat(),
+                    Name = (string)doc.GetNodeValue(_nameTag + index),
+                    Regexes = doc.GetNodeListValue(_regexTag + index),
+                    Description = doc.GetNodeListValue(_descTag + index).Cat(),
                 });
             }
 
