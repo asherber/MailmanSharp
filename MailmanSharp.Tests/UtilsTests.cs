@@ -120,9 +120,8 @@ namespace MailmanSharp.Tests
         [InlineData(typeof(TwoUnignored), 2)]
         public void GetUnignoredProperties_Should_Work(Type type, int expectedCount)
         {
-            /*
-            var output = type.GetUnignoredProps();
-            output.Should().HaveCount(expectedCount); */
+            var output = type.GetProperties().GetUnignoredProps();
+            output.Should().HaveCount(expectedCount);
         }
     
         private class NoUnignored
