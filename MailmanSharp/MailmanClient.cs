@@ -18,9 +18,11 @@
  */
 
 using RestSharp;
+using RestSharp.Authenticators;
 using System;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -37,6 +39,17 @@ namespace MailmanSharp
         /// </summary>
         internal string AdminPassword { get; set; }
 
+        public IAuthenticator Authenticator { get => _client.Authenticator; set => _client.Authenticator = value; }
+        public X509CertificateCollection ClientCertificates { get => _client.ClientCertificates; set => _client.ClientCertificates = value; }
+        public bool FollowRedirects { get => _client.FollowRedirects; set => _client.FollowRedirects = value; }
+        public int? MaxRedirects { get => _client.MaxRedirects; set => _client.MaxRedirects = value; }
+        public IWebProxy Proxy { get => _client.Proxy; set => _client.Proxy = value; }
+        public int Timeout { get => _client.Timeout; set => _client.Timeout = value; }
+        public string UserAgent { get => _client.UserAgent; set => _client.UserAgent = value; }
+        public bool UseSynchronizationContext { get => _client.UseSynchronizationContext; set => _client.UseSynchronizationContext = value; }
+        public CookieContainer CookieContainer { get => _client.CookieContainer; set => _client.CookieContainer = value; }
+
+
         private string _listName;
         private string _adminPath;
         private MailmanList _list;
@@ -46,9 +59,11 @@ namespace MailmanSharp
         {
             _list = list ?? throw new ArgumentNullException("list");
 
-            _client = new RestClient();
-            _client.FollowRedirects = true;
-            _client.CookieContainer = new System.Net.CookieContainer();            
+            _client = new RestClient
+            {
+                FollowRedirects = true,
+                CookieContainer = new System.Net.CookieContainer()
+            };
         }
 
         /// <summary>
@@ -61,21 +76,20 @@ namespace MailmanSharp
             {
                 AdminUrl = this.AdminUrl,
                 AdminPassword = this.AdminPassword,
+
+                Authenticator = this.Authenticator,
+                //BaseUrl = this.BaseUrl,
+                ClientCertificates = this.ClientCertificates,
+                FollowRedirects = this.FollowRedirects,
+                MaxRedirects = this.MaxRedirects,
+                Proxy = this.Proxy,
+                Timeout = this.Timeout,
+                UserAgent = this.UserAgent,
+                UseSynchronizationContext = this.UseSynchronizationContext,
             };
 
-            result._client.Authenticator = _client.Authenticator;
-            //result._client.BaseUrl = _client.BaseUrl;
-            result._client.ClientCertificates = _client.ClientCertificates;
-            result._client.FollowRedirects = _client.FollowRedirects;
-            result._client.MaxRedirects = _client.MaxRedirects;
-            result._client.Proxy = _client.Proxy;
-            result._client.Timeout = _client.Timeout;
-            result._client.UserAgent = _client.UserAgent;
-            result._client.UseSynchronizationContext = _client.UseSynchronizationContext;
-            
-
-            foreach (var cookie in _client.CookieContainer.GetCookies(_client.BaseUrl))
-                result._client.CookieContainer.Add((Cookie)cookie);
+            foreach (var cookie in this.CookieContainer.GetCookies(_client.BaseUrl))
+                result.CookieContainer.Add((Cookie)cookie);
             
             foreach (var param in _client.DefaultParameters)
                 result._client.DefaultParameters.Add(param);
@@ -164,7 +178,7 @@ namespace MailmanSharp
 
         internal bool HasAdminCookie()
         {
-            var cookies = _client.CookieContainer.GetCookies(_client.BaseUrl);
+            var cookies = CookieContainer.GetCookies(_client.BaseUrl);
             return cookies.Cast<Cookie>().Any(c => c.Name == String.Format("{0}+admin", _listName));
         }
         
