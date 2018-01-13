@@ -32,7 +32,7 @@ namespace MailmanSharp
         public bool TopicsEnabled { get; set; }
         public ushort TopicsBodylinesLimit { get; set; }
         [Ignore]
-        public List<Topic> TopicList { get; set; }
+        public List<Topic> TopicList { get; set; } = new List<Topic>();
 
         internal TopicsSection(MailmanList list) : base(list) { }
 

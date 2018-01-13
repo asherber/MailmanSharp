@@ -42,7 +42,7 @@ namespace MailmanSharp
         [Path("subscribing")]
         public bool UnubscribePolicy { get; set; }
         [Path("subscribing")]
-        public List<string> BanList { get; set; }
+        public List<string> BanList { get; set; } = new List<string>();
         [Path("subscribing")]
         public PrivateRosterOption PrivateRoster { get; set; }
         [Path("subscribing")]
@@ -53,34 +53,34 @@ namespace MailmanSharp
         [Path("sender")]
         public MemberModerationActionOption MemberModerationAction { get; set; }
         [Path("sender")]
-        public List<string> MemberModerationNotice { get; set; }
+        public List<string> MemberModerationNotice { get; set; } = new List<string>();
         [Path("sender")]
-        public List<string> AcceptTheseNonmembers { get; set; }
+        public List<string> AcceptTheseNonmembers { get; set; } = new List<string>();
         [Path("sender")]
-        public List<string> HoldTheseNonmembers { get; set; }
+        public List<string> HoldTheseNonmembers { get; set; } = new List<string>();
         [Path("sender")]
-        public List<string> RejectTheseNonmembers { get; set; }
+        public List<string> RejectTheseNonmembers { get; set; } = new List<string>();
         [Path("sender")]
-        public List<string> DiscardTheseNonmembers { get; set; }
+        public List<string> DiscardTheseNonmembers { get; set; } = new List<string>();
         [Path("sender")]
         public GenericNonmemberActionOption GenericNonmemberAction { get; set; }
         [Path("sender")]
         public bool ForwardAutoDiscards { get; set; }
         [Path("sender")]
-        public List<string> NonmemberRejectionNotice { get; set; }
+        public List<string> NonmemberRejectionNotice { get; set; } = new List<string>();
 
         [Path("recipient")]
         public bool RequireExplicitDestination { get; set; }
         [Path("recipient")]
-        public List<string> AcceptableAliases { get; set; }
+        public List<string> AcceptableAliases { get; set; } = new List<string>();
         [Path("recipient")]
         public ushort MaxNumRecipients { get; set; }
 
         [Path("spam")]
-        public List<string> BounceMatchingHeaders { get; set; }
+        public List<string> BounceMatchingHeaders { get; set; } = new List<string>();
         [Path("spam")]
         [Ignore]
-        public List<HeaderFilter> FilterList { get; set; }
+        public List<HeaderFilter> FilterList { get; set; } = new List<HeaderFilter>();
 
         internal PrivacySection(MailmanList list) : base(list) { }
 

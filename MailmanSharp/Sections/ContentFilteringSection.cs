@@ -31,10 +31,10 @@ namespace MailmanSharp
     public class ContentFilteringSection: SectionBase
     {
         public bool FilterContent { get; set; }
-        public List<string> FilterMimeTypes { get; set; }
-        public List<string> PassMimeTypes { get; set; }
-        public List<string> FilterFilenameExtensions { get; set; }
-        public List<string> PassFilenameExtensions { get; set; }
+        public List<string> FilterMimeTypes { get; set; } = new List<string>();
+        public List<string> PassMimeTypes { get; set; } = new List<string>();
+        public List<string> FilterFilenameExtensions { get; set; } = new List<string>();
+        public List<string> PassFilenameExtensions { get; set; } = new List<string>();
         public bool CollapseAlternatives { get; set; }
         public bool ConvertHtmlToPlaintext { get; set; }
         public FilterActionOption FilterAction { get; set; }

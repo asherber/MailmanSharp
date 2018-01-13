@@ -32,12 +32,12 @@ namespace MailmanSharp
     {
         public bool Nondigestable { get; set; }
         public PersonalizeOption Personalize { get; set; }
-        public List<string> MsgHeader { get; set; }
-        public List<string> MsgFooter { get; set; }
+        public List<string> MsgHeader { get; set; } = new List<string>();
+        public List<string> MsgFooter { get; set; } = new List<string>();
         public bool ScrubNondigest { get; set; }
-        public List<string> RegularExcludeLists { get; set; }
+        public List<string> RegularExcludeLists { get; set; } = new List<string>();
         public bool RegularExcludeIgnore { get; set; }
-        public List<string> RegularIncludeLists { get; set; }
+        public List<string> RegularIncludeLists { get; set; } = new List<string>();
 
         internal NonDigestSection(MailmanList list) : base(list) { }
     }

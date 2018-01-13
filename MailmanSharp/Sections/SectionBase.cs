@@ -57,15 +57,6 @@ namespace MailmanSharp
             }
             if (!_paths.Any())
                 _paths.Add(basePath);
-
-            // Initialize any reference types
-            foreach (var prop in props.Where(p => p.CanWrite))
-            {
-                if (prop.PropertyType.GetConstructor(Type.EmptyTypes) != null)
-                    prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, null), null);
-                else if (prop.PropertyType == typeof(string))
-                    prop.SetValue(this, "", null);
-            }
         }
 
         protected MailmanClient GetClient()

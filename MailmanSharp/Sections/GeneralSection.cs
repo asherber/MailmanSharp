@@ -34,22 +34,22 @@ namespace MailmanSharp
     public class GeneralSection: SectionBase
     {
         public string RealName { get { return _realName; } set { SetRealName(value); } }
-        public List<string> Owner { get; set; }
-        public List<string> Moderator { get; set; }
-        public string Description { get; set; }
-        public List<string> Info { get; set; }
-        public string SubjectPrefix { get; set; }
+        public List<string> Owner { get; set; } = new List<string>();
+        public List<string> Moderator { get; set; } = new List<string>();
+        public string Description { get; set; } = "";
+        public List<string> Info { get; set; } = new List<string>();
+        public string SubjectPrefix { get; set; } = "";
         public FromIsListOption FromIsList { get; set; }
         public bool AnonymousList { get; set; }
         public bool FirstStripReplyTo { get; set; }
         public ReplyGoesToListOption ReplyGoesToList { get; set; }
-        public string ReplyToAddress { get; set; }
+        public string ReplyToAddress { get; set; } = "";
         public bool UmbrellaList { get; set; }
-        public string UmbrellaMemberSuffix { get; set; }
+        public string UmbrellaMemberSuffix { get; set; } = "";
         public bool SendReminders { get; set; }
-        public List<string> WelcomeMsg { get; set; }
+        public List<string> WelcomeMsg { get; set; } = new List<string>();
         public bool SendWelcomeMsg { get; set; }
-        public List<string> GoodbyeMsg { get; set; }
+        public List<string> GoodbyeMsg { get; set; } = new List<string>();
         public bool SendGoodbyeMsg { get; set; }
         public bool AdminImmedNotify { get; set; }
         public bool AdminNotifyMchanges { get; set; }
@@ -64,7 +64,7 @@ namespace MailmanSharp
         public bool IncludeSenderHeader { get; set; }
         public ushort MaxDaysToHold { get; set; }
 
-        private string _realName;
+        private string _realName = "";
 
         internal GeneralSection(MailmanList list) : base(list) { }
 
