@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
@@ -37,9 +38,9 @@ namespace MailmanSharp
         private NewsModerationOption NewsModeration { get; set; }
         public bool NewPrefixSubjectToo { get; set; }
         
-        public void MassCatchup()
+        public Task MassCatchup()
         {
-            this.GetClient().ExecutePostAdminRequest(_paths.First(), "_mass_catchup", 1);
+            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), "_mass_catchup", 1);
         }
 
         internal MailNewsGatewaysSection(MailmanList list) : base(list) { }

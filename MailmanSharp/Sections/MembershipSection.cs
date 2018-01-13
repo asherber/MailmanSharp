@@ -49,14 +49,15 @@ namespace MailmanSharp
         
         internal MembershipSection(MailmanList list) : base(list) { }
 
-        public override void Read()
+        public override Task ReadAsync()
         {
-            PopulateEmailList();
+            return PopulateEmailListAsync();
         }
 
-        public override void Write()
+        public override Task WriteAsync()
         {
             // do nothing
+            return Task.CompletedTask;
         }
 
         internal override string GetCurrentConfig()
@@ -64,10 +65,10 @@ namespace MailmanSharp
             return null;
         }
 
-        private void PopulateEmailList()
+        private async Task PopulateEmailListAsync()
         {
             _emailList.Clear();
-            var resp = this.GetClient().ExecuteRosterRequest();
+            var resp = await this.GetClient().ExecuteRosterRequestAsync().ConfigureAwait(false);
             var doc = GetHtmlDocument(resp.Content);
             
             var addrs = doc.DocumentNode.SafeSelectNodes("//li");
@@ -81,15 +82,15 @@ namespace MailmanSharp
             _emailListPopulated = true;
         }
 
-        public void ModerateAll(bool moderate)
+        public Task ModerateAllAsync(bool moderate)
         {
             var req = new RestRequest();
             req.AddParameter("allmodbit_val", moderate ? 1 : 0);
             req.AddParameter("allmodbit_btn", 1);
-            this.GetClient().ExecutePostAdminRequest(_paths.Single(), req);
+            return this.GetClient().ExecutePostAdminRequestAsync(_paths.Single(), req);
         }
 
-        public UnsubscribeResult Unsubscribe(string members, UnsubscribeOptions options = UnsubscribeOptions.None)
+        public async Task<UnsubscribeResult> UnsubscribeAsync(string members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
             var result = new UnsubscribeResult();
 
@@ -100,7 +101,7 @@ namespace MailmanSharp
                 req.AddParameter("send_unsub_ack_to_this_batch", options.HasFlag(UnsubscribeOptions.SendAcknowledgement).ToInt());
                 req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.NotifyOwner).ToInt());
 
-                var resp = this.GetClient().ExecutePostAdminRequest(_removePage, req);
+                var resp = await this.GetClient().ExecutePostAdminRequestAsync(_removePage, req).ConfigureAwait(false);
                 var doc = GetHtmlDocument(resp.Content);
                 
                 string xpath = "//h5[contains(translate(text(), 'SU', 'su'), 'successfully unsubscribed')]/following-sibling::ul[1]/li";
@@ -112,19 +113,19 @@ namespace MailmanSharp
                     result.NonMembers.Add(node.InnerText.Trim());
 
                 if (_emailListPopulated)
-                    PopulateEmailList();
+                    await PopulateEmailListAsync().ConfigureAwait(false);
             }
 
             return result;
         }
 
-        public UnsubscribeResult Unsubscribe(IEnumerable<string> members, UnsubscribeOptions options = UnsubscribeOptions.None)
+        public Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<string> members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
-            return Unsubscribe(members.Cat(), options);
+            return UnsubscribeAsync(members.Cat(), options);
         }
 
         private enum SubscribeAction { Subscribe, Invite }
-        private SubscribeResult SubscribeOrInvite(string members, SubscribeAction action, SubscribeOptions options = SubscribeOptions.None)
+        private async Task<SubscribeResult> SubscribeOrInviteAsync(string members, SubscribeAction action, SubscribeOptions options = SubscribeOptions.None)
         {
             var result = new SubscribeResult();
 
@@ -136,7 +137,7 @@ namespace MailmanSharp
                 req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOptions.SendWelcomeMessage).ToInt());
                 req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt());
 
-                var resp = this.GetClient().ExecutePostAdminRequest(_addPage, req);
+                var resp = await this.GetClient().ExecutePostAdminRequestAsync(_addPage, req).ConfigureAwait(false);
                 var doc = GetHtmlDocument(resp.Content);
                 
                 string verb = action == SubscribeAction.Invite ? "invited" : "subscribed";
@@ -158,42 +159,37 @@ namespace MailmanSharp
                 }
 
                 if (action == SubscribeAction.Subscribe && _emailListPopulated)
-                    PopulateEmailList();
+                    await PopulateEmailListAsync().ConfigureAwait(false);
             }
 
             return result;
         }
 
-        public SubscribeResult Subscribe(string members, SubscribeOptions options = SubscribeOptions.None)
+        public Task<SubscribeResult> SubscribeAsync(string members, SubscribeOptions options = SubscribeOptions.None)
         {
-            return SubscribeOrInvite(members, SubscribeAction.Subscribe, options);
+            return SubscribeOrInviteAsync(members, SubscribeAction.Subscribe, options);
         }
 
-        public SubscribeResult Subscribe(IEnumerable<string> members, SubscribeOptions options = SubscribeOptions.None)
+        public Task<SubscribeResult> SubscribeAsync(IEnumerable<string> members, SubscribeOptions options = SubscribeOptions.None)
         {
-            return Subscribe(members.Cat(), options);
+            return SubscribeAsync(members.Cat(), options);
         }
 
-        public SubscribeResult Invite(string members)
+        public Task<SubscribeResult> InviteAsync(string members)
         {
-            return SubscribeOrInvite(members, SubscribeAction.Invite);
+            return SubscribeOrInviteAsync(members, SubscribeAction.Invite);
         }
 
-        public SubscribeResult Invite(IEnumerable<string> members)
+        public Task<SubscribeResult> InviteAsync(IEnumerable<string> members)
         {
-            return Invite(members.Cat());
+            return InviteAsync(members.Cat());
         }
 
-        public IEnumerable<Member> GetMembers()
-        {
-            return GetMembers("");
-        }
-
-        public IEnumerable<Member> GetMembers(string search)
+        public async Task<IEnumerable<Member>> GetMembersAsync(string search)
         {
             var req = new RestRequest();
             req.AddParameter("findmember", search);
-            var resp = this.GetClient().ExecuteGetAdminRequest(_paths.Single(), req);
+            var resp = await this.GetClient().ExecuteGetAdminRequestAsync(_paths.Single(), req).ConfigureAwait(false);
 
             // Do we have multiple letters to look at?
             // General approach from http://www.msapiro.net/mailman-subscribers.py
@@ -201,23 +197,18 @@ namespace MailmanSharp
             var letters = GetHrefValuesForParam(doc, "letter");
 
             if (letters.Any())
-            {                
+            {
                 var list = new List<Member>();
-                Parallel.ForEach(letters, letter =>
+                Parallel.ForEach(letters, async letter =>
                 {
-                    var members = GetMembersForLetter(search, letter);
+                    var members = await GetMembersForLetterAsync(search, letter).ConfigureAwait(false);
                     lock (list) { list.AddRange(members); }
                 });
 
-                return list.OrderBy(m => m.Email);               
+                return list.OrderBy(m => m.Email);
             }
             else
-                return ExtractMembersFromPage(doc);            
-        }
-
-        public Task<IEnumerable<Member>> GetMembersAsync(string search)
-        {
-            return Task.Run(() => this.GetMembers(search));
+                return ExtractMembersFromPage(doc);
         }
 
         public Task<IEnumerable<Member>> GetMembersAsync()
@@ -226,7 +217,7 @@ namespace MailmanSharp
         }
 
 
-        private IEnumerable<Member> GetMembersForLetter(string search, string letter)
+        private async Task<IEnumerable<Member>> GetMembersForLetterAsync(string search, string letter)
         {
             var result = new List<Member>();
             int currentChunk = 0;
@@ -238,7 +229,7 @@ namespace MailmanSharp
             {
                 req.AddOrSetParameter("letter", letter);
                 req.AddOrSetParameter("chunk", currentChunk);
-                var resp = this.GetClient().ExecuteGetAdminRequest(_paths.Single(), req);
+                var resp = await this.GetClient().ExecuteGetAdminRequestAsync(_paths.Single(), req).ConfigureAwait(false);
                 var doc = GetHtmlDocument(resp.Content);
                 
                 result.AddRange(ExtractMembersFromPage(doc));
@@ -282,7 +273,7 @@ namespace MailmanSharp
             return result;
         }
 
-        public void SaveMembers(IEnumerable<Member> members)
+        public Task SaveMembersAsync(IEnumerable<Member> members)
         {
             var req = new RestRequest();
             req.AddParameter("setmemberopts_btn", 1);
@@ -290,12 +281,12 @@ namespace MailmanSharp
             foreach (var member in members)
                 req.Parameters.AddRange(member.ToParameters());
 
-            this.GetClient().ExecutePostAdminRequest(_paths.Single(), req);
+            return this.GetClient().ExecutePostAdminRequestAsync(_paths.Single(), req);
         }
 
-        public void SaveMembers(params Member[] members)
+        public Task SaveMembersAsync(params Member[] members)
         {
-            SaveMembers(members.ToList());
+            return SaveMembersAsync(members.ToList());
         }
 
         

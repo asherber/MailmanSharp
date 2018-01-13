@@ -79,9 +79,9 @@ namespace MailmanSharp
             return att != null ? att.Value : null;
         }
 
-        public virtual void Read()
+        public virtual async Task ReadAsync()
         {
-            var docs = FetchHtmlDocuments();
+            var docs = await FetchHtmlDocumentsAsync().ConfigureAwait(false);
             var props = this.GetType().GetUnignoredProps();
 
             foreach (var kvp in docs)
@@ -108,7 +108,7 @@ namespace MailmanSharp
             DoAfterRead(docs);
         }
 
-        public virtual void Write()
+        public virtual async Task WriteAsync()
         {
             var props = this.GetType().GetUnignoredProps();
             var client = this.GetClient();
@@ -130,18 +130,8 @@ namespace MailmanSharp
                 }
 
                 DoBeforeFinishWrite(req);
-                client.ExecutePostAdminRequest(path, req);
+                await client.ExecutePostAdminRequestAsync(path, req).ConfigureAwait(false);
             }
-        }
-
-        public Task ReadAsync()
-        {
-            return Task.Run(() => this.Read());
-        }
-
-        public Task WriteAsync()
-        {
-            return Task.Run(() => this.Write());
         }
 
         protected virtual void DoAfterRead(Dictionary<string, HtmlDocument> docs) { }
@@ -235,13 +225,13 @@ namespace MailmanSharp
             return result;
         }
 
-        protected Dictionary<string, HtmlDocument> FetchHtmlDocuments()
+        protected async Task<Dictionary<string, HtmlDocument>> FetchHtmlDocumentsAsync()
         {
             var result = new Dictionary<string, HtmlDocument>();
             var client = this.GetClient();  // to avoid unneccessary cloning
             foreach (var path in _paths)
             {
-                var resp = client.ExecuteGetAdminRequest(path);
+                var resp = await client.ExecuteGetAdminRequestAsync(path).ConfigureAwait(false);
                 var doc = GetHtmlDocument(resp.Content);
                 result.Add(path, doc);
             }

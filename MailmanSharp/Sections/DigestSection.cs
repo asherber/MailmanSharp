@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
@@ -41,14 +42,14 @@ namespace MailmanSharp
         public List<string> DigestFooter { get; set; }
         public DigestVolumeFrequencyOption DigestVolumeFrequency { get; set; }
         
-        public void NewVolume()
+        public Task NewVolumeAsync()
         {
-            this.GetClient().ExecutePostAdminRequest(_paths.First(), "_new_volume", 1);
+            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), "_new_volume", 1);
         }
 
-        public void SendDigestNow()
+        public Task SendDigestNowAsync()
         {
-            this.GetClient().ExecutePostAdminRequest(_paths.First(), "_send_digest_now", 1);
+            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), "_send_digest_now", 1);
         }
 
         internal DigestSection(MailmanList list) : base(list) { }

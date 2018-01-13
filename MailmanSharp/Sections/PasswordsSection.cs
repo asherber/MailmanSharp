@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
@@ -35,19 +36,20 @@ namespace MailmanSharp
 
         internal PasswordsSection(MailmanList list) : base(list) { }
 
-        public override void Read()
+        public override Task ReadAsync()
         {
             // Nothing to read
+            return Task.CompletedTask;
         }
 
-        public override void Write()
+        public override Task WriteAsync()
         {
             var req = new RestRequest();
             SetParams("", this.Administrator, req);
             SetParams("mod", this.Moderator, req);
             SetParams("post", this.Poster, req);
 
-            this.GetClient().ExecuteGetAdminRequest(_paths.Single(), req);
+            return this.GetClient().ExecuteGetAdminRequestAsync(_paths.Single(), req);
         }
 
         internal override string GetCurrentConfig()

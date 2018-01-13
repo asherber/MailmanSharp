@@ -87,29 +87,19 @@ namespace MailmanSharp
         /// <summary>
         /// Read all list values from web site.
         /// </summary>
-        public void Read()
+        public async Task ReadAsync()
         {            
-            TryLogin();
-            this.InvokeSectionMethod("Read");
-        }
-
-        public Task ReadAsync()
-        {
-            return Task.Run(() => this.Read());
-        }
-
-        public Task WriteAsync()
-        {
-            return Task.Run(() => this.Write());
+            await TryLoginAsync().ConfigureAwait(false);
+            await this.InvokeSectionMethodAsync("ReadAsync").ConfigureAwait(false);
         }
 
         /// <summary>
         /// Write all values to list.
         /// </summary>
-        public void Write()
+        public async Task WriteAsync()
         {
-            TryLogin();
-            this.InvokeSectionMethod("Write");
+            await TryLoginAsync().ConfigureAwait(false);
+            await this.InvokeSectionMethodAsync("WriteAsync").ConfigureAwait(false);
         }
 
         private string GetCurrentConfig()
@@ -180,10 +170,10 @@ namespace MailmanSharp
             }
         }
 
-        private void TryLogin()
+        private Task TryLoginAsync()
         {
             // This checks the URL and credentials before we get multi-threaded 
-            Client.ExecuteGetAdminRequest("");
+            return Client.ExecuteGetAdminRequestAsync("");
         }
 
         private string GetNodeValue(XElement root, string nodeName)
@@ -204,7 +194,7 @@ namespace MailmanSharp
             }
         }
 
-        private void InvokeSectionMethod(string methodName)
+        private Task InvokeSectionMethodAsync(string methodName)
         {
             var method = typeof(SectionBase).GetMethod(methodName);
             Parallel.ForEach(GetSectionProps(), p =>
@@ -213,6 +203,7 @@ namespace MailmanSharp
                 if (section != null)
                     method.Invoke(section, null);
             });
+            return Task.CompletedTask;
         }
 
         private IEnumerable<PropertyInfo> GetSectionProps()

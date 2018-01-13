@@ -22,6 +22,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
@@ -85,29 +86,29 @@ namespace MailmanSharp
             _list.ResetClient();
         }
 
-        public IRestResponse ExecuteGetAdminRequest(string path, IRestRequest request)
+        public Task<IRestResponse> ExecuteGetAdminRequestAsync(string path, IRestRequest request)
         {
-            return DoAdminRequest(path, request, Method.GET);
+            return DoAdminRequestAsync(path, request, Method.GET);
         }
 
-        public IRestResponse ExecuteGetAdminRequest(string path, params object[] parms)
-        {
-            var req = BuildRequestFromParms(parms);
-            return this.ExecuteGetAdminRequest(path, req);
-        }
-
-        public IRestResponse ExecutePostAdminRequest(string path, IRestRequest request)
-        {
-            return DoAdminRequest(path, request, Method.POST);
-        }
-
-        public IRestResponse ExecutePostAdminRequest(string path, params object[] parms)
+        public Task<IRestResponse> ExecuteGetAdminRequestAsync(string path, params object[] parms)
         {
             var req = BuildRequestFromParms(parms);
-            return this.ExecutePostAdminRequest(path, req);
+            return this.ExecuteGetAdminRequestAsync(path, req);
         }
 
-        private IRestResponse DoAdminRequest(string path, IRestRequest request, Method method)
+        public Task<IRestResponse> ExecutePostAdminRequestAsync(string path, IRestRequest request)
+        {
+            return DoAdminRequestAsync(path, request, Method.POST);
+        }
+
+        public Task<IRestResponse> ExecutePostAdminRequestAsync(string path, params object[] parms)
+        {
+            var req = BuildRequestFromParms(parms);
+            return this.ExecutePostAdminRequestAsync(path, req);
+        }
+
+        private async Task<IRestResponse> DoAdminRequestAsync(string path, IRestRequest request, Method method)
         {
             if (!String.IsNullOrEmpty(path))
                 path = path.Trim('/');
@@ -117,7 +118,7 @@ namespace MailmanSharp
             req.Method = method;
             req.AddOrSetParameter("adminpw", this.AdminPassword);
 
-            var resp = this.Execute(req);
+            var resp = await this.ExecuteTaskAsync(req).ConfigureAwait(false);
             if (resp.StatusCode == HttpStatusCode.OK)
             {
                 _list.MailmanVersion = Regex.Match(resp.Content, @"(?<=Delivered by Mailman.*version ).*(?=<)").Value;
@@ -149,14 +150,14 @@ namespace MailmanSharp
         }
         
 
-        public IRestResponse ExecuteRosterRequest()
+        public async Task<IRestResponse> ExecuteRosterRequestAsync()
         {
             if (!HasAdminCookie())
-                ExecuteGetAdminRequest("");
+                await ExecuteGetAdminRequestAsync("").ConfigureAwait(false);
             var resource = String.Format("{0}/{1}", this.GetRosterPath(), _listName);
             var req = new RestRequest(resource);
             req.AddParameter("adminpw", this.AdminPassword);
-            return this.Execute(req);
+            return await this.ExecuteTaskAsync(req).ConfigureAwait(false);
         }
 
         internal bool HasAdminCookie()
