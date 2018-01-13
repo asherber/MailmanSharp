@@ -71,9 +71,9 @@ namespace MailmanSharp
                 {
                     var val = thisNode.Attributes["value"].Value;
                     if (prop.PropertyType == typeof(string))
-                        prop.SetValue(this, val, null);
+                        prop.SetValue(this, val);
                     else if (prop.PropertyType == typeof(bool))
-                        prop.SetValue(this, val == "on", null);
+                        prop.SetValue(this, val == "on");
                 }
             }
 
@@ -109,7 +109,7 @@ namespace MailmanSharp
             foreach (var prop in _props.GetUnignoredProps())
             {
                 var parmName = String.Format("{0}_{1}", _encEmail, prop.Name.ToLower());
-                object value = prop.GetValue(this, null);
+                object value = prop.GetValue(this);
                 if (value is bool)
                 {
                     if ((bool)value)

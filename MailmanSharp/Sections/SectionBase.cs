@@ -147,7 +147,7 @@ namespace MailmanSharp
 
             foreach (var prop in unignoredProps)
             {
-                var val = prop.GetValue(this, null);
+                var val = prop.GetValue(this);
                 if (val is List<string>)
                     val = ((List<string>)val).Cat();
                     
@@ -169,20 +169,20 @@ namespace MailmanSharp
                 if (el != null)
                 {
                     if (prop.PropertyType == typeof(bool))
-                        prop.SetValue(this, Convert.ToBoolean(el.Value), null);
+                        prop.SetValue(this, Convert.ToBoolean(el.Value));
                     else if (prop.PropertyType == typeof(ushort))
-                        prop.SetValue(this, Convert.ToUInt16(el.Value), null);
+                        prop.SetValue(this, Convert.ToUInt16(el.Value));
                     else if (prop.PropertyType == typeof(double))
-                        prop.SetValue(this, Convert.ToDouble(el.Value), null);
+                        prop.SetValue(this, Convert.ToDouble(el.Value));
                     else if (prop.PropertyType == typeof(List<string>))
                     {
                         var list = el.Value.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
-                        prop.SetValue(this, list, null);
+                        prop.SetValue(this, list);
                     }
                     else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
-                        prop.SetValue(this, Enum.Parse(prop.PropertyType, el.Value, true), null);
+                        prop.SetValue(this, Enum.Parse(prop.PropertyType, el.Value, true));
                     else
-                        prop.SetValue(this, el.Value, null);
+                        prop.SetValue(this, el.Value);
                 }
             }
         }
@@ -194,7 +194,7 @@ namespace MailmanSharp
 
         private object GetPropertyObjectValue(PropertyInfo prop)
         {
-            var val = prop.GetValue(this, null);
+            var val = prop.GetValue(this);
             if (prop.PropertyType == typeof(bool))
                 return Convert.ToInt32(val);
             else if (prop.PropertyType == typeof(List<string>))
@@ -206,7 +206,7 @@ namespace MailmanSharp
         private IEnumerable<object> GetPropertyEnumValues(PropertyInfo prop)
         {
             var result = new List<object>();
-            var val = prop.GetValue(this, null);
+            var val = prop.GetValue(this);
 
             if (prop.PropertyType.GetCustomAttributes(typeof(FlagsAttribute), false).Any())
             {
@@ -250,7 +250,7 @@ namespace MailmanSharp
         protected void SetPropValue(PropertyInfo prop, object value)
         {
             if (value != null)
-                prop.SetValue(this, value, null);
+                prop.SetValue(this, value);
         }
 
         protected object GetNodeValue(HtmlDocument doc, PropertyInfo prop)

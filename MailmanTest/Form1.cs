@@ -24,7 +24,7 @@ namespace MailmanTest
         private async void button1_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "");
-            mm.Membership.ReadAsync();
+            await mm.Membership.ReadAsync();
             
             //mm.Membership.Unsubscribe("aaron@sherber.com");
         }
@@ -32,7 +32,7 @@ namespace MailmanTest
         private async void button2_Click(object sender, EventArgs e)
         {
             var mm = new MailmanList("http://lists.sherber.com/admin.cgi/test-sherber.com", "");
-            mm.ReadAsync();
+            await mm.ReadAsync();
         }
 
         private async void button3_Click(object sender, EventArgs e)

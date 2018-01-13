@@ -123,7 +123,7 @@ namespace MailmanSharp
 
             foreach (var prop in _sectionProperties)
             {
-                var xml = ((SectionBase)prop.GetValue(this, null)).GetCurrentConfig();
+                var xml = ((SectionBase)prop.GetValue(this)).GetCurrentConfig();
                 if (!String.IsNullOrWhiteSpace(xml))
                     root.Add(XElement.Parse(xml));
             }
@@ -176,7 +176,7 @@ namespace MailmanSharp
             {                
                 var el = root.Element(prop.Name);
                 if (el != null)
-                    ((SectionBase)prop.GetValue(this, null)).LoadConfig(el.ToString());
+                    ((SectionBase)prop.GetValue(this)).LoadConfig(el.ToString());
             }
         }
 
@@ -200,7 +200,7 @@ namespace MailmanSharp
             foreach (var prop in _sectionProperties)
             {
                 var section = Activator.CreateInstance(prop.PropertyType, flags, null, args, null);
-                prop.SetValue(this, section, null);
+                prop.SetValue(this, section);
             }
         }
 
@@ -208,7 +208,7 @@ namespace MailmanSharp
         {
             var tasks = _sectionProperties.Select(p =>
             {
-                if (p.GetValue(this, null) is SectionBase section)
+                if (p.GetValue(this) is SectionBase section)
                     return func(section);
                 else
                     return Task.CompletedTask;
