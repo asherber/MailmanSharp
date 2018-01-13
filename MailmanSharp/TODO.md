@@ -2,4 +2,4 @@
 
 - [x] `InvokeSectionMethod()`
 - [ ] Section initializers for properties
-- [ ] Parallel
+- [x] Parallel

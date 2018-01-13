@@ -20,6 +20,7 @@
 using HtmlAgilityPack;
 using RestSharp;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -198,14 +199,13 @@ namespace MailmanSharp
 
             if (letters.Any())
             {
-                var list = new List<Member>();
-                Parallel.ForEach(letters, async letter =>
+                var bag = new ConcurrentBag<IEnumerable<Member>>();
+                var tasks = letters.Select(async letter =>
                 {
-                    var members = await GetMembersForLetterAsync(search, letter).ConfigureAwait(false);
-                    lock (list) { list.AddRange(members); }
+                    bag.Add(await GetMembersForLetterAsync(search, letter).ConfigureAwait(false));                    
                 });
-
-                return list.OrderBy(m => m.Email);
+                await Task.WhenAll(tasks);
+                return bag.SelectMany(b => b).OrderBy(m => m.Email);
             }
             else
                 return ExtractMembersFromPage(doc);
