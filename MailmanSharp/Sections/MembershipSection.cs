@@ -18,7 +18,6 @@
  */
 
 using HtmlAgilityPack;
-using MailmanSharp.Extensions;
 using RestSharp;
 using System;
 using System.Collections.Concurrent;

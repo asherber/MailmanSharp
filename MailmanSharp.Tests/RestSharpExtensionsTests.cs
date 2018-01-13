@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using RestSharp;
-using MailmanSharp.Extensions;
 
 namespace MailmanSharp.Tests
 {

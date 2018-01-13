@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using HtmlAgilityPack;
-using MailmanSharp.Extensions;
 
 namespace MailmanSharp.Tests
 {

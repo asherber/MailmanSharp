@@ -25,7 +25,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MailmanSharp.Extensions
+namespace MailmanSharp
 {
     public static class HtmlAgilityPackExtensions
     {
