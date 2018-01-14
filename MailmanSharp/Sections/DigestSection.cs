@@ -25,8 +25,8 @@ using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
-    public enum DigestIsDefaultOptions { Regular, Digest }
-    public enum MimeIsDefaultDigestOptions { Plain, Mime }
+    public enum DigestIsDefaultOption { Regular, Digest }
+    public enum MimeIsDefaultDigestOption { Plain, Mime }
     public enum DigestVolumeFrequencyOption { Yearly, Monthly, Quarterly, Weekly, Daily }
 
     [Path("digest")]
@@ -34,8 +34,8 @@ namespace MailmanSharp
     public class DigestSection: SectionBase
     {
         public bool Digestable { get; set; }
-        public DigestIsDefaultOptions DigestIsDefault { get; set; }
-        public MimeIsDefaultDigestOptions MimeIsDefaultDigest { get; set; }
+        public DigestIsDefaultOption DigestIsDefault { get; set; }
+        public MimeIsDefaultDigestOption MimeIsDefaultDigest { get; set; }
         public ushort DigestSizeThreshhold { get; set; }
         public bool DigestSendPeriodic { get; set; }
         public List<string> DigestHeader { get; set; } = new List<string>();

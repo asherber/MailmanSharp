@@ -159,7 +159,7 @@ namespace MailmanSharp.Tests
         private class EnumValuesClass
         {
             public SubscribePolicyOption SubscribePolicy { get; set; } = SubscribePolicyOption.RequireApproval;
-            public ChangeNotificationOptions ChangeNotification { get; set; } = ChangeNotificationOptions.NewAddress | ChangeNotificationOptions.OldAddress;
+            public ChangeNotificationOption ChangeNotification { get; set; } = ChangeNotificationOption.NewAddress | ChangeNotificationOption.OldAddress;
         }
 
         [Theory]
