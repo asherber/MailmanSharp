@@ -15,8 +15,7 @@ namespace MailmanSharp.IntegrationTests
         public async void Foo()
         {
             var list = new MailmanList(ListConfig.Url, ListConfig.Password);
-            await list.Privacy.ReadAsync();
-            //await list.General.WriteAsync();
+            var resp = await list.Membership.ChangeMemberAddressAsync("aaron+test@sherber.com", "aaron@sherber.com");
         }
     }
 }

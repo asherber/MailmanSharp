@@ -33,6 +33,8 @@ namespace MailmanSharp
     public enum SubscribeOptions { None = 0, SendWelcomeMessage = 1, NotifyOwner = 2 }
     [Flags]
     public enum UnsubscribeOptions { None = 0, SendAcknowledgement = 1, NotifyOwner = 2 }
+    [Flags]
+    public enum ChangeNotificationOptions { None = 0, OldAddress = 1, NewAddress = 2 }
     
 
     [Path("members")]
@@ -44,6 +46,7 @@ namespace MailmanSharp
 
         protected static string _addPage = "members/add";
         protected static string _removePage = "members/remove";
+        protected static string _changePage = "members/change";
         protected List<string> _emailList = new List<string>();
 
         private bool _emailListPopulated = false;
@@ -289,6 +292,31 @@ namespace MailmanSharp
             return SaveMembersAsync(members.ToList());
         }
 
-        
+        /// <summary>
+        /// Change a member's address while leaving other options the same. Note: This function
+        /// is only available on Mailman 2.1.20 and higher.
+        /// </summary>
+        /// <param name="oldAddress"></param>
+        /// <param name="newAddress"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public async Task<ChangeAddressResult> ChangeMemberAddressAsync(string oldAddress, string newAddress, ChangeNotificationOptions options = ChangeNotificationOptions.None)
+        {
+            var req = new RestRequest();
+            req.AddParameter("change_from", oldAddress);
+            req.AddParameter("change_to", newAddress);
+            if (options.HasFlag(ChangeNotificationOptions.OldAddress))
+                req.AddParameter("notice_old", "yes");
+            if (options.HasFlag(ChangeNotificationOptions.NewAddress))
+                req.AddParameter("notice_new", "yes");
+
+            var resp = await this.GetClient().ExecutePostAdminRequestAsync(_changePage, req).ConfigureAwait(false);
+            var doc = resp.Content.GetHtmlDocument();
+
+            string xpath = "//body/h3";
+            var nodes = doc.DocumentNode.SafeSelectNodes(xpath);
+
+            return new ChangeAddressResult(nodes.FirstOrDefault().InnerText);
+        }
     }
 }
