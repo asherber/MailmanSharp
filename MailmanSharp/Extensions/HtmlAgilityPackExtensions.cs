@@ -51,7 +51,7 @@ namespace MailmanSharp
 
         public static object GetNodeValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            return GetNodeValue(doc, prop.Name.Decamel());
+            return doc.GetNodeValue(prop.Name.Decamel());
         }
 
         public static object GetNodeValue(this HtmlDocument doc, string name)
@@ -64,24 +64,24 @@ namespace MailmanSharp
 
         public static object GetNodeStringValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            return GetNodeValue(doc, prop);
+            return doc.GetNodeValue(prop);
         }
 
         public static object GetNodeIntValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            var val = GetNodeValue(doc, prop);
+            var val = doc.GetNodeValue(prop);
             return val != null ? (object)ushort.Parse(val.ToString()) : null;
         }
 
         public static object GetNodeDoubleValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            var val = GetNodeValue(doc, prop);
+            var val = doc.GetNodeValue(prop);
             return val != null ? (object)double.Parse(val.ToString()) : null;
         }
 
         public static List<string> GetNodeListValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            return GetNodeListValue(doc, prop.Name.Decamel());
+            return doc.GetNodeListValue(prop.Name.Decamel());
         }
 
         public static List<string> GetNodeListValue(this HtmlDocument doc, string name)
@@ -94,7 +94,7 @@ namespace MailmanSharp
                 if (String.IsNullOrEmpty(node.InnerText))
                     return new List<string>();
                 else
-                    return node.InnerText.Split(new string[] { "\n" }, StringSplitOptions.None).ToList();
+                    return node.InnerText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
             }
             return null;
         }
@@ -110,7 +110,7 @@ namespace MailmanSharp
 
         public static object GetNodeEnumValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            return GetNodeEnumValue(doc, prop.Name.Decamel(), prop.PropertyType);
+            return doc.GetNodeEnumValue(prop.Name.Decamel(), prop.PropertyType);
         }
 
         public static object GetNodeEnumValue(this HtmlDocument doc, string name, Type enumType)
@@ -125,6 +125,8 @@ namespace MailmanSharp
                 {
                     var val = node.Attributes["value"].Value;
                     var enumVal = Enum.Parse(enumType, val, true);
+                    if (!Enum.IsDefined(enumType, enumVal))
+                        throw new ArgumentException($"{enumVal} is not a defined value for enum type {enumType}");
                     result |= (int)enumVal;
                 }
                 return Enum.ToObject(enumType, result);
@@ -136,7 +138,7 @@ namespace MailmanSharp
         public static T GetNodeEnumValue<T>(this HtmlDocument doc, string name) where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum) throw new ArgumentException("T must be an enumerated type");
-            var obj = GetNodeEnumValue(doc, name, typeof(T));
+            var obj = doc.GetNodeEnumValue(name, typeof(T));
             if (obj != null)
                 return (T)obj;
             else
