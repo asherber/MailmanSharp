@@ -54,6 +54,10 @@ namespace MailmanSharp
         [Path("sender")]
         public bool DefaultMemberModeration { get; set; }
         [Path("sender")]
+        public ushort MemberVerbosityThreshold { get; set; }
+        [Path("sender")]
+        public ushort MemberVerbosityInterval { get; set; }
+        [Path("sender")]
         public MemberModerationActionOption MemberModerationAction { get; set; }
         [Path("sender")]
         public List<string> MemberModerationNotice { get; set; } = new List<string>();
@@ -61,6 +65,8 @@ namespace MailmanSharp
         public DmarcModerationActionOption DmarcModerationAction { get; set; }
         [Path("sender")]
         public bool DmarcQuarantineModerationAction { get; set; }
+        [Path("sender")]
+        public bool DmarcNoneModerationAction { get; set; }
         [Path("sender")]
         public List<string> DmarcWrappedMessageText { get; set; } = new List<string>();
         [Path("sender")]

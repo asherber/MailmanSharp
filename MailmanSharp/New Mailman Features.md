@@ -7,7 +7,7 @@
   (LP: #1572330)
 
 ### 2.1.21
-- [ ] There is a new dmarc_none_moderation_action list setting and a
+- [x] There is a new dmarc_none_moderation_action list setting and a
     DEFAULT_DMARC_NONE_MODERATION_ACTION mm_cfg.py setting to optionally
     apply Munge From or Wrap Message actions to posts From: domains that
     publish DMARC p=none.  The intent is to eliminate failure reports to
@@ -15,7 +15,7 @@
     domain published a stronger DMARC policy.  See the descriptions in
     Defaults.py, the web UI and the bug report for more.  (LP: #1539384)
 
-- [ ] Thanks to Jim Popovitch there is now a feature to automatically turn
+- [x] Thanks to Jim Popovitch there is now a feature to automatically turn
   on moderation for a malicious list member who attempts to flood a list
   with spam.  See the details for the Privacy options ... -> Sender
   filters -> member_verbosity_threshold and member_verbosity_interval
@@ -24,7 +24,7 @@
   information.
 
 ### 2.1.20
-- [ ] There is a new Address Change sub-section in the web admin Membership
+- [x] There is a new Address Change sub-section in the web admin Membership
   Management section to allow a list admin to change a list member's
   address in one step rather than adding the new address, copying settings
   and deleting the old address.  (LP: #266809)
