@@ -5,14 +5,14 @@ VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailmanSharp", "MailmanSharp\MailmanSharp.csproj", "{343F95F5-A9BA-4785-A8E4-FC383818BFD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailmanTest", "MailmanTest\MailmanTest.csproj", "{8C01E237-D789-4024-8236-31FD81DBD3DC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailmanSharp.Tests", "MailmanSharp.Tests\MailmanSharp.Tests.csproj", "{7790FDE1-D252-49CE-9A55-DD1B92B7BFC9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{D72181D3-DAFD-4C83-917D-8E9EC6D5E237}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailmanSharp.IntegrationTests", "MailmanSharp.IntegrationTests\MailmanSharp.IntegrationTests.csproj", "{10251062-5F82-4B38-BFA3-1231B459D787}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,17 +36,6 @@ Global
 		{343F95F5-A9BA-4785-A8E4-FC383818BFD4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{343F95F5-A9BA-4785-A8E4-FC383818BFD4}.Release|x86.ActiveCfg = Release|Any CPU
 		{343F95F5-A9BA-4785-A8E4-FC383818BFD4}.Release|x86.Build.0 = Release|Any CPU
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Debug|x86.ActiveCfg = Debug|x86
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Debug|x86.Build.0 = Debug|x86
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Release|Any CPU.ActiveCfg = Release|x86
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Release|Mixed Platforms.Build.0 = Release|x86
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Release|x86.ActiveCfg = Release|x86
-		{8C01E237-D789-4024-8236-31FD81DBD3DC}.Release|x86.Build.0 = Release|x86
 		{7790FDE1-D252-49CE-9A55-DD1B92B7BFC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7790FDE1-D252-49CE-9A55-DD1B92B7BFC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7790FDE1-D252-49CE-9A55-DD1B92B7BFC9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -59,6 +48,18 @@ Global
 		{7790FDE1-D252-49CE-9A55-DD1B92B7BFC9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7790FDE1-D252-49CE-9A55-DD1B92B7BFC9}.Release|x86.ActiveCfg = Release|Any CPU
 		{7790FDE1-D252-49CE-9A55-DD1B92B7BFC9}.Release|x86.Build.0 = Release|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Debug|x86.Build.0 = Debug|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Release|x86.ActiveCfg = Release|Any CPU
+		{10251062-5F82-4B38-BFA3-1231B459D787}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
