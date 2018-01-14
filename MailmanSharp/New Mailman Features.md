@@ -30,31 +30,27 @@
   and deleting the old address.  (LP: #266809)
 
 ### 2.1.19
-- [ ] There is a new list attribute 'subscribe_auto_approval' which is a list
+- [x] There is a new list attribute 'subscribe_auto_approval' which is a list
   of email addresses and regular expressions matching email addresses
   whose subscriptions are exempt from admin approval.  (LP: #266609)
 
-- [ ] Added real name display to the web roster.  (LP: #266754)      
+- [x] Added real name display to the web roster.  (LP: #266754)      *I don't see this on my server*
 
-- [ ] There is a new list attribute dmarc_wrapped_message_text and a
+- [x] There is a new list attribute dmarc_wrapped_message_text and a
   DEFAULT_DMARC_WRAPPED_MESSAGE_TEXT setting to set the default for new
   lists.  This text is added to a message which is wrapped because of
   dmarc_moderation_action in a separate text/plain part that precedes the
   message/rfc822 part containing the original message.  It can be used to
   provide an explanation of why the message was wrapped or similar info.
 
-- [ ] There is a new list attribute equivalent_domains and a
+- [x] There is a new list attribute equivalent_domains and a
   DEFAULT_EQUIVALENT_DOMAINS setting to set the default for new lists which
   in turn defaults to the empty string.  This provides a way to specify one
   or more groups of domains, e.g., mac.com, me.com, icloud.com, which are
   considered equivalent for validating list membership for posting and
   moderation purposes.
 
-- [ ] There is a new DEFAULT_SUBSCRIBE_OR_INVITE setting.  Set this to Yes
-  to make the default selection on the admin Mass Subscriptions page
-  Invite rather than Subscribe.  (LP: #1404511)
-
-- [ ] There is a new list attribute in the Bounce processing section.
+- [x] There is a new list attribute in the Bounce processing section.
   bounce_notify_owner_on_bounce_increment if set to Yes will cause
   Mailman to notify the list owner on every bounce that increments a
   list member's score but doesn't result in a probe or disable.  There

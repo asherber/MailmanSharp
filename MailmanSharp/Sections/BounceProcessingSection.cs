@@ -34,6 +34,7 @@ namespace MailmanSharp
         public ushort BounceYouAreDisabledWarnings { get; set; }
         public ushort BounceYouAreDisabledWarningsInterval { get; set; }
         public bool BounceUnrecognizedGoesToListOwner { get; set; }
+        public bool BounceNotifyOwnerOnBounceIncrement { get; set; }
         public bool BounceNotifyOwnerOnDisable { get; set; }
         public bool BounceNotifyOwnerOnRemoval { get; set; }
 

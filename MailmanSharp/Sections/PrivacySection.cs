@@ -41,6 +41,8 @@ namespace MailmanSharp
         [Path("subscribing")]
         public SubscribePolicyOption SubscribePolicy { get; set; }
         [Path("subscribing")]
+        public List<string> SubscribeAutoApproval { get; set; } = new List<string>();
+        [Path("subscribing")]
         public bool UnubscribePolicy { get; set; }
         [Path("subscribing")]
         public List<string> BanList { get; set; } = new List<string>();
@@ -59,6 +61,10 @@ namespace MailmanSharp
         public DmarcModerationActionOption DmarcModerationAction { get; set; }
         [Path("sender")]
         public bool DmarcQuarantineModerationAction { get; set; }
+        [Path("sender")]
+        public List<string> DmarcWrappedMessageText { get; set; } = new List<string>();
+        [Path("sender")]
+        public List<string> EquivalentDomains { get; set; } = new List<string>();
         [Path("sender")]
         public List<string> AcceptTheseNonmembers { get; set; } = new List<string>();
         [Path("sender")]
