@@ -81,11 +81,11 @@ namespace MailmanSharp
         public virtual async Task ReadAsync()
         {
             var docs = await FetchHtmlDocumentsAsync().ConfigureAwait(false);
-            var unignoredProps = _props.GetUnignored();
+            var unignoredProps = _props.Unignored();
 
             foreach (var kvp in docs)
             {
-                var propsToRead = docs.Count == 1 ? unignoredProps : unignoredProps.GetForPath(kvp.Key);
+                var propsToRead = docs.Count == 1 ? unignoredProps : unignoredProps.ForPath(kvp.Key);
                 var doc = kvp.Value;
                 foreach (var prop in propsToRead)
                 {
@@ -109,13 +109,13 @@ namespace MailmanSharp
 
         public virtual async Task WriteAsync()
         {
-            var unignoredProps = _props.GetUnignored();
+            var unignoredProps = _props.Unignored();
             var client = this.GetClient();
 
             foreach (var path in _paths)
             {
                 var req = new RestRequest();
-                var propsToWrite = _paths.Count == 1 ? unignoredProps : unignoredProps.GetForPath(path);
+                var propsToWrite = _paths.Count == 1 ? unignoredProps : unignoredProps.ForPath(path);
                     
                 foreach (var prop in propsToWrite)
                 {
@@ -125,7 +125,7 @@ namespace MailmanSharp
                             req.AddParameter(prop.Name.Decamel(), val);
                     }
                     else
-                        req.AddParameter(prop.Name.Decamel(), prop.GetObjectValue(this));
+                        req.AddParameter(prop.Name.Decamel(), prop.GetSimpleValue(this));
                 }
 
                 DoBeforeFinishWrite(req);
@@ -140,7 +140,7 @@ namespace MailmanSharp
         internal virtual string GetCurrentConfig()
         {
             var result = new XElement(this.SectionName);
-            var unignoredProps = _props.GetUnignored();
+            var unignoredProps = _props.Unignored();
 
             foreach (var prop in unignoredProps)
             {
@@ -158,7 +158,7 @@ namespace MailmanSharp
             var root = XElement.Parse(xml);
             root.CheckElementName(this.SectionName);
 
-            var unignoredProps = _props.GetUnignored();
+            var unignoredProps = _props.Unignored();
             foreach (var prop in unignoredProps)
             {
                 var el = root.Element(prop.Name);

@@ -62,12 +62,12 @@ namespace MailmanSharp
             return input ? 1 : 0;
         }
 
-        public static IEnumerable<PropertyInfo> GetUnignored(this IEnumerable<PropertyInfo> props)
+        public static IEnumerable<PropertyInfo> Unignored(this IEnumerable<PropertyInfo> props)
         {
             return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
         }
 
-        public static IEnumerable<PropertyInfo> GetForPath(this IEnumerable<PropertyInfo> props, string path)
+        public static IEnumerable<PropertyInfo> ForPath(this IEnumerable<PropertyInfo> props, string path)
         {
             return props.Where(p => p.GetCustomAttributes(false).OfType<PathAttribute>().Any(a => path.Contains(a.Value)));
         }
@@ -77,7 +77,7 @@ namespace MailmanSharp
             return String.Join("\n", strings); 
         }
 
-        public static object GetObjectValue(this PropertyInfo prop, object obj)
+        public static object GetSimpleValue(this PropertyInfo prop, object obj)
         {
             var val = prop.GetValue(obj);
             if (prop.PropertyType == typeof(bool))
