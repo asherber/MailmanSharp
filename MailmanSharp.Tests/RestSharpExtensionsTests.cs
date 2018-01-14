@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using RestSharp;
+using System.Net;
 
 namespace MailmanSharp.Tests
 {
@@ -31,6 +32,40 @@ namespace MailmanSharp.Tests
             req.Parameters.Single().Value.Should().Be("baz");
         }
 
+        public static IEnumerable<object[]> HttpStatuses = new []
+        {
+            new object[] { HttpStatusCode.OK, true },
+            new object[] { HttpStatusCode.Accepted, true },
+            new object[] { HttpStatusCode.Created, true },
+            new object[] { HttpStatusCode.Unauthorized, false },
+            new object[] { HttpStatusCode.BadRequest, false },
+            new object[] { HttpStatusCode.InternalServerError, false },
+            new object[] { HttpStatusCode.MovedPermanently, false },
+            new object[] { HttpStatusCode.BadGateway, false },
+        };
 
+        [Theory]
+        [MemberData(nameof(HttpStatuses))]
+        public void IsSuccessStatusCode_Should_Work(HttpStatusCode statusCode, bool expected)
+        {
+            var output = statusCode.IsSuccessStatusCode();
+            output.Should().Be(expected);
+        }
+
+        [Theory]
+        [MemberData(nameof(HttpStatuses))]
+        public void EnsureSuccessStatusCode_Should_Work(HttpStatusCode statusCode, bool success)
+        {
+            var response = new RestResponse()
+            {
+                StatusCode = statusCode
+            };
+
+            Action act = () => response.EnsureSuccessStatusCode();
+            if (success)
+                act.Should().NotThrow();
+            else
+                act.Should().Throw<MailmanHttpException>();
+        }
     }
 }
