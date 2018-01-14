@@ -1,12 +1,25 @@
-# New Mailman Features
+# Mailman Changelog
+
+See http://bazaar.launchpad.net/~mailman-coders/mailman/2.1/view/head:/NEWS
+
+### 2.1.25
+
+No new features
+
+### 2.1.24
+
+No new features
 
 ### 2.1.23
-- [ ] A list's nonmember_rejection_notice attribute will now be the default
-  rejection reason for a held non-member post in addition to it's prior
-  role as the reson for an automatically rejected non-member post.
-  (LP: #1572330)
+
+No new features
+
+### 2.1.22
+
+No new features
 
 ### 2.1.21
+
 - [x] There is a new dmarc_none_moderation_action list setting and a
     DEFAULT_DMARC_NONE_MODERATION_ACTION mm_cfg.py setting to optionally
     apply Munge From or Wrap Message actions to posts From: domains that
