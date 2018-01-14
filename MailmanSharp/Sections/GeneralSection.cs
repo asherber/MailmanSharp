@@ -24,7 +24,7 @@ using System.Text;
 
 namespace MailmanSharp
 {
-    public enum FromIsListOption { No, MungFrom, WrapMessage }
+    public enum FromIsListOption { No, MungeFrom, WrapMessage }
     public enum ReplyGoesToListOption { Poster, ThisList, ExplicitAddress }
     [Flags]
     public enum NewMemberOptions { None = 0, Hide = 1, Ack = 2, NotMeToo = 4, NoDupes = 8 }

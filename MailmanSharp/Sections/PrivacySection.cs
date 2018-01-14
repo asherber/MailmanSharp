@@ -30,6 +30,7 @@ namespace MailmanSharp
     public enum PrivateRosterOption { Anyone, ListMembers, ListAdminOnly }
     public enum MemberModerationActionOption { Hold, Reject, Discard }
     public enum GenericNonmemberActionOption { Accept, Hold, Reject, Discard }
+    public enum DmarcModerationActionOption { Accept, MungeFrom, WrapMessage, Reject, Discard }
 
     [Path("privacy")]
     [Order(7)]
@@ -54,6 +55,10 @@ namespace MailmanSharp
         public MemberModerationActionOption MemberModerationAction { get; set; }
         [Path("sender")]
         public List<string> MemberModerationNotice { get; set; } = new List<string>();
+        [Path("sender")]
+        public DmarcModerationActionOption DmarcModerationAction { get; set; }
+        [Path("sender")]
+        public bool DmarcQuarantineModerationAction { get; set; }
         [Path("sender")]
         public List<string> AcceptTheseNonmembers { get; set; } = new List<string>();
         [Path("sender")]

@@ -6,4 +6,4 @@
 - [x] Custom exceptions
 - [x] Move all the helpers in `SectionBase` to utility classes
 - [x] Get rid of `SafeSelectNodes()`
-- [ ] Test with properties that don't exist in Mailman
+- [x] Test with properties that don't exist in Mailman

@@ -1,10 +1,12 @@
 # New Mailman Features
 
+### 2.1.23
 - [ ] A list's nonmember_rejection_notice attribute will now be the default
   rejection reason for a held non-member post in addition to it's prior
   role as the reson for an automatically rejected non-member post.
   (LP: #1572330)
 
+### 2.1.21
 - [ ] There is a new dmarc_none_moderation_action list setting and a
     DEFAULT_DMARC_NONE_MODERATION_ACTION mm_cfg.py setting to optionally
     apply Munge From or Wrap Message actions to posts From: domains that
@@ -21,11 +23,13 @@
   the DEFAULT_MEMBER_VERBOSITY_* and VERBOSE_CLEAN_LIMIT settings for
   information.
 
+### 2.1.20
 - [ ] There is a new Address Change sub-section in the web admin Membership
   Management section to allow a list admin to change a list member's
   address in one step rather than adding the new address, copying settings
   and deleting the old address.  (LP: #266809)
 
+### 2.1.19
 - [ ] There is a new list attribute 'subscribe_auto_approval' which is a list
   of email addresses and regular expressions matching email addresses
   whose subscriptions are exempt from admin approval.  (LP: #266609)
@@ -58,9 +62,10 @@
   DEFAULT_BOUNCE_NOTIFY_OWNER_ON_BOUNCE_INCREMENT to set the default
   for new lists.  This in turn defaults to No.  (LP: #1382150)    
 
-- [ ] The from_is_list feature introduced in 2.1.16 is now unconditionally
+### 2.1.18
+- [x] The from_is_list feature introduced in 2.1.16 is now unconditionally
   available to list owners.  There is also, a new Privacy options ->
-  Sender filters -> dmarc_moderation_action feature which applies to list
+  Sender filters -> **dmarc_moderation_action** feature which applies to list
   messages where the From: address is in a domain which publishes a DMARC
   policy of reject or possibly quarantine.  This is a list setting with
   values of Accept, Wrap Message, Munge From, Reject or Discard. There is
@@ -68,7 +73,7 @@
   default for this, and the list admin UI is not able to set an action
   which is 'less' than the default.  The prior ALLOW_FROM_IS_LIST setting
   has been removed and is effectively always Yes. There is a new
-  dmarc_quarantine_moderation_action list setting with default set by a
+  **dmarc_quarantine_moderation_action** list setting with default set by a
   new DEFAULT_DMARC_QUARANTINE_MODERATION_ACTION configuration setting
   which in turn defaults to Yes.  The list setting can be set to No to
   exclude domains with DMARC policy of quarantine from

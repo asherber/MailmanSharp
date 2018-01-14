@@ -15,8 +15,8 @@ namespace MailmanSharp.IntegrationTests
         public async void Foo()
         {
             var list = new MailmanList(ListConfig.Url, ListConfig.Password);
-            await list.Membership.ReadAsync();
-            list.Membership.EmailList.Should().HaveCount(2);
+            await list.Privacy.ReadAsync();
+            //await list.General.WriteAsync();
         }
     }
 }

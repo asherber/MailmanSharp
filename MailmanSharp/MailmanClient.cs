@@ -130,7 +130,7 @@ namespace MailmanSharp
                 path = path.Trim('/');
 
             var req = request ?? new RestRequest();
-            req.Resource = String.Format("{0}/{1}/{2}", _adminPath, _listName, path); ;
+            req.Resource = String.Format("{0}/{1}/{2}", _adminPath, _listName, path);
             req.Method = method;
             req.AddOrSetParameter("adminpw", this.AdminPassword);
 
