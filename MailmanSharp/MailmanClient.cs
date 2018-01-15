@@ -53,7 +53,7 @@ namespace MailmanSharp
         private string _listName;
         private string _adminPath;
         private MailmanList _list;
-        private RestClient _client;
+        private IRestClient _client;
 
         internal MailmanClient(MailmanList list)
         {

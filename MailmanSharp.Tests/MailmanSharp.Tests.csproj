@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HtmlAgilityPackExtensionsTests.cs" />
+    <Compile Include="MailmanClientTests.cs" />
     <Compile Include="MemberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MiscellaneousExtensionsTests.cs" />
