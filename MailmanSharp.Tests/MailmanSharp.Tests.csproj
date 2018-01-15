@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="HtmlAgilityPackExtensionsTests.cs" />
     <Compile Include="MailmanClientTests.cs" />
+    <Compile Include="MailmanListTests.cs" />
     <Compile Include="MemberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MiscellaneousExtensionsTests.cs" />
@@ -103,12 +104,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="HTML\general.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="HTML\members.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="HTML\ChangedConfig.xml" />
+    <Content Include="HTML\DefaultConfig.xml" />
+    <Content Include="HTML\general.html" />
+    <Content Include="HTML\members.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -120,4 +119,7 @@
     <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.3.1\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.3.1\build\net20\xunit.runner.visualstudio.props'))" />
   </Target>
   <Import Project="..\packages\xunit.core.2.3.1\build\xunit.core.targets" Condition="Exists('..\packages\xunit.core.2.3.1\build\xunit.core.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)html\*.*" "$(TargetDir)" /y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

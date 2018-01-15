@@ -9,3 +9,8 @@
 - [x] Test with properties that don't exist in Mailman
 - [ ] Make `MailmanVersion` more usable
 - [ ] Introduce some kind of internal 'tested with' property?
+- [ ] Don't let RestSharp leak through
+- [ ] Parameters as tuples
+- [ ] RosterRequest should check status code
+- [ ] Implement `IComparable` on `Member`
+- [ ] Differentiate `textarea` strings and lists

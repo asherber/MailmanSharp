@@ -116,9 +116,9 @@ namespace MailmanSharp
         private string GetCurrentConfig()
         {
             var root = new XElement("MailmanList",
-                new XAttribute("adminUrl", this.AdminUrl),
+                new XAttribute("adminUrl", this.AdminUrl ?? ""),
                 new XAttribute("dateCreated", DateTime.Now.ToString("s")),
-                new XAttribute("mailmanVersion", this.MailmanVersion),
+                new XAttribute("mailmanVersion", this.MailmanVersion ?? ""),
                 new XAttribute("mailmanSharpVersion", Assembly.GetExecutingAssembly().GetName().Version)
             );
 

@@ -49,7 +49,7 @@ namespace MailmanSharp
             SetParams("mod", this.Moderator, req);
             SetParams("post", this.Poster, req);
 
-            return this.GetClient().ExecuteGetAdminRequestAsync(_paths.Single(), req);
+            return this.GetClient().ExecutePostAdminRequestAsync(_paths.Single(), req);
         }
 
         internal override string GetCurrentConfig()

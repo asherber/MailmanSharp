@@ -23,7 +23,7 @@ namespace MailmanSharp.Tests
         public void SafeSelectNodes_ValidPath_Should_Work()
         {
             var doc = new CustomHtmlDocument();
-            doc.Load("html/general.html");
+            doc.Load("general.html");
 
             var safeNodes = doc.DocumentNode.SafeSelectNodes("//td");
             var nodes = doc.DocumentNode.SelectNodes("//td");
@@ -34,7 +34,7 @@ namespace MailmanSharp.Tests
         public void SafeSelectNodes_BadPath_Should_Return_Empty()
         {
             var doc = new CustomHtmlDocument();
-            doc.Load("html/general.html");
+            doc.Load("general.html");
 
             var safeNodes = doc.DocumentNode.SafeSelectNodes("//tdxxx");
             safeNodes.Should().NotBeNull().And.BeEmpty();

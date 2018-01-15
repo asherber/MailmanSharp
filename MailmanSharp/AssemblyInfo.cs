@@ -21,4 +21,5 @@ using System.Runtime.CompilerServices;
 
 #if DEBUG
 [assembly: InternalsVisibleTo("MailmanSharp.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 #endif

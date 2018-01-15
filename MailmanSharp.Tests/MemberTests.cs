@@ -20,7 +20,7 @@ namespace MailmanSharp.Tests
             {
                 OptionFixNestedTags = true
             };
-            _doc.Load("html/members.html");
+            _doc.Load("members.html");
         }
 
         [Fact]
