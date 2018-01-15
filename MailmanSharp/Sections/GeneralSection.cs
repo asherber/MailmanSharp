@@ -27,7 +27,7 @@ namespace MailmanSharp
     public enum FromIsListOption { No, MungeFrom, WrapMessage }
     public enum ReplyGoesToListOption { Poster, ThisList, ExplicitAddress }
     [Flags]
-    public enum NewMemberOption { None = 0, Hide = 1, Ack = 2, NotMeToo = 4, NoDupes = 8 }
+    public enum NewMemberOptions { None = 0, Hide = 1, Ack = 2, NotMeToo = 4, NoDupes = 8 }
 
     [Path("general")]
     [Order(1)]
@@ -55,7 +55,7 @@ namespace MailmanSharp
         public bool AdminNotifyMchanges { get; set; }
         public bool RespondToPostRequests { get; set; }
         public bool Emergency { get; set; }
-        public NewMemberOption NewMemberOptions { get; set; }
+        public NewMemberOptions NewMemberOptions { get; set; }
         public bool Administrivia { get; set; }
         public ushort MaxMessageSize { get; set; }
         public ushort AdminMemberChunksize { get; set; }

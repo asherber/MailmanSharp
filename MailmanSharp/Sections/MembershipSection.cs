@@ -30,11 +30,11 @@ using System.Threading.Tasks;
 namespace MailmanSharp
 {
     [Flags]
-    public enum SubscribeOption { None = 0, SendWelcomeMessage = 1, NotifyOwner = 2 }
+    public enum SubscribeOptions { None = 0, SendWelcomeMessage = 1, NotifyOwner = 2 }
     [Flags]
-    public enum UnsubscribeOption { None = 0, SendAcknowledgement = 1, NotifyOwner = 2 }
+    public enum UnsubscribeOptions { None = 0, SendAcknowledgement = 1, NotifyOwner = 2 }
     [Flags]
-    public enum ChangeNotificationOption { None = 0, OldAddress = 1, NewAddress = 2 }
+    public enum ChangeNotificationOptions { None = 0, OldAddress = 1, NewAddress = 2 }
     
 
     [Path("members")]
@@ -94,7 +94,7 @@ namespace MailmanSharp
             return this.GetClient().ExecutePostAdminRequestAsync(_paths.Single(), req);
         }
 
-        public async Task<UnsubscribeResult> UnsubscribeAsync(string members, UnsubscribeOption options = UnsubscribeOption.None)
+        public async Task<UnsubscribeResult> UnsubscribeAsync(string members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
             var result = new UnsubscribeResult();
 
@@ -102,8 +102,8 @@ namespace MailmanSharp
             {
                 var req = new RestRequest();
                 req.AddParameter("unsubscribees", members);
-                req.AddParameter("send_unsub_ack_to_this_batch", options.HasFlag(UnsubscribeOption.SendAcknowledgement).ToInt());
-                req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOption.NotifyOwner).ToInt());
+                req.AddParameter("send_unsub_ack_to_this_batch", options.HasFlag(UnsubscribeOptions.SendAcknowledgement).ToInt());
+                req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.NotifyOwner).ToInt());
 
                 var resp = await this.GetClient().ExecutePostAdminRequestAsync(_removePage, req).ConfigureAwait(false);
                 var doc = resp.Content.GetHtmlDocument();
@@ -123,13 +123,13 @@ namespace MailmanSharp
             return result;
         }
 
-        public Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<string> members, UnsubscribeOption options = UnsubscribeOption.None)
+        public Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<string> members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
             return UnsubscribeAsync(members.Cat(), options);
         }
 
         private enum SubscribeAction { Subscribe, Invite }
-        private async Task<SubscribeResult> SubscribeOrInviteAsync(string members, SubscribeAction action, SubscribeOption options = SubscribeOption.None)
+        private async Task<SubscribeResult> SubscribeOrInviteAsync(string members, SubscribeAction action, SubscribeOptions options = SubscribeOptions.None)
         {
             var result = new SubscribeResult();
 
@@ -138,8 +138,8 @@ namespace MailmanSharp
                 var req = new RestRequest();
                 req.AddParameter("subscribees", members);
                 req.AddParameter("subscribe_or_invite", action == SubscribeAction.Subscribe ? 0 : 1);
-                req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOption.SendWelcomeMessage).ToInt());
-                req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOption.NotifyOwner).ToInt());
+                req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOptions.SendWelcomeMessage).ToInt());
+                req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt());
 
                 var resp = await this.GetClient().ExecutePostAdminRequestAsync(_addPage, req).ConfigureAwait(false);
                 var doc = resp.Content.GetHtmlDocument();
@@ -169,12 +169,12 @@ namespace MailmanSharp
             return result;
         }
 
-        public Task<SubscribeResult> SubscribeAsync(string members, SubscribeOption options = SubscribeOption.None)
+        public Task<SubscribeResult> SubscribeAsync(string members, SubscribeOptions options = SubscribeOptions.None)
         {
             return SubscribeOrInviteAsync(members, SubscribeAction.Subscribe, options);
         }
 
-        public Task<SubscribeResult> SubscribeAsync(IEnumerable<string> members, SubscribeOption options = SubscribeOption.None)
+        public Task<SubscribeResult> SubscribeAsync(IEnumerable<string> members, SubscribeOptions options = SubscribeOptions.None)
         {
             return SubscribeAsync(members.Cat(), options);
         }
@@ -300,14 +300,14 @@ namespace MailmanSharp
         /// <param name="newAddress"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public async Task<ChangeAddressResult> ChangeMemberAddressAsync(string oldAddress, string newAddress, ChangeNotificationOption options = ChangeNotificationOption.None)
+        public async Task<ChangeAddressResult> ChangeMemberAddressAsync(string oldAddress, string newAddress, ChangeNotificationOptions options = ChangeNotificationOptions.None)
         {
             var req = new RestRequest();
             req.AddParameter("change_from", oldAddress);
             req.AddParameter("change_to", newAddress);
-            if (options.HasFlag(ChangeNotificationOption.OldAddress))
+            if (options.HasFlag(ChangeNotificationOptions.OldAddress))
                 req.AddParameter("notice_old", "yes");
-            if (options.HasFlag(ChangeNotificationOption.NewAddress))
+            if (options.HasFlag(ChangeNotificationOptions.NewAddress))
                 req.AddParameter("notice_new", "yes");
 
             var resp = await this.GetClient().ExecutePostAdminRequestAsync(_changePage, req).ConfigureAwait(false);
