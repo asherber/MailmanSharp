@@ -29,4 +29,11 @@ namespace MailmanSharp
         Task<IRestResponse> ExecutePostAdminRequestAsync(string path, params object[] parms);
         Task<IRestResponse> ExecuteRosterRequestAsync();
     }
+
+    internal interface IMailmanClientInternal: IMailmanClient
+    {
+        string AdminUrl { get; set; }
+        string AdminPassword { get; set; }
+        IMailmanClientInternal Clone();
+    }
 }

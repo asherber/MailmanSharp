@@ -14,7 +14,7 @@ namespace MailmanSharp.Tests
 {
     public class MailmanClientTests
     {
-        private readonly MailmanClient _client;
+        private readonly IMailmanClientInternal _client;
         private readonly Mock<IRestClient> _restClientMock;
         private IRestRequest _passedRequest = null;
 

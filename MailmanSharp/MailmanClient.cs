@@ -28,16 +28,18 @@ using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
-    public class MailmanClient: IMailmanClient
+    public class MailmanClient: IMailmanClientInternal
     {
         /// <summary>
         /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
         /// </summary>
-        internal string AdminUrl { get { return GetAdminUrl(); } set { SetAdminUrl(value); } }
+        string IMailmanClientInternal.AdminUrl { get { return GetAdminUrl(); } set { SetAdminUrl(value); } }
+        private string AdminUrl { get => ((IMailmanClientInternal)this).AdminUrl; set => ((IMailmanClientInternal)this).AdminUrl = value; }
         /// <summary>
         /// Administrator password for list.
         /// </summary>
-        internal string AdminPassword { get; set; }
+        string IMailmanClientInternal.AdminPassword { get; set; }
+        private string AdminPassword { get => ((IMailmanClientInternal)this).AdminPassword; set => ((IMailmanClientInternal)this).AdminPassword = value; }
 
         public IAuthenticator Authenticator { get => _client.Authenticator; set => _client.Authenticator = value; }
         public X509CertificateCollection ClientCertificates { get => _client.ClientCertificates; set => _client.ClientCertificates = value; }
@@ -70,7 +72,7 @@ namespace MailmanSharp
         /// Create a copy of a MailmanClient.
         /// </summary>
         /// <returns>New MailmanClient</returns>
-        internal MailmanClient Clone()
+        IMailmanClientInternal IMailmanClientInternal.Clone()
         {
             var result = new MailmanClient(_list)
             {

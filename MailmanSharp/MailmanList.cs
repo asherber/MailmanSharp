@@ -26,7 +26,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 
 /**
- * Tested with Mailman 2.1.17
+ * Tested with Mailman 2.1.23
  */
 
 namespace MailmanSharp
@@ -65,12 +65,12 @@ namespace MailmanSharp
         public ContentFilteringSection ContentFiltering { get; private set; }
         public PasswordsSection Passwords { get; private set; }   
         public AutoResponderSection AutoResponder { get; private set; }  
-        public TopicsSection Topics { get; private set; }     
+        public TopicsSection Topics { get; private set; }
 
         //public LanguageSection Language { get; private set; }   // Won't implement
 
-        public IMailmanClient Client { get; private set; }
-        internal MailmanClient InternalClient => Client as MailmanClient;
+        public IMailmanClient Client => InternalClient;
+        internal IMailmanClientInternal InternalClient { get; private set; }
 
         private string _mailmanVersion = null;
 
@@ -236,7 +236,7 @@ namespace MailmanSharp
 
         internal void ResetClient()
         {
-            this.Client = new MailmanClient(this);
+            this.InternalClient = new MailmanClient(this);
         }
     }
 }
