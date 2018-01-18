@@ -18,6 +18,7 @@ Features include: all Mailman settings available as object properties, bulk subs
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="[1.6.13,2.0)" />
     <PackageReference Include="Nerdbank.GitVersioning" Version="2.1.11" PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="RestSharp" Version="[106.2.1,107.0)" />
   </ItemGroup>
 

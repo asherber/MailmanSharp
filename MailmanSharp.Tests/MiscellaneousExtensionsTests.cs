@@ -10,6 +10,8 @@ using HtmlAgilityPack;
 using System.Xml.Linq;
 using System.Xml;
 using RestSharp;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace MailmanSharp.Tests
 {
@@ -43,21 +45,21 @@ namespace MailmanSharp.Tests
         
 
         [Fact]
-        public void CheckElementName_MatchingName_Should_Work()
+        public void CheckObjectName_MatchingName_Should_Work()
         {
             string name = "foo";
-            var el = new XElement(name);
-
-            el.CheckElementName(name);
+            var obj = new JObject(new JProperty(name, 123));
+            
+            obj.CheckObjectName(name);
         }
 
         [Fact]
         public void CheckElementName_NoMatch_Should_Throw()
         {
-            var el = new XElement("foo");
+            var obj = new JObject(new JProperty("foo", 123));
 
-            Action act = () => el.CheckElementName("Bar");
-            act.Should().Throw<XmlException>();
+            Action act = () => obj.CheckObjectName("Bar");
+            act.Should().Throw<JsonException>();
         }
 
         [Theory]

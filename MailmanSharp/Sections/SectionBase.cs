@@ -18,6 +18,8 @@
  */
 
 using HtmlAgilityPack;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Concurrent;
@@ -39,9 +41,10 @@ namespace MailmanSharp
         protected IEnumerable<PropertyInfo> _props => _propsDict[this.GetType()];
         
         [Ignore]
-        public string CurrentConfig { get { return GetCurrentConfig(); } }
+        public string CurrentConfig => new JObject(GetCurrentConfigJProperty()).ToString();
 
         private string SectionName => this.GetType().Name.Replace("Section", "");
+        private static JsonSerializer Serializer = new JsonSerializer() { ContractResolver = new MailmanContractResolver() };
         
 
         internal SectionBase(MailmanList list)
@@ -137,51 +140,25 @@ namespace MailmanSharp
         protected virtual void DoBeforeFinishWrite(RestRequest req) { }
 
         
-        internal virtual string GetCurrentConfig()
+        internal virtual JProperty GetCurrentConfigJProperty()
         {
-            var result = new XElement(this.SectionName);
-            var unignoredProps = _props.Unignored();
-
-            foreach (var prop in unignoredProps)
-            {
-                var val = prop.GetValue(this);
-                if (val is List<string>)
-                    val = ((List<string>)val).Cat();
-                    
-                result.Add(new XElement(prop.Name, val));
-            }
-            return result.ToString();
+            var allProperties = JToken.FromObject(this, Serializer);
+            return new JProperty(SectionName, allProperties);
         }
 
-        public void LoadConfig(string xml)
+        public void LoadConfig(string json)
         {
-            var root = XElement.Parse(xml);
-            root.CheckElementName(this.SectionName);
+            var obj = JObject.Parse(json);
+            obj.CheckObjectName(this.SectionName);
 
-            var unignoredProps = _props.Unignored();
-            foreach (var prop in unignoredProps)
-            {
-                var el = root.Element(prop.Name);
-                //if (el != null && !String.IsNullOrEmpty(el.Value))
-                if (el != null)
-                {
-                    if (prop.PropertyType == typeof(bool))
-                        prop.SetValue(this, Convert.ToBoolean(el.Value));
-                    else if (prop.PropertyType == typeof(ushort))
-                        prop.SetValue(this, Convert.ToUInt16(el.Value));
-                    else if (prop.PropertyType == typeof(double))
-                        prop.SetValue(this, Convert.ToDouble(el.Value));
-                    else if (prop.PropertyType == typeof(List<string>))
-                    {
-                        var list = el.Value.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
-                        prop.SetValue(this, list);
-                    }
-                    else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
-                        prop.SetValue(this, Enum.Parse(prop.PropertyType, el.Value, true));
-                    else
-                        prop.SetValue(this, el.Value);
-                }
-            }
+            var prop = obj.First as JProperty;
+            LoadConfig(prop);
+        }
+
+        internal void LoadConfig(JProperty prop)
+        {
+            var properties = prop.First.ToString();
+            JsonConvert.PopulateObject(properties, this);
         }
 
         protected async Task<Dictionary<string, HtmlDocument>> FetchHtmlDocumentsAsync()

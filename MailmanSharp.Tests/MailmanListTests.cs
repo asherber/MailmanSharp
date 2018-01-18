@@ -10,9 +10,15 @@ using System.Reflection;
 using System.Xml.Linq;
 using System.IO;
 using RestSharp;
+using Newtonsoft.Json.Linq;
+using ApprovalTests;
+using ApprovalTests.Reporters;
+using ApprovalTests.Namers;
 
 namespace MailmanSharp.Tests
 {
+    [UseApprovalSubdirectory("Approvals")]
+    [UseReporter(typeof(DiffReporter))]
     public class MailmanListTests
     {
         private readonly Mock<IMailmanClientInternal> _clientMock;
@@ -52,23 +58,9 @@ namespace MailmanSharp.Tests
         [Fact]
         public void New_List_Has_Default_Config()
         {
-            var expected = XDocument.Parse(File.ReadAllText("DefaultConfig.xml"));
-            
-            var output = XDocument.Parse(_list.CurrentConfig);
-            output.Root.RemoveAttributes();
-
-            output.Should().BeEquivalentTo(expected);
-        }
-
-        [Fact]
-        public void New_List_Has_Default_Clean_Config()
-        {
-            var expected = XDocument.Parse(File.ReadAllText("DefaultSafeConfig.xml"));
-
-            var output = XDocument.Parse(_list.SafeCurrentConfig);
-            output.Root.RemoveAttributes();
-
-            output.Should().BeEquivalentTo(expected);
+            var output = JObject.Parse(_list.CurrentConfig);
+            output.Remove("Meta");
+            Approvals.Verify(output.ToString());
         }
 
         [Fact]
@@ -90,13 +82,11 @@ namespace MailmanSharp.Tests
         [Fact]
         public void LoadConfig_Works()
         {
-            var expected = XDocument.Parse(File.ReadAllText("ChangedConfig.xml"));
+            _list.LoadConfig(File.ReadAllText("ChangedConfig.json"));
+            var output = JObject.Parse(_list.CurrentConfig);
+            output.Remove("Meta");
 
-            _list.LoadConfig(expected.ToString());
-            var output = XDocument.Parse(_list.SafeCurrentConfig);
-            output.Root.RemoveAttributes();
-
-            output.Should().BeEquivalentTo(expected);
+            Approvals.Verify(output.ToString());
         }
 
         [Fact]

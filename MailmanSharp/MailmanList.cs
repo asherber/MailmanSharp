@@ -17,6 +17,7 @@
  * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,10 +46,6 @@ namespace MailmanSharp
         /// Current configuration of object as XML.
         /// </summary>
         public string CurrentConfig { get { return GetCurrentConfig(); } }
-        /// <summary>
-        /// CurrentConfig with certain list-specific properties removed.
-        /// </summary>
-        public string SafeCurrentConfig { get { return GetSafeCurrentConfig(); } }
         /// <summary>
         /// Gets version of Mailman that this list is running on.
         /// </summary>
@@ -115,69 +112,39 @@ namespace MailmanSharp
 
         private string GetCurrentConfig()
         {
-            var root = new XElement("MailmanList",
-                new XAttribute("adminUrl", this.AdminUrl ?? ""),
-                new XAttribute("dateCreated", DateTime.Now.ToString("s")),
-                new XAttribute("mailmanVersion", this.MailmanVersion ?? ""),
-                new XAttribute("mailmanSharpVersion", Assembly.GetExecutingAssembly().GetName().Version)
-            );
+            var listProps = new JProperty("Meta", new JObject(
+                new JProperty("AdminUrl", this.AdminUrl),
+                new JProperty("ExportedDate", DateTime.Now.ToString("s")),
+                new JProperty("MailmanVersion", this.MailmanVersion),
+                new JProperty("MailmanSharpVersion", Assembly.GetExecutingAssembly().GetName().Version.ToString())
+            ));
+
+            var root = new JObject(listProps);
 
             foreach (var prop in _sectionProperties)
             {
-                var xml = ((SectionBase)prop.GetValue(this)).GetCurrentConfig();
-                if (!String.IsNullOrWhiteSpace(xml))
-                    root.Add(XElement.Parse(xml));
+                var jprop = ((SectionBase)prop.GetValue(this)).GetCurrentConfigJProperty();
+                if (jprop != null)
+                    root.Add(jprop);
             }
             return root.ToString();
         }
 
-        private string GetSafeCurrentConfig()
-        {
-            return SanitizeConfig(this.CurrentConfig);
-        }
+               
 
         /// <summary>
-        /// Remove list-specific properties from config XML.
+        /// Overwrite current configuration with values from JSON.
         /// </summary>
-        /// <param name="config">XML config to sanitize.</param>
-        /// <returns></returns>
-        public static string SanitizeConfig(string config)
+        /// <param name="json">Config JSON with values to load.</param>
+        public void LoadConfig(string json)
         {
-            var itemsToRemove = new List<string>()
-            {
-                "//General/RealName",
-                "//General/Description",
-                "//General/Info",
-                "//General/SubjectPrefix",
-                "//Privacy/AcceptableAliases",
-            };
-            var xml = XElement.Parse(config);
-            foreach (var item in itemsToRemove)
-            {
-                var el = xml.XPathSelectElement(item);
-                if (el != null)
-                    el.Remove();
-            }
-
-            return xml.ToString();
-        }
-        
-        
-
-        /// <summary>
-        /// Overwrite current configuration with values from XML.
-        /// </summary>
-        /// <param name="xml">Config XML with values to load.</param>
-        public void LoadConfig(string xml)
-        {
-            var root = XElement.Parse(xml);
-            root.CheckElementName("MailmanList");
+            var root = JObject.Parse(json);
 
             foreach (var prop in _sectionProperties)
-            {                
-                var el = root.Element(prop.Name);
-                if (el != null)
-                    ((SectionBase)prop.GetValue(this)).LoadConfig(el.ToString());
+            {
+                var jsonProp = root.Property(prop.Name);
+                if (jsonProp != null)
+                    ((SectionBase)prop.GetValue(this)).LoadConfig(jsonProp);
             }
         }
 

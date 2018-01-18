@@ -11,7 +11,6 @@ namespace MailmanSharp
         string AdminUrl { get; set; }
         string AdminPassword { get; set; }
         string CurrentConfig { get; }
-        string SafeCurrentConfig { get; }
         string MailmanVersion { get; }
 
         MembershipSection Membership { get; }

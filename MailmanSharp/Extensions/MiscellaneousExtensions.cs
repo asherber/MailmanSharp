@@ -18,6 +18,8 @@
  */
 
 using HtmlAgilityPack;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -51,10 +53,10 @@ namespace MailmanSharp
             return result;
         }
 
-        public static void CheckElementName(this XElement element, string expectedName)
+        public static void CheckObjectName(this JObject obj, string expectedName)
         {
-            if (element.Name != expectedName)
-                throw new XmlException("Incorrect root element name.", null, 1, 2);
+            if ((obj.First as JProperty).Name != expectedName)
+                throw new JsonException("Incorrect root property name.");
         }
 
         public static int ToInt(this bool input)

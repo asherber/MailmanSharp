@@ -18,6 +18,7 @@
  */
 
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Concurrent;
@@ -64,7 +65,7 @@ namespace MailmanSharp
             return Task.CompletedTask;
         }
 
-        internal override string GetCurrentConfig()
+        internal override JProperty GetCurrentConfigJProperty()
         {
             return null;
         }

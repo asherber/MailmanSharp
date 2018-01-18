@@ -17,6 +17,7 @@
  * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,7 @@ namespace MailmanSharp
             return this.GetClient().ExecutePostAdminRequestAsync(_paths.Single(), req);
         }
 
-        internal override string GetCurrentConfig()
+        internal override JProperty GetCurrentConfigJProperty()
         {
             return null;
         }
