@@ -51,9 +51,9 @@ namespace MailmanSharp
                 string index = i.ToString("D2");
                 this.TopicList.Add(new Topic()
                 {
-                    Name = (string)doc.GetNodeValue(_nameTag + index),
-                    Regexes = doc.GetNodeListValue(_regexTag + index),
-                    Description = doc.GetNodeListValue(_descTag + index).Cat(),
+                    Name = (string)doc.GetInputValue(_nameTag + index),
+                    Regexes = doc.GetTextAreaListValue(_regexTag + index),
+                    Description = doc.GetTextAreaListValue(_descTag + index).Cat(),
                 });
             }
 

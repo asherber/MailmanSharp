@@ -60,7 +60,7 @@ namespace MailmanSharp
         [Path("sender")]
         public MemberModerationActionOption MemberModerationAction { get; set; }
         [Path("sender")]
-        public List<string> MemberModerationNotice { get; set; } = new List<string>();
+        public string MemberModerationNotice { get; set; } = "";
         [Path("sender")]
         public DmarcModerationActionOption DmarcModerationAction { get; set; }
         [Path("sender")]
@@ -68,7 +68,9 @@ namespace MailmanSharp
         [Path("sender")]
         public bool DmarcNoneModerationAction { get; set; }
         [Path("sender")]
-        public List<string> DmarcWrappedMessageText { get; set; } = new List<string>();
+        public string DmarcModerationNotice { get; set; } = "";
+        [Path("sender")]
+        public string DmarcWrappedMessageText { get; set; } = "";
         [Path("sender")]
         public List<string> EquivalentDomains { get; set; } = new List<string>();
         [Path("sender")]
@@ -84,7 +86,7 @@ namespace MailmanSharp
         [Path("sender")]
         public bool ForwardAutoDiscards { get; set; }
         [Path("sender")]
-        public List<string> NonmemberRejectionNotice { get; set; } = new List<string>();
+        public string NonmemberRejectionNotice { get; set; } = "";
 
         [Path("recipient")]
         public bool RequireExplicitDestination { get; set; }
@@ -115,8 +117,8 @@ namespace MailmanSharp
 
                 this.FilterList.Add(new HeaderFilter()
                 {
-                    Regexes = doc.GetNodeListValue(_regexTag + index),
-                    Action = doc.GetNodeEnumValue<FilterAction>(_actionTag + index)
+                    Regexes = doc.GetTextAreaListValue(_regexTag + index),
+                    Action = doc.GetInputEnumValue<FilterAction>(_actionTag + index)
                 });
             }
         }

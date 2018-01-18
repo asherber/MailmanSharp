@@ -13,7 +13,7 @@
 - [ ] Parameters as tuples
 - [ ] RosterRequest should check status code
 - [ ] Implement `IComparable` on `Member`
-- [ ] Differentiate `textarea` strings and lists
+- [x] Differentiate `textarea` strings and lists
 - [ ] Make all properties nullable
 - [x] Switch to JSON
 - [ ] `ReadAsync` needs to start with a blank object

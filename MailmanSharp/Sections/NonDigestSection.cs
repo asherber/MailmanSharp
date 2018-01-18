@@ -32,8 +32,8 @@ namespace MailmanSharp
     {
         public bool Nondigestable { get; set; }
         public PersonalizeOption Personalize { get; set; }
-        public List<string> MsgHeader { get; set; } = new List<string>();
-        public List<string> MsgFooter { get; set; } = new List<string>();
+        public string MsgHeader { get; set; } = "";
+        public string MsgFooter { get; set; } = "";
         public bool ScrubNondigest { get; set; }
         public List<string> RegularExcludeLists { get; set; } = new List<string>();
         public bool RegularExcludeIgnore { get; set; }

@@ -38,8 +38,8 @@ namespace MailmanSharp
         public MimeIsDefaultDigestOption MimeIsDefaultDigest { get; set; }
         public ushort DigestSizeThreshhold { get; set; }
         public bool DigestSendPeriodic { get; set; }
-        public List<string> DigestHeader { get; set; } = new List<string>();
-        public List<string> DigestFooter { get; set; } = new List<string>();
+        public string DigestHeader { get; set; } = "";
+        public string DigestFooter { get; set; } = "";
         public DigestVolumeFrequencyOption DigestVolumeFrequency { get; set; }
         
         public Task NewVolumeAsync()

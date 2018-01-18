@@ -49,12 +49,12 @@ namespace MailmanSharp
             return doc;
         }
 
-        public static object GetNodeValue(this HtmlDocument doc, PropertyInfo prop)
+        public static object GetInputValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            return doc.GetNodeValue(prop.Name.Decamel());
+            return doc.GetInputValue(prop.Name.Decamel());
         }
 
-        public static object GetNodeValue(this HtmlDocument doc, string name)
+        public static object GetInputValue(this HtmlDocument doc, string name)
         {
             string xpath = String.Format("//input[@name='{0}']", name);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
@@ -62,44 +62,55 @@ namespace MailmanSharp
             return node?.Attributes["value"].Value;
         }
 
-        public static object GetNodeStringValue(this HtmlDocument doc, PropertyInfo prop)
+        public static object GetInputStringValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            return doc.GetNodeValue(prop);
+            return doc.GetInputValue(prop);
         }
 
-        public static object GetNodeIntValue(this HtmlDocument doc, PropertyInfo prop)
+        public static object GetInputIntValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            var val = doc.GetNodeValue(prop);
+            var val = doc.GetInputValue(prop);
             return val != null ? (object)ushort.Parse(val.ToString()) : null;
         }
 
-        public static object GetNodeDoubleValue(this HtmlDocument doc, PropertyInfo prop)
+        public static object GetInputDoubleValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            var val = doc.GetNodeValue(prop);
+            var val = doc.GetInputValue(prop);
             return val != null ? (object)double.Parse(val.ToString()) : null;
         }
 
-        public static List<string> GetNodeListValue(this HtmlDocument doc, PropertyInfo prop)
+        public static List<string> GetTextAreaListValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            return doc.GetNodeListValue(prop.Name.Decamel());
+            return doc.GetTextAreaListValue(prop.Name.Decamel());
         }
 
-        public static List<string> GetNodeListValue(this HtmlDocument doc, string name)
+        public static List<string> GetTextAreaListValue(this HtmlDocument doc, string name)
+        {
+            var text = doc.GetTextAreaStringValue(name);
+            if (text == null)
+                return new List<string>();
+            else
+                return text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
+        }
+
+        public static string GetTextAreaStringValue(this HtmlDocument doc, PropertyInfo prop)
+        {
+            return doc.GetTextAreaStringValue(prop.Name.Decamel());
+        }
+
+        public static string GetTextAreaStringValue(this HtmlDocument doc, string name)
         {
             string xpath = String.Format("//textarea[@name='{0}']", name);
             var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
 
-            if (node != default(HtmlNode))
-            {
-                if (String.IsNullOrEmpty(node.InnerText))
-                    return new List<string>();
-                else
-                    return node.InnerText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
-            }
-            return null;
+            var result = node?.InnerText;
+            if (String.IsNullOrEmpty(node?.InnerText))
+                return null;
+            else
+                return result;
         }
 
-        public static object GetNodeBoolValue(this HtmlDocument doc, PropertyInfo prop)
+        public static object GetInputBoolValue(this HtmlDocument doc, PropertyInfo prop)
         {
             var dname = prop.Name.Decamel();
             string xpath = String.Format("//input[@name='{0}' and @checked]", dname);
@@ -108,12 +119,12 @@ namespace MailmanSharp
             return node != null ? (object)(node.Attributes["value"].Value == "1") : null;
         }
 
-        public static object GetNodeEnumValue(this HtmlDocument doc, PropertyInfo prop)
+        public static object GetInputEnumValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            return doc.GetNodeEnumValue(prop.Name.Decamel(), prop.PropertyType);
+            return doc.GetInputEnumValue(prop.Name.Decamel(), prop.PropertyType);
         }
 
-        public static object GetNodeEnumValue(this HtmlDocument doc, string name, Type enumType)
+        public static object GetInputEnumValue(this HtmlDocument doc, string name, Type enumType)
         {
             string xpath = String.Format("//input[@name='{0}' and @checked]", name);
             var nodes = doc.DocumentNode.SafeSelectNodes(xpath);
@@ -135,10 +146,10 @@ namespace MailmanSharp
                 return null;
         }
 
-        public static T GetNodeEnumValue<T>(this HtmlDocument doc, string name) where T : struct, IConvertible
+        public static T GetInputEnumValue<T>(this HtmlDocument doc, string name) where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum) throw new ArgumentException("T must be an enumerated type");
-            var obj = doc.GetNodeEnumValue(name, typeof(T));
+            var obj = doc.GetInputEnumValue(name, typeof(T));
             if (obj != null)
                 return (T)obj;
             else

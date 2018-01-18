@@ -71,12 +71,13 @@ Line Two</textarea>
 
         private class NodeTestClass
         {
-            public string StringProp { get; set; } = "apple";
-            public ushort IntProp { get; set; } = 42;
-            public double DoubleProp { get; set; } = 8.7;
-            public List<string> ListProp { get; set; } = new List<string>() { "Line One", "Line Two" };
-            public DigestVolumeFrequencyOption EnumProp { get; set; } = DigestVolumeFrequencyOption.Quarterly;
-            public bool BoolProp { get; set; } = true;
+            public string StringProp => "apple";
+            public ushort IntProp => 42;
+            public double DoubleProp => 8.7;
+            public List<string> ListProp => new List<string>() { "Line One", "Line Two" };
+            public string StringProp2 => "Line One\r\nLine Two";
+            public DigestVolumeFrequencyOption EnumProp => DigestVolumeFrequencyOption.Quarterly;
+            public bool BoolProp => true;
         }
 
         [Theory]
@@ -84,12 +85,12 @@ Line Two</textarea>
         [InlineData("int_prop", "42")]
         [InlineData("double_prop", "8.7")]
         [InlineData("enum_prop", "2")]
-        public void GetNodeValue_ByName(string name, object expected)
+        public void GetInputValue_ByName(string name, object expected)
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
 
-            var output = doc.GetNodeValue(name);
+            var output = doc.GetInputValue(name);
             output.Should().Be(expected);
         }
 
@@ -98,138 +99,161 @@ Line Two</textarea>
         [InlineData("IntProp", "42")]
         [InlineData("DoubleProp", "8.7")]
         [InlineData("EnumProp", "2")]
-        public void GetNodeValue_ByProp(string name, object expected)
+        public void GetInputValue_ByProp(string name, object expected)
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
 
             var prop = typeof(NodeTestClass).GetProperty(name);
 
-            var output = doc.GetNodeValue(prop);
+            var output = doc.GetInputValue(prop);
             output.Should().Be(expected);
         }
 
         [Fact]
-        public void GetNodeStringValue()
+        public void GetInputStringValue()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
             var obj = new NodeTestClass();
             var prop = typeof(NodeTestClass).GetProperty("StringProp");
 
-            var output = doc.GetNodeStringValue(prop);
+            var output = doc.GetInputStringValue(prop);
             output.Should().Be(obj.StringProp);
         }
 
         [Fact]
-        public void GetNodeIntValue()
+        public void GetInputIntValue()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
             var obj = new NodeTestClass();
             var prop = typeof(NodeTestClass).GetProperty("IntProp");
 
-            var output = doc.GetNodeIntValue(prop);
+            var output = doc.GetInputIntValue(prop);
             output.Should().Be(obj.IntProp);
         }
 
         [Fact]
-        public void GetNodeDoubleValue()
+        public void GetInputDoubleValue()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
             var obj = new NodeTestClass();
             var prop = typeof(NodeTestClass).GetProperty("DoubleProp");
 
-            var output = doc.GetNodeDoubleValue(prop);
+            var output = doc.GetInputDoubleValue(prop);
             output.Should().Be(obj.DoubleProp);
         }
 
         [Fact]
-        public void GetNodeBoolValue()
+        public void GetInputBoolValue()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
             var obj = new NodeTestClass();
             var prop = typeof(NodeTestClass).GetProperty("BoolProp");
 
-            var output = doc.GetNodeBoolValue(prop);
+            var output = doc.GetInputBoolValue(prop);
             output.Should().Be(obj.BoolProp);
         }
 
         [Fact]
-        public void GetNodeListValue()
+        public void GetTextareaListValue()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
             var obj = new NodeTestClass();
             var prop = typeof(NodeTestClass).GetProperty("ListProp");
 
-            var output = doc.GetNodeListValue(prop);
+            var output = doc.GetTextAreaListValue(prop);
             output.Should().BeEquivalentTo(obj.ListProp);
         }
 
         [Fact]
-        public void GetNodeListValue_ByName()
+        public void GetTextareaListValue_ByName()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
             var obj = new NodeTestClass();
             
-            var output = doc.GetNodeListValue("list_prop");
+            var output = doc.GetTextAreaListValue("list_prop");
             output.Should().BeEquivalentTo(obj.ListProp);
         }
 
         [Fact]
-        public void GetNodeEnumValue()
+        public void GetTextAreaStringValue()
+        {
+            var doc = new CustomHtmlDocument();
+            doc.LoadHtml(_nodeTestHtml);
+            var obj = new NodeTestClass();
+            var prop = typeof(NodeTestClass).GetProperty("ListProp");
+
+            var output = doc.GetTextAreaStringValue(prop);
+            output.Should().Be(obj.StringProp2);
+        }
+
+        [Fact]
+        public void GetTextareaStringValue_ByName()
+        {
+            var doc = new CustomHtmlDocument();
+            doc.LoadHtml(_nodeTestHtml);
+            var obj = new NodeTestClass();
+
+            var output = doc.GetTextAreaStringValue("list_prop");
+            output.Should().Be(obj.StringProp2);
+        }
+
+        [Fact]
+        public void GetInputEnumValue()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
             var obj = new NodeTestClass();
             var prop = typeof(NodeTestClass).GetProperty("EnumProp");
 
-            var output = doc.GetNodeEnumValue(prop);
+            var output = doc.GetInputEnumValue(prop);
             output.Should().Be(obj.EnumProp);
         }
 
         [Fact]
-        public void GetNodeEnumValue_ByName()
+        public void GetInputEnumValue_ByName()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
             var obj = new NodeTestClass();
 
-            var output = doc.GetNodeEnumValue<DigestVolumeFrequencyOption>("enum_prop");
+            var output = doc.GetInputEnumValue<DigestVolumeFrequencyOption>("enum_prop");
             output.Should().Be(obj.EnumProp);
         }
 
         [Fact]
-        public void GetNodeEnumValue_WrongType_ArgumentException()
+        public void GetInputEnumValue_WrongType_ArgumentException()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
             
-            Action act = () => doc.GetNodeEnumValue<int>("enum_prop");
+            Action act = () => doc.GetInputEnumValue<int>("enum_prop");
             act.Should().Throw<ArgumentException>();
         }
 
         [Fact]
-        public void GetNodeEnumValue_WrongValue_ArgumentException()
+        public void GetInputEnumValue_WrongValue_ArgumentException()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
 
-            Action act = () => doc.GetNodeEnumValue<DigestVolumeFrequencyOption>("bad_enum_prop");
+            Action act = () => doc.GetInputEnumValue<DigestVolumeFrequencyOption>("bad_enum_prop");
             act.Should().Throw<ArgumentException>();
         }
 
         [Fact]
-        public void GetNodeEnumValue_WrongName_OutOfRangeException()
+        public void GetInputEnumValue_WrongName_OutOfRangeException()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
 
-            Action act = () => doc.GetNodeEnumValue<DigestVolumeFrequencyOption>("xyz");
+            Action act = () => doc.GetInputEnumValue<DigestVolumeFrequencyOption>("xyz");
             act.Should().Throw<ArgumentOutOfRangeException>();
         }
     }

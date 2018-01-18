@@ -93,17 +93,20 @@ namespace MailmanSharp
                 foreach (var prop in propsToRead)
                 {
                     if (prop.PropertyType == typeof(string))
-                        prop.SetValueIfNotNull(this, doc.GetNodeStringValue(prop));
+                    {
+                        var val = doc.GetInputStringValue(prop) ?? doc.GetTextAreaStringValue(prop);
+                        prop.SetValueIfNotNull(this, val);
+                    }
                     else if (prop.PropertyType == typeof(ushort))
-                        prop.SetValueIfNotNull(this, doc.GetNodeIntValue(prop));
+                        prop.SetValueIfNotNull(this, doc.GetInputIntValue(prop));
                     else if (prop.PropertyType == typeof(double))
-                        prop.SetValueIfNotNull(this, doc.GetNodeDoubleValue(prop));
+                        prop.SetValueIfNotNull(this, doc.GetInputDoubleValue(prop));
                     else if (prop.PropertyType == typeof(bool))
-                        prop.SetValueIfNotNull(this, doc.GetNodeBoolValue(prop));
+                        prop.SetValueIfNotNull(this, doc.GetInputBoolValue(prop));
                     else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
-                        prop.SetValueIfNotNull(this, doc.GetNodeEnumValue(prop));
+                        prop.SetValueIfNotNull(this, doc.GetInputEnumValue(prop));
                     else if (prop.PropertyType == typeof(List<string>))
-                        prop.SetValueIfNotNull(this, doc.GetNodeListValue(prop));
+                        prop.SetValueIfNotNull(this, doc.GetTextAreaListValue(prop));
                 }
             }
 

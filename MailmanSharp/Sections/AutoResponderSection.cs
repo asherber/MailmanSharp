@@ -31,11 +31,11 @@ namespace MailmanSharp
     public class AutoResponderSection: SectionBase
     {
         public bool AutorespondPostings { get; set; }
-        public List<string> AutoresponsePostingsText { get; set; } = new List<string>();
+        public string AutoresponsePostingsText { get; set; } = "";
         public bool AutorespondAdmin { get; set; }
-        public List<string> AutoresponseAdminText { get; set; } = new List<string>();
+        public string AutoresponseAdminText { get; set; } = "";
         public AutorespondRequestsOption AutorespondRequests { get; set; }
-        public List<string> AutoresponseRequestText { get; set; } = new List<string>();
+        public string AutoresponseRequestText { get; set; } = "";
         public ushort AutoresponseGraceperiod { get; set; }
 
 

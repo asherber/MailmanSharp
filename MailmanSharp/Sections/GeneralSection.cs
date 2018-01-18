@@ -37,7 +37,7 @@ namespace MailmanSharp
         public List<string> Owner { get; set; } = new List<string>();
         public List<string> Moderator { get; set; } = new List<string>();
         public string Description { get; set; } = "";
-        public List<string> Info { get; set; } = new List<string>();
+        public string Info { get; set; } = "";
         public string SubjectPrefix { get; set; } = "";
         public FromIsListOption FromIsList { get; set; }
         public bool AnonymousList { get; set; }
@@ -47,9 +47,9 @@ namespace MailmanSharp
         public bool UmbrellaList { get; set; }
         public string UmbrellaMemberSuffix { get; set; } = "";
         public bool SendReminders { get; set; }
-        public List<string> WelcomeMsg { get; set; } = new List<string>();
+        public string WelcomeMsg { get; set; } = "";
         public bool SendWelcomeMsg { get; set; }
-        public List<string> GoodbyeMsg { get; set; } = new List<string>();
+        public string GoodbyeMsg { get; set; } = "";
         public bool SendGoodbyeMsg { get; set; }
         public bool AdminImmedNotify { get; set; }
         public bool AdminNotifyMchanges { get; set; }
