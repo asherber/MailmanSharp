@@ -6,10 +6,10 @@
     "Description": "",
     "Info": [],
     "SubjectPrefix": "",
-    "FromIsList": 0,
+    "FromIsList": "No",
     "AnonymousList": false,
     "FirstStripReplyTo": false,
-    "ReplyGoesToList": 0,
+    "ReplyGoesToList": "Poster",
     "ReplyToAddress": "",
     "UmbrellaList": false,
     "UmbrellaMemberSuffix": "",
@@ -22,7 +22,7 @@
     "AdminNotifyMchanges": false,
     "RespondToPostRequests": false,
     "Emergency": false,
-    "NewMemberOptions": 0,
+    "NewMemberOptions": "None",
     "Administrivia": false,
     "MaxMessageSize": 0,
     "AdminMemberChunksize": 0,
@@ -33,7 +33,7 @@
   },
   "NonDigest": {
     "Nondigestable": false,
-    "Personalize": 0,
+    "Personalize": "No",
     "MsgHeader": [],
     "MsgFooter": [],
     "ScrubNondigest": false,
@@ -43,28 +43,28 @@
   },
   "Digest": {
     "Digestable": false,
-    "DigestIsDefault": 0,
-    "MimeIsDefaultDigest": 0,
+    "DigestIsDefault": "Regular",
+    "MimeIsDefaultDigest": "Plain",
     "DigestSizeThreshhold": 0,
     "DigestSendPeriodic": false,
     "DigestHeader": [],
     "DigestFooter": [],
-    "DigestVolumeFrequency": 0
+    "DigestVolumeFrequency": "Yearly"
   },
   "Privacy": {
     "Advertised": false,
-    "SubscribePolicy": 0,
+    "SubscribePolicy": "Confirm",
     "SubscribeAutoApproval": [],
     "UnubscribePolicy": false,
     "BanList": [],
-    "PrivateRoster": 0,
+    "PrivateRoster": "Anyone",
     "ObscureAddresses": false,
     "DefaultMemberModeration": false,
     "MemberVerbosityThreshold": 0,
     "MemberVerbosityInterval": 0,
-    "MemberModerationAction": 0,
+    "MemberModerationAction": "Hold",
     "MemberModerationNotice": [],
-    "DmarcModerationAction": 0,
+    "DmarcModerationAction": "Accept",
     "DmarcQuarantineModerationAction": false,
     "DmarcNoneModerationAction": false,
     "DmarcWrappedMessageText": [],
@@ -73,7 +73,7 @@
     "HoldTheseNonmembers": [],
     "RejectTheseNonmembers": [],
     "DiscardTheseNonmembers": [],
-    "GenericNonmemberAction": 0,
+    "GenericNonmemberAction": "Accept",
     "ForwardAutoDiscards": false,
     "NonmemberRejectionNotice": [],
     "RequireExplicitDestination": false,
@@ -94,8 +94,8 @@
   },
   "Archiving": {
     "Archive": false,
-    "ArchivePrivate": 0,
-    "ArchiveVolumeFrequency": 0
+    "ArchivePrivate": "Public",
+    "ArchiveVolumeFrequency": "Yearly"
   },
   "MailNewsGateways": {
     "NntpHost": "",
@@ -109,7 +109,7 @@
     "AutoresponsePostingsText": [],
     "AutorespondAdmin": false,
     "AutoresponseAdminText": [],
-    "AutorespondRequests": 0,
+    "AutorespondRequests": "No",
     "AutoresponseRequestText": [],
     "AutoresponseGraceperiod": 0
   },
@@ -121,7 +121,7 @@
     "PassFilenameExtensions": [],
     "CollapseAlternatives": false,
     "ConvertHtmlToPlaintext": false,
-    "FilterAction": 0
+    "FilterAction": "Discard"
   },
   "Topics": {
     "TopicsEnabled": false,

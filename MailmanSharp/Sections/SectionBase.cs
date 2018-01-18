@@ -44,7 +44,7 @@ namespace MailmanSharp
         public string CurrentConfig => new JObject(GetCurrentConfigJProperty()).ToString();
 
         private string SectionName => this.GetType().Name.Replace("Section", "");
-        private static JsonSerializer Serializer = new JsonSerializer() { ContractResolver = new MailmanContractResolver() };
+        private static JsonSerializer Serializer = new MailmanJsonSerializer();
         
 
         internal SectionBase(MailmanList list)
