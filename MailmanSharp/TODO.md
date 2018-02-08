@@ -12,7 +12,7 @@
 - [ ] Don't let RestSharp leak through
 - [ ] Parameters as tuples
 - [ ] RosterRequest should check status code
-- [ ] Implement `IComparable` on `Member`
+- [x] Implement `IEquatable` on `Member`
 - [x] Differentiate `textarea` strings and lists
 - [x] Make all properties nullable
 - [x] Switch to JSON

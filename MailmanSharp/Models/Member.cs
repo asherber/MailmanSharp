@@ -32,7 +32,7 @@ namespace MailmanSharp
     public enum NoMailReason { None, Unknown, Bounce, User, Administrator }
 
     [DebuggerDisplay("Email = {Email}, RealName = {RealName}")]
-    public class Member
+    public class Member: IEquatable<Member>
     {
         [Ignore]
         public string Email { get; internal set; }
@@ -121,5 +121,35 @@ namespace MailmanSharp
             req.AddParameter(_encEmail + "_language", "en");  // Assume English
             return req.Parameters;
         }
+
+        #region IEquatable
+        public bool Equals(Member other)
+        {
+            return this.Email.ToLower() == other?.Email?.ToLower();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Member);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Email.GetHashCode();
+        }
+
+        public static bool operator ==(Member left, Member right)
+        {
+            if ((object)left == null || (object)right == null)
+                return Object.Equals(left, right);
+            else
+                return left.Equals(right);
+        }
+
+        public static bool operator !=(Member left, Member right)
+        {
+            return !(left == right);
+        }
+        #endregion        
     }
 }

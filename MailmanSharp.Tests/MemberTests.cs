@@ -100,5 +100,21 @@ namespace MailmanSharp.Tests
             }
         }
        
+        [Fact]
+        public void NotEquals_Should_Work()
+        {
+            var members = GetMembersFromHtml().ToArray();
+            var equal = members[0] != members[1];
+            equal.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Equals_Should_Work()
+        {
+            var members = GetMembersFromHtml().ToArray();
+            members[1].Email = members[0].Email;
+            var equal = members[0] == members[1];
+            equal.Should().BeTrue();
+        }
     }
 }
