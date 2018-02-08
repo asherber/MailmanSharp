@@ -95,18 +95,18 @@ namespace MailmanSharp
                     if (prop.PropertyType == typeof(string))
                     {
                         var val = doc.GetInputStringValue(prop) ?? doc.GetTextAreaStringValue(prop);
-                        prop.SetValueIfNotNull(this, val);
+                        prop.SetValue(this, val);
                     }
-                    else if (prop.PropertyType == typeof(ushort))
-                        prop.SetValueIfNotNull(this, doc.GetInputIntValue(prop));
-                    else if (prop.PropertyType == typeof(double))
-                        prop.SetValueIfNotNull(this, doc.GetInputDoubleValue(prop));
-                    else if (prop.PropertyType == typeof(bool))
-                        prop.SetValueIfNotNull(this, doc.GetInputBoolValue(prop));
-                    else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
-                        prop.SetValueIfNotNull(this, doc.GetInputEnumValue(prop));
+                    else if (prop.PropertyType == typeof(ushort?))
+                        prop.SetValue(this, doc.GetInputIntValue(prop));
+                    else if (prop.PropertyType == typeof(double?))
+                        prop.SetValue(this, doc.GetInputDoubleValue(prop));
+                    else if (prop.PropertyType == typeof(bool?))
+                        prop.SetValue(this, doc.GetInputBoolValue(prop));
+                    else if (Nullable.GetUnderlyingType(prop.PropertyType)?.IsEnum == true)
+                        prop.SetValue(this, doc.GetInputEnumValue(prop));
                     else if (prop.PropertyType == typeof(List<string>))
-                        prop.SetValueIfNotNull(this, doc.GetTextAreaListValue(prop));
+                        prop.SetValue(this, doc.GetTextAreaListValue(prop));
                 }
             }
 

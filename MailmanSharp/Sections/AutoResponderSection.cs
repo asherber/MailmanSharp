@@ -30,13 +30,13 @@ namespace MailmanSharp
     [Order(11)]
     public class AutoResponderSection: SectionBase
     {
-        public bool AutorespondPostings { get; set; }
-        public string AutoresponsePostingsText { get; set; } = "";
-        public bool AutorespondAdmin { get; set; }
-        public string AutoresponseAdminText { get; set; } = "";
-        public AutorespondRequestsOption AutorespondRequests { get; set; }
-        public string AutoresponseRequestText { get; set; } = "";
-        public ushort AutoresponseGraceperiod { get; set; }
+        public bool? AutorespondPostings { get; set; }
+        public string AutoresponsePostingsText { get; set; }
+        public bool? AutorespondAdmin { get; set; }
+        public string AutoresponseAdminText { get; set; }
+        public AutorespondRequestsOption? AutorespondRequests { get; set; }
+        public string AutoresponseRequestText { get; set; }
+        public ushort? AutoresponseGraceperiod { get; set; }
 
 
         internal AutoResponderSection(MailmanList list) : base(list) { }

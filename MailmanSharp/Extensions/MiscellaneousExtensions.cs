@@ -82,7 +82,7 @@ namespace MailmanSharp
         public static object GetSimpleValue(this PropertyInfo prop, object obj)
         {
             var val = prop.GetValue(obj);
-            if (prop.PropertyType == typeof(bool))
+            if (prop.PropertyType == typeof(bool?))
                 return Convert.ToInt32(val);
             else if (prop.PropertyType == typeof(List<string>))
                 return ((List<string>)val).Cat();
@@ -106,12 +106,6 @@ namespace MailmanSharp
             }
 
             return result;
-        }
-
-        public static void SetValueIfNotNull(this PropertyInfo prop, object obj, object value)
-        {
-            if (value != null)
-                prop.SetValue(obj, value);
         }
 
 

@@ -31,9 +31,9 @@ namespace MailmanSharp
     [Order(2)]
     public class PasswordsSection: SectionBase
     {
-        public string Administrator { get; set; } = "";
-        public string Moderator { get; set; } = "";
-        public string Poster { get; set; } = "";
+        public string Administrator { get; set; }
+        public string Moderator { get; set; }
+        public string Poster { get; set; }
 
         internal PasswordsSection(MailmanList list) : base(list) { }
 

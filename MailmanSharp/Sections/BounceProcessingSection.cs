@@ -28,14 +28,14 @@ namespace MailmanSharp
     [Order(8)]
     public class BounceProcessingSection: SectionBase
     {
-        public bool BounceProcessing { get; set; }
-        public double BounceScoreThreshold { get; set; }
-        public ushort BounceInfoStaleAfter { get; set; }
-        public ushort BounceYouAreDisabledWarnings { get; set; }
-        public ushort BounceYouAreDisabledWarningsInterval { get; set; }
-        public bool BounceUnrecognizedGoesToListOwner { get; set; }
-        public bool BounceNotifyOwnerOnBounceIncrement { get; set; }
-        public bool BounceNotifyOwnerOnDisable { get; set; }
+        public bool? BounceProcessing { get; set; }
+        public double? BounceScoreThreshold { get; set; }
+        public ushort? BounceInfoStaleAfter { get; set; }
+        public ushort? BounceYouAreDisabledWarnings { get; set; }
+        public ushort? BounceYouAreDisabledWarningsInterval { get; set; }
+        public bool? BounceUnrecognizedGoesToListOwner { get; set; }
+        public bool? BounceNotifyOwnerOnBounceIncrement { get; set; }
+        public bool? BounceNotifyOwnerOnDisable { get; set; }
         public bool BounceNotifyOwnerOnRemoval { get; set; }
 
         internal BounceProcessingSection(MailmanList list) : base(list) { }

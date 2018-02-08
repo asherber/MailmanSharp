@@ -121,7 +121,8 @@ namespace MailmanSharp
 
         public static object GetInputEnumValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            return doc.GetInputEnumValue(prop.Name.Decamel(), prop.PropertyType);
+            var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+            return doc.GetInputEnumValue(prop.Name.Decamel(), type);
         }
 
         public static object GetInputEnumValue(this HtmlDocument doc, string name, Type enumType)

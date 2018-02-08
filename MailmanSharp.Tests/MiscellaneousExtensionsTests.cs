@@ -135,12 +135,12 @@ namespace MailmanSharp.Tests
 
         private class GetSimpleValueClass
         {
-            public bool BoolProp { get; set; } = true;
+            public bool? BoolProp { get; set; } = true;
             public List<string> ListProp { get; set; } = new List<string>() { "apple", "banana" };
             public string StringProp { get; set; } = "string";
-            public ushort UshortProp { get; set; } = 42;
-            public double DoubleProp { get; set; } = 4.5;
-            public SubscribePolicyOption SubscribePolicy { get; set; } = SubscribePolicyOption.RequireApproval;
+            public ushort? UshortProp { get; set; } = 42;
+            public double? DoubleProp { get; set; } = 4.5;
+            public SubscribePolicyOption? SubscribePolicy { get; set; } = SubscribePolicyOption.RequireApproval;
         }
 
         [Theory]
@@ -181,16 +181,5 @@ namespace MailmanSharp.Tests
             public string Name { get; set; } = "John";
         }
 
-        [Theory]
-        [InlineData("Mary", "Mary")]
-        [InlineData(null, "John")]
-        public void Prop_SetIfNotNull(string input, string expected)
-        {
-            var obj = new Foo();
-            var prop = typeof(Foo).GetProperty("Name");
-            prop.SetValueIfNotNull(obj, input);
-
-            obj.Name.Should().Be(expected);
-        }
     }
 }

@@ -33,14 +33,14 @@ namespace MailmanSharp
     [Order(6)]
     public class DigestSection: SectionBase
     {
-        public bool Digestable { get; set; }
-        public DigestIsDefaultOption DigestIsDefault { get; set; }
-        public MimeIsDefaultDigestOption MimeIsDefaultDigest { get; set; }
-        public ushort DigestSizeThreshhold { get; set; }
-        public bool DigestSendPeriodic { get; set; }
-        public string DigestHeader { get; set; } = "";
-        public string DigestFooter { get; set; } = "";
-        public DigestVolumeFrequencyOption DigestVolumeFrequency { get; set; }
+        public bool? Digestable { get; set; }
+        public DigestIsDefaultOption? DigestIsDefault { get; set; }
+        public MimeIsDefaultDigestOption? MimeIsDefaultDigest { get; set; }
+        public ushort? DigestSizeThreshhold { get; set; }
+        public bool? DigestSendPeriodic { get; set; }
+        public string DigestHeader { get; set; }
+        public string DigestFooter { get; set; }
+        public DigestVolumeFrequencyOption? DigestVolumeFrequency { get; set; }
         
         public Task NewVolumeAsync()
         {

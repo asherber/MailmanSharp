@@ -31,9 +31,9 @@ namespace MailmanSharp
     [Order(9)]
     public class ArchivingSection: SectionBase
     {
-        public bool Archive { get; set; }
-        public ArchivePrivateOption ArchivePrivate { get; set; }
-        public ArchiveVolumeFrequencyOption ArchiveVolumeFrequency { get; set; }
+        public bool? Archive { get; set; }
+        public ArchivePrivateOption? ArchivePrivate { get; set; }
+        public ArchiveVolumeFrequencyOption? ArchiveVolumeFrequency { get; set; }
 
         internal ArchivingSection(MailmanList list) : base(list) { }
     }

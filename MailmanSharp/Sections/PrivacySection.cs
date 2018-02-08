@@ -37,40 +37,40 @@ namespace MailmanSharp
     public class PrivacySection: SectionBase
     {
         [Path("subscribing")]
-        public bool Advertised { get; set; }
+        public bool? Advertised { get; set; }
         [Path("subscribing")]
-        public SubscribePolicyOption SubscribePolicy { get; set; }
+        public SubscribePolicyOption? SubscribePolicy { get; set; }
         [Path("subscribing")]
         public List<string> SubscribeAutoApproval { get; set; } = new List<string>();
         [Path("subscribing")]
-        public bool UnubscribePolicy { get; set; }
+        public bool? UnubscribePolicy { get; set; }
         [Path("subscribing")]
         public List<string> BanList { get; set; } = new List<string>();
         [Path("subscribing")]
-        public PrivateRosterOption PrivateRoster { get; set; }
+        public PrivateRosterOption? PrivateRoster { get; set; }
         [Path("subscribing")]
-        public bool ObscureAddresses { get; set; }
+        public bool? ObscureAddresses { get; set; }
 
         [Path("sender")]
-        public bool DefaultMemberModeration { get; set; }
+        public bool? DefaultMemberModeration { get; set; }
         [Path("sender")]
-        public ushort MemberVerbosityThreshold { get; set; }
+        public ushort? MemberVerbosityThreshold { get; set; }
         [Path("sender")]
-        public ushort MemberVerbosityInterval { get; set; }
+        public ushort? MemberVerbosityInterval { get; set; }
         [Path("sender")]
-        public MemberModerationActionOption MemberModerationAction { get; set; }
+        public MemberModerationActionOption? MemberModerationAction { get; set; }
         [Path("sender")]
-        public string MemberModerationNotice { get; set; } = "";
+        public string MemberModerationNotice { get; set; }
         [Path("sender")]
-        public DmarcModerationActionOption DmarcModerationAction { get; set; }
+        public DmarcModerationActionOption? DmarcModerationAction { get; set; }
         [Path("sender")]
-        public bool DmarcQuarantineModerationAction { get; set; }
+        public bool? DmarcQuarantineModerationAction { get; set; }
         [Path("sender")]
-        public bool DmarcNoneModerationAction { get; set; }
+        public bool? DmarcNoneModerationAction { get; set; }
         [Path("sender")]
-        public string DmarcModerationNotice { get; set; } = "";
+        public string DmarcModerationNotice { get; set; }
         [Path("sender")]
-        public string DmarcWrappedMessageText { get; set; } = "";
+        public string DmarcWrappedMessageText { get; set; }
         [Path("sender")]
         public List<string> EquivalentDomains { get; set; } = new List<string>();
         [Path("sender")]
@@ -82,18 +82,18 @@ namespace MailmanSharp
         [Path("sender")]
         public List<string> DiscardTheseNonmembers { get; set; } = new List<string>();
         [Path("sender")]
-        public GenericNonmemberActionOption GenericNonmemberAction { get; set; }
+        public GenericNonmemberActionOption? GenericNonmemberAction { get; set; }
         [Path("sender")]
-        public bool ForwardAutoDiscards { get; set; }
+        public bool? ForwardAutoDiscards { get; set; }
         [Path("sender")]
-        public string NonmemberRejectionNotice { get; set; } = "";
+        public string NonmemberRejectionNotice { get; set; }
 
         [Path("recipient")]
-        public bool RequireExplicitDestination { get; set; }
+        public bool? RequireExplicitDestination { get; set; }
         [Path("recipient")]
         public List<string> AcceptableAliases { get; set; } = new List<string>();
         [Path("recipient")]
-        public ushort MaxNumRecipients { get; set; }
+        public ushort? MaxNumRecipients { get; set; }
 
         [Path("spam")]
         public List<string> BounceMatchingHeaders { get; set; } = new List<string>();

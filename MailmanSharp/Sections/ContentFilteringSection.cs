@@ -30,14 +30,14 @@ namespace MailmanSharp
     [Order(12)]
     public class ContentFilteringSection: SectionBase
     {
-        public bool FilterContent { get; set; }
+        public bool? FilterContent { get; set; }
         public List<string> FilterMimeTypes { get; set; } = new List<string>();
         public List<string> PassMimeTypes { get; set; } = new List<string>();
         public List<string> FilterFilenameExtensions { get; set; } = new List<string>();
         public List<string> PassFilenameExtensions { get; set; } = new List<string>();
-        public bool CollapseAlternatives { get; set; }
-        public bool ConvertHtmlToPlaintext { get; set; }
-        public FilterActionOption FilterAction { get; set; }
+        public bool? CollapseAlternatives { get; set; }
+        public bool? ConvertHtmlToPlaintext { get; set; }
+        public FilterActionOption? FilterAction { get; set; }
 
         internal ContentFilteringSection(MailmanList list) : base(list) { }
     }

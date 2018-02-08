@@ -30,13 +30,13 @@ namespace MailmanSharp
     [Order(5)]
     public class NonDigestSection: SectionBase
     {
-        public bool Nondigestable { get; set; }
-        public PersonalizeOption Personalize { get; set; }
-        public string MsgHeader { get; set; } = "";
-        public string MsgFooter { get; set; } = "";
-        public bool ScrubNondigest { get; set; }
+        public bool? Nondigestable { get; set; }
+        public PersonalizeOption? Personalize { get; set; }
+        public string MsgHeader { get; set; }
+        public string MsgFooter { get; set; }
+        public bool? ScrubNondigest { get; set; }
         public List<string> RegularExcludeLists { get; set; } = new List<string>();
-        public bool RegularExcludeIgnore { get; set; }
+        public bool? RegularExcludeIgnore { get; set; }
         public List<string> RegularIncludeLists { get; set; } = new List<string>();
 
         internal NonDigestSection(MailmanList list) : base(list) { }

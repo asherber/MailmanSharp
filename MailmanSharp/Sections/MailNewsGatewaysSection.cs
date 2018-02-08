@@ -31,12 +31,12 @@ namespace MailmanSharp
     [Order(10)]
     public class MailNewsGatewaysSection: SectionBase
     {
-        public string NntpHost { get; set; } = "";
-        public string LinkedNewsgroup { get; set; } = "";
-        public bool GatewayToNews { get; set; }
-        public bool GatewayToMail { get; set; }
-        private NewsModerationOption NewsModeration { get; set; }
-        public bool NewPrefixSubjectToo { get; set; }
+        public string NntpHost { get; set; }
+        public string LinkedNewsgroup { get; set; }
+        public bool? GatewayToNews { get; set; }
+        public bool? GatewayToMail { get; set; }
+        private NewsModerationOption? NewsModeration { get; set; }
+        public bool? NewPrefixSubjectToo { get; set; }
         
         public Task MassCatchup()
         {

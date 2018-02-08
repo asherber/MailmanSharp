@@ -14,7 +14,7 @@
 - [ ] RosterRequest should check status code
 - [ ] Implement `IComparable` on `Member`
 - [x] Differentiate `textarea` strings and lists
-- [ ] Make all properties nullable
+- [x] Make all properties nullable
 - [x] Switch to JSON
 - [ ] `ReadAsync` needs to start with a blank object
 - [ ] Ignore changes to `RealName`
