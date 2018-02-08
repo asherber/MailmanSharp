@@ -126,6 +126,7 @@ namespace MailmanSharp
             return this.ExecutePostAdminRequestAsync(path, req);
         }
 
+        private static Regex _versionRe = new Regex(@"(?<=Delivered by Mailman.*version ).*(?=<)");
         private async Task<IRestResponse> DoAdminRequestAsync(string path, IRestRequest request, Method method)
         {
             if (!String.IsNullOrEmpty(path))
@@ -143,7 +144,7 @@ namespace MailmanSharp
                 throw resp.ErrorException;
             else 
             {
-                _list.MailmanVersion = Regex.Match(resp.Content, @"(?<=Delivered by Mailman.*version ).*(?=<)").Value;
+                _list.SetMailmanVersion(_versionRe.Match(resp.Content).Value);
                 return resp;
             }     
         }

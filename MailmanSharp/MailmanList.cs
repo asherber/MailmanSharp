@@ -37,7 +37,7 @@ namespace MailmanSharp
         /// <summary>
         /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
         /// </summary>
-        public string AdminUrl { get { return InternalClient.AdminUrl; } set { MailmanVersion = null; InternalClient.AdminUrl = value; } }
+        public string AdminUrl { get { return InternalClient.AdminUrl; } set { SetMailmanVersion(""); InternalClient.AdminUrl = value; } }
         /// <summary>
         /// Administrator password for list.
         /// </summary>
@@ -49,7 +49,7 @@ namespace MailmanSharp
         /// <summary>
         /// Gets version of Mailman that this list is running on.
         /// </summary>
-        public string MailmanVersion { get { return _mailmanVersion; } internal set { SetMailmanVersion(value); } }
+        public MailmanVersion MailmanVersion { get; private set; } = new MailmanVersion();
 
         public MembershipSection Membership { get; private set; }
         public PrivacySection Privacy { get; private set; }
@@ -68,8 +68,6 @@ namespace MailmanSharp
 
         public IMailmanClient Client => InternalClient;
         internal IMailmanClientInternal InternalClient { get; private set; }
-
-        private string _mailmanVersion = null;
 
         private static IEnumerable<PropertyInfo> _sectionProperties;
 
@@ -115,7 +113,7 @@ namespace MailmanSharp
             var listProps = new JProperty("Meta", new JObject(
                 new JProperty("AdminUrl", this.AdminUrl),
                 new JProperty("ExportedDate", DateTime.Now.ToString("s")),
-                new JProperty("MailmanVersion", this.MailmanVersion),
+                new JProperty("MailmanVersion", this.MailmanVersion.ToString()),
                 new JProperty("MailmanSharpVersion", Assembly.GetExecutingAssembly().GetName().Version.ToString())
             ));
 
@@ -185,12 +183,15 @@ namespace MailmanSharp
         }
 
         private object _versionLocker = new object();
-        private void SetMailmanVersion(string value)
+        internal void SetMailmanVersion(string value)
         {
-            lock (_versionLocker)
+            if (value != MailmanVersion.ToString())
             {
-                if (value != _mailmanVersion)
-                    _mailmanVersion = value;
+                lock (_versionLocker)
+                {
+                    if (value != MailmanVersion.ToString())
+                        MailmanVersion = new MailmanVersion(value);
+                }
             }
         }
 
@@ -198,7 +199,7 @@ namespace MailmanSharp
         {
             this.ResetClient();
             InitSections();
-            this.MailmanVersion = null;
+            SetMailmanVersion("");
         }
 
         internal void ResetClient()

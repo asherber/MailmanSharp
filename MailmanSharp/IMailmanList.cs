@@ -11,7 +11,7 @@ namespace MailmanSharp
         string AdminUrl { get; set; }
         string AdminPassword { get; set; }
         string CurrentConfig { get; }
-        string MailmanVersion { get; }
+        MailmanVersion MailmanVersion { get; }
 
         MembershipSection Membership { get; }
         PrivacySection Privacy { get; }
