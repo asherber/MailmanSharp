@@ -16,5 +16,5 @@
 - [x] Differentiate `textarea` strings and lists
 - [x] Make all properties nullable
 - [x] Switch to JSON
-- [ ] `ReadAsync` needs to start with a blank object
+- [x] `ReadAsync` needs to start with a blank object
 - [ ] Ignore changes to `RealName`

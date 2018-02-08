@@ -39,6 +39,7 @@ namespace MailmanSharp
 
         public override Task ReadAsync()
         {
+            ResetProperties();
             // Nothing to read
             return Task.CompletedTask;
         }

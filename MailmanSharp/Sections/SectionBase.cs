@@ -88,24 +88,27 @@ namespace MailmanSharp
 
             foreach (var kvp in docs)
             {
+                ResetProperties();
+
                 var propsToRead = docs.Count == 1 ? unignoredProps : unignoredProps.ForPath(kvp.Key);
                 var doc = kvp.Value;
                 foreach (var prop in propsToRead)
                 {
-                    if (prop.PropertyType == typeof(string))
+                    var type = prop.PropertyType;
+                    if (type == typeof(string))
                     {
                         var val = doc.GetInputStringValue(prop) ?? doc.GetTextAreaStringValue(prop);
                         prop.SetValue(this, val);
                     }
-                    else if (prop.PropertyType == typeof(ushort?))
+                    else if (type == typeof(ushort?))
                         prop.SetValue(this, doc.GetInputIntValue(prop));
-                    else if (prop.PropertyType == typeof(double?))
+                    else if (type == typeof(double?))
                         prop.SetValue(this, doc.GetInputDoubleValue(prop));
-                    else if (prop.PropertyType == typeof(bool?))
+                    else if (type == typeof(bool?))
                         prop.SetValue(this, doc.GetInputBoolValue(prop));
-                    else if (Nullable.GetUnderlyingType(prop.PropertyType)?.IsEnum == true)
+                    else if (Nullable.GetUnderlyingType(type)?.IsEnum == true)
                         prop.SetValue(this, doc.GetInputEnumValue(prop));
-                    else if (prop.PropertyType == typeof(List<string>))
+                    else if (type == typeof(List<string>))
                         prop.SetValue(this, doc.GetTextAreaListValue(prop));
                 }
             }
@@ -175,6 +178,18 @@ namespace MailmanSharp
                 result.Add(path, doc);
             }
             return result;
+        }
+
+        protected void ResetProperties()
+        {
+            foreach (var prop in _props.Where(p => p.CanWrite))
+            {
+                var type = prop.PropertyType;
+                if (type == typeof(List<string>))
+                    prop.SetValue(this, new List<string>());
+                else if (type == typeof(string) || Nullable.GetUnderlyingType(type) != null)
+                    prop.SetValue(this, null);
+            }
         }
     }
 }
