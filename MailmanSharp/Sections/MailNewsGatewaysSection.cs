@@ -40,7 +40,7 @@ namespace MailmanSharp
         
         public Task MassCatchup()
         {
-            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), "_mass_catchup", 1);
+            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), ("_mass_catchup", 1));
         }
 
         internal MailNewsGatewaysSection(MailmanList list) : base(list) { }

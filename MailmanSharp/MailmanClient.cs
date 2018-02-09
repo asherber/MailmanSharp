@@ -109,7 +109,7 @@ namespace MailmanSharp
             return DoAdminRequestAsync(path, request, Method.GET);
         }
 
-        public Task<IRestResponse> ExecuteGetAdminRequestAsync(string path, params object[] parms)
+        public Task<IRestResponse> ExecuteGetAdminRequestAsync(string path, params (string Name, object Value)[] parms)
         {
             var req = BuildRequestFromParms(parms);
             return this.ExecuteGetAdminRequestAsync(path, req);
@@ -120,7 +120,7 @@ namespace MailmanSharp
             return DoAdminRequestAsync(path, request, Method.POST);
         }
 
-        public Task<IRestResponse> ExecutePostAdminRequestAsync(string path, params object[] parms)
+        public Task<IRestResponse> ExecutePostAdminRequestAsync(string path, params (string Name, object Value)[] parms)
         {
             var req = BuildRequestFromParms(parms);
             return this.ExecutePostAdminRequestAsync(path, req);
@@ -149,15 +149,12 @@ namespace MailmanSharp
             }     
         }
 
-        private static IRestRequest BuildRequestFromParms(params object[] parms)
+        private static IRestRequest BuildRequestFromParms(params (string Name, object Value)[] parms)
         {
-            if (parms.Length % 2 != 0)
-                throw new ArgumentException("Argument 'parms' must have even number of values");
-
-            var result = new RestRequest();
-            for (int i = 0; i < parms.Length; i += 2)
+            var result = new RestRequest();            
+            foreach (var parm in parms)
             {
-                result.AddParameter(parms[i].ToString(), parms[i + 1]);
+                result.AddParameter(parm.Name, parm.Value);
             }
             return result;
         }

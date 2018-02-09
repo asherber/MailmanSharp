@@ -10,7 +10,7 @@
 - [x] Make `MailmanVersion` more usable
 - [ ] Introduce some kind of internal 'tested with' property?
 - [ ] Don't let RestSharp leak through
-- [ ] Parameters as tuples
+- [x] Parameters as tuples
 - [ ] RosterRequest should check status code
 - [x] Implement `IEquatable` on `Member`
 - [x] Differentiate `textarea` strings and lists

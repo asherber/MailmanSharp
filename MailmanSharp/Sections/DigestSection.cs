@@ -44,12 +44,12 @@ namespace MailmanSharp
         
         public Task NewVolumeAsync()
         {
-            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), "_new_volume", 1);
+            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), ("_new_volume", 1));
         }
 
         public Task SendDigestNowAsync()
         {
-            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), "_send_digest_now", 1);
+            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), ("_send_digest_now", 1));
         }
 
         internal DigestSection(MailmanList list) : base(list) { }

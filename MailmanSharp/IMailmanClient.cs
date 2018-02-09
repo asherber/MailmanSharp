@@ -24,9 +24,9 @@ namespace MailmanSharp
 
         void Reset();
         Task<IRestResponse> ExecuteGetAdminRequestAsync(string path, IRestRequest request);
-        Task<IRestResponse> ExecuteGetAdminRequestAsync(string path, params object[] parms);
+        Task<IRestResponse> ExecuteGetAdminRequestAsync(string path, params (string Name, object Value)[] parms);
         Task<IRestResponse> ExecutePostAdminRequestAsync(string path, IRestRequest request);
-        Task<IRestResponse> ExecutePostAdminRequestAsync(string path, params object[] parms);
+        Task<IRestResponse> ExecutePostAdminRequestAsync(string path, params (string Name, object Value)[] parms);
         Task<IRestResponse> ExecuteRosterRequestAsync();
     }
 
