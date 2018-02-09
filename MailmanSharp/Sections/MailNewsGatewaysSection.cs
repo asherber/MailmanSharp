@@ -17,6 +17,7 @@
  * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace MailmanSharp
         
         public Task MassCatchup()
         {
-            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), ("_mass_catchup", 1));
+            return this.GetClient().ExecuteAdminRequestAsync(Method.POST, _paths.First(), ("_mass_catchup", 1));
         }
 
         internal MailNewsGatewaysSection(MailmanList list) : base(list) { }

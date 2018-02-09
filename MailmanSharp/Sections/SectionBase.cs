@@ -123,7 +123,7 @@ namespace MailmanSharp
 
             foreach (var path in _paths)
             {
-                var req = new RestRequest();
+                var req = new RestRequest(Method.POST);
                 var propsToWrite = _paths.Count == 1 ? unignoredProps : unignoredProps.ForPath(path);
                     
                 foreach (var prop in propsToWrite)
@@ -138,7 +138,7 @@ namespace MailmanSharp
                 }
 
                 DoBeforeFinishWrite(req);
-                await client.ExecutePostAdminRequestAsync(path, req).ConfigureAwait(false);
+                await client.ExecuteAdminRequestAsync(path, req).ConfigureAwait(false);
             }
         }
 
@@ -173,7 +173,7 @@ namespace MailmanSharp
             var client = this.GetClient();  // to avoid unneccessary cloning
             foreach (var path in _paths)
             {
-                var resp = await client.ExecuteGetAdminRequestAsync(path).ConfigureAwait(false);
+                var resp = await client.ExecuteAdminRequestAsync(Method.GET, path).ConfigureAwait(false);
                 var doc = resp.Content.GetHtmlDocument();
                 result.Add(path, doc);
             }

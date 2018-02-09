@@ -18,6 +18,7 @@
  */
 
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -149,7 +150,7 @@ namespace MailmanSharp
         private Task TryLoginAsync()
         {
             // This checks the URL and credentials before we get multi-threaded 
-            return Client.ExecuteGetAdminRequestAsync("");
+            return Client.ExecuteAdminRequestAsync(Method.GET, null);
         }
 
         private string GetNodeValue(XElement root, string nodeName)

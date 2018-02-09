@@ -89,10 +89,10 @@ namespace MailmanSharp
 
         public Task ModerateAllAsync(bool moderate)
         {
-            var req = new RestRequest();
+            var req = new RestRequest(Method.POST);
             req.AddParameter("allmodbit_val", moderate ? 1 : 0);
             req.AddParameter("allmodbit_btn", 1);
-            return this.GetClient().ExecutePostAdminRequestAsync(_paths.Single(), req);
+            return this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req);
         }
 
         public async Task<UnsubscribeResult> UnsubscribeAsync(string members, UnsubscribeOptions options = UnsubscribeOptions.None)
@@ -101,12 +101,12 @@ namespace MailmanSharp
 
             if (!String.IsNullOrWhiteSpace(members))
             {
-                var req = new RestRequest();
+                var req = new RestRequest(Method.POST);
                 req.AddParameter("unsubscribees", members);
                 req.AddParameter("send_unsub_ack_to_this_batch", options.HasFlag(UnsubscribeOptions.SendAcknowledgement).ToInt());
                 req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.NotifyOwner).ToInt());
 
-                var resp = await this.GetClient().ExecutePostAdminRequestAsync(_removePage, req).ConfigureAwait(false);
+                var resp = await this.GetClient().ExecuteAdminRequestAsync(_removePage, req).ConfigureAwait(false);
                 var doc = resp.Content.GetHtmlDocument();
                 
                 string xpath = "//h5[contains(translate(text(), 'SU', 'su'), 'successfully unsubscribed')]/following-sibling::ul[1]/li";
@@ -136,13 +136,13 @@ namespace MailmanSharp
 
             if (!String.IsNullOrWhiteSpace(members))
             {
-                var req = new RestRequest();
+                var req = new RestRequest(Method.POST);
                 req.AddParameter("subscribees", members);
                 req.AddParameter("subscribe_or_invite", action == SubscribeAction.Subscribe ? 0 : 1);
                 req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOptions.SendWelcomeMessage).ToInt());
-                req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt());
+                req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt());                
 
-                var resp = await this.GetClient().ExecutePostAdminRequestAsync(_addPage, req).ConfigureAwait(false);
+                var resp = await this.GetClient().ExecuteAdminRequestAsync(_addPage, req).ConfigureAwait(false);
                 var doc = resp.Content.GetHtmlDocument();
                 
                 string verb = action == SubscribeAction.Invite ? "invited" : "subscribed";
@@ -192,9 +192,9 @@ namespace MailmanSharp
 
         public async Task<IEnumerable<Member>> GetMembersAsync(string search)
         {
-            var req = new RestRequest();
+            var req = new RestRequest(Method.GET);
             req.AddParameter("findmember", search);
-            var resp = await this.GetClient().ExecuteGetAdminRequestAsync(_paths.Single(), req).ConfigureAwait(false);
+            var resp = await this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req).ConfigureAwait(false);
 
             // Do we have multiple letters to look at?
             // General approach from http://www.msapiro.net/mailman-subscribers.py
@@ -226,14 +226,14 @@ namespace MailmanSharp
             var result = new List<Member>();
             int currentChunk = 0;
             int maxChunk = 0;
-            var req = new RestRequest();
+            var req = new RestRequest(Method.GET);
             req.AddParameter("findmember", search);
 
             while (currentChunk <= maxChunk)
             {
                 req.AddOrSetParameter("letter", letter);
                 req.AddOrSetParameter("chunk", currentChunk);
-                var resp = await this.GetClient().ExecuteGetAdminRequestAsync(_paths.Single(), req).ConfigureAwait(false);
+                var resp = await this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req).ConfigureAwait(false);
                 var doc = resp.Content.GetHtmlDocument();
                 
                 result.AddRange(ExtractMembersFromPage(doc));
@@ -279,13 +279,13 @@ namespace MailmanSharp
 
         public Task SaveMembersAsync(IEnumerable<Member> members)
         {
-            var req = new RestRequest();
+            var req = new RestRequest(Method.POST);
             req.AddParameter("setmemberopts_btn", 1);
 
             foreach (var member in members)
                 req.Parameters.AddRange(member.ToParameters());
 
-            return this.GetClient().ExecutePostAdminRequestAsync(_paths.Single(), req);
+            return this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req);
         }
 
         public Task SaveMembersAsync(params Member[] members)
@@ -303,7 +303,7 @@ namespace MailmanSharp
         /// <returns></returns>
         public async Task<ChangeAddressResult> ChangeMemberAddressAsync(string oldAddress, string newAddress, ChangeNotificationOptions options = ChangeNotificationOptions.None)
         {
-            var req = new RestRequest();
+            var req = new RestRequest(Method.POST);
             req.AddParameter("change_from", oldAddress);
             req.AddParameter("change_to", newAddress);
             if (options.HasFlag(ChangeNotificationOptions.OldAddress))
@@ -311,7 +311,7 @@ namespace MailmanSharp
             if (options.HasFlag(ChangeNotificationOptions.NewAddress))
                 req.AddParameter("notice_new", "yes");
 
-            var resp = await this.GetClient().ExecutePostAdminRequestAsync(_changePage, req).ConfigureAwait(false);
+            var resp = await this.GetClient().ExecuteAdminRequestAsync(_changePage, req).ConfigureAwait(false);
             var doc = resp.Content.GetHtmlDocument();
 
             string xpath = "//body/h3";

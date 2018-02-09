@@ -46,12 +46,12 @@ namespace MailmanSharp
 
         public override Task WriteAsync()
         {
-            var req = new RestRequest();
+            var req = new RestRequest(Method.POST);
             SetParams("", this.Administrator, req);
             SetParams("mod", this.Moderator, req);
             SetParams("post", this.Poster, req);
 
-            return this.GetClient().ExecutePostAdminRequestAsync(_paths.Single(), req);
+            return this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req);
         }
 
         internal override JProperty GetCurrentConfigJProperty()

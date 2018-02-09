@@ -9,7 +9,7 @@
 - [x] Test with properties that don't exist in Mailman
 - [x] Make `MailmanVersion` more usable
 - [ ] Introduce some kind of internal 'tested with' property?
-- [ ] Don't let RestSharp leak through
+- [ ] ~~Don't let RestSharp leak through~~
 - [x] Parameters as tuples
 - [ ] RosterRequest should check status code
 - [x] Implement `IEquatable` on `Member`

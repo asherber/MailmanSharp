@@ -104,59 +104,39 @@ namespace MailmanSharp
             _list.ResetClient();
         }
 
-        public Task<IRestResponse> ExecuteGetAdminRequestAsync(string path, IRestRequest request)
-        {
-            return DoAdminRequestAsync(path, request, Method.GET);
-        }
-
-        public Task<IRestResponse> ExecuteGetAdminRequestAsync(string path, params (string Name, object Value)[] parms)
-        {
-            var req = BuildRequestFromParms(parms);
-            return this.ExecuteGetAdminRequestAsync(path, req);
-        }
-
-        public Task<IRestResponse> ExecutePostAdminRequestAsync(string path, IRestRequest request)
-        {
-            return DoAdminRequestAsync(path, request, Method.POST);
-        }
-
-        public Task<IRestResponse> ExecutePostAdminRequestAsync(string path, params (string Name, object Value)[] parms)
-        {
-            var req = BuildRequestFromParms(parms);
-            return this.ExecutePostAdminRequestAsync(path, req);
-        }
-
         private static Regex _versionRe = new Regex(@"(?<=Delivered by Mailman.*version ).*(?=<)");
-        private async Task<IRestResponse> DoAdminRequestAsync(string path, IRestRequest request, Method method)
+        public async Task<IRestResponse> ExecuteAdminRequestAsync(string path, IRestRequest request)
         {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
             if (!String.IsNullOrEmpty(path))
                 path = path.Trim('/');
 
-            var req = request ?? new RestRequest();
-            req.Resource = String.Format("{0}/{1}/{2}", _adminPath, _listName, path);
-            req.Method = method;
-            req.AddOrSetParameter("adminpw", this.AdminPassword);
+            request.Resource = String.Format("{0}/{1}/{2}", _adminPath, _listName, path);
+            request.AddOrSetParameter("adminpw", this.AdminPassword);
 
-            var resp = await _client.ExecuteTaskAsync(req).ConfigureAwait(false);
+            var resp = await _client.ExecuteTaskAsync(request).ConfigureAwait(false);
 
             resp.EnsureSuccessStatusCode();
             if (resp.ErrorException != null)
                 throw resp.ErrorException;
-            else 
+            else
             {
                 _list.SetMailmanVersion(_versionRe.Match(resp.Content).Value);
                 return resp;
-            }     
+            }
         }
 
-        private static IRestRequest BuildRequestFromParms(params (string Name, object Value)[] parms)
+        public Task<IRestResponse> ExecuteAdminRequestAsync(Method method, string path, params (string Name, object Value)[] parms)
         {
-            var result = new RestRequest();            
+            var req = new RestRequest(method);
             foreach (var parm in parms)
             {
-                result.AddParameter(parm.Name, parm.Value);
+                req.AddParameter(parm.Name, parm.Value);
             }
-            return result;
+            
+            return this.ExecuteAdminRequestAsync(path, req);
         }
 
         private string GetRosterPath() 
@@ -164,11 +144,10 @@ namespace MailmanSharp
             return _adminPath.Replace("admin", "roster"); 
         }
         
-
         public async Task<IRestResponse> ExecuteRosterRequestAsync()
         {
             if (!HasAdminCookie())
-                await ExecuteGetAdminRequestAsync("").ConfigureAwait(false);
+                await ExecuteAdminRequestAsync(Method.GET, null).ConfigureAwait(false);
             var resource = String.Format("{0}/{1}", this.GetRosterPath(), _listName);
             var req = new RestRequest(resource);
             req.AddParameter("adminpw", this.AdminPassword);

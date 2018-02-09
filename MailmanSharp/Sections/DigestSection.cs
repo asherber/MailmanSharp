@@ -17,6 +17,7 @@
  * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,12 +45,12 @@ namespace MailmanSharp
         
         public Task NewVolumeAsync()
         {
-            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), ("_new_volume", 1));
+            return this.GetClient().ExecuteAdminRequestAsync(Method.POST, _paths.First(), ("_new_volume", 1));
         }
 
         public Task SendDigestNowAsync()
         {
-            return this.GetClient().ExecutePostAdminRequestAsync(_paths.First(), ("_send_digest_now", 1));
+            return this.GetClient().ExecuteAdminRequestAsync(Method.POST, _paths.First(), ("_send_digest_now", 1));
         }
 
         internal DigestSection(MailmanList list) : base(list) { }

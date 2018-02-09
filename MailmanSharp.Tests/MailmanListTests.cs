@@ -92,10 +92,10 @@ namespace MailmanSharp.Tests
         [Fact]
         public async Task ReadAsync_Logs_In_And_Does_All_Reads()
         {
-            _clientMock.Setup(c => c.ExecuteGetAdminRequestAsync(""))
+            _clientMock.Setup(c => c.ExecuteAdminRequestAsync(Method.GET, null))
                 .ReturnsAsync(new RestResponse())
                 .Verifiable();
-            _clientMock.Setup(c => c.ExecuteGetAdminRequestAsync(It.IsNotIn("")))
+            _clientMock.Setup(c => c.ExecuteAdminRequestAsync(Method.GET, It.IsNotNull<string>()))
                 .ReturnsAsync(new RestResponse()
                 {
                     Content = File.ReadAllText("general.html"),
@@ -114,13 +114,13 @@ namespace MailmanSharp.Tests
 
             _clientMock.Verify();
             // There should be 15 reads, but Membership and Passwords don't read initially
-            _clientMock.Verify(c => c.ExecuteGetAdminRequestAsync(It.IsNotIn("")), Times.Exactly(13));
+            _clientMock.Verify(c => c.ExecuteAdminRequestAsync(Method.GET, It.IsNotNull<string>()), Times.Exactly(13));
         }
 
         [Fact]
         public async Task WriteAsync_Logs_In_And_Does_All_Reads()
         {
-            _clientMock.Setup(c => c.ExecuteGetAdminRequestAsync(""))
+            _clientMock.Setup(c => c.ExecuteAdminRequestAsync(Method.GET, null))
                 .ReturnsAsync(new RestResponse())
                 .Verifiable();
             _clientMock.Setup(c => c.Clone())
@@ -130,7 +130,7 @@ namespace MailmanSharp.Tests
 
             _clientMock.Verify();
             // Membership doesn't post
-            _clientMock.Verify(c => c.ExecutePostAdminRequestAsync(It.IsAny<string>(), It.IsAny<IRestRequest>()), 
+            _clientMock.Verify(c => c.ExecuteAdminRequestAsync(It.IsAny<string>(), It.IsAny<IRestRequest>()), 
                 Times.Exactly(14));
         }
     }

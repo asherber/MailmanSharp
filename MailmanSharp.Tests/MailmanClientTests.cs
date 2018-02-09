@@ -113,7 +113,7 @@ namespace MailmanSharp.Tests
             expected.AddParameter("adminpw", _password)
                 .AddParameter("foo", "bar");
 
-            await _client.ExecuteGetAdminRequestAsync("privacy", ("foo", "bar"));
+            await _client.ExecuteAdminRequestAsync(Method.GET, "privacy", ("foo", "bar"));
 
             _restClientMock.Verify();
             _passedRequest.Should().BeEquivalentTo(expected);
@@ -135,7 +135,7 @@ namespace MailmanSharp.Tests
             expected.AddParameter("adminpw", _password)
                 .AddParameter("foo", "bar");
 
-            Func<Task> act = async () => await _client.ExecuteGetAdminRequestAsync("privacy", ("foo", "bar"));
+            Func<Task> act = async () => await _client.ExecuteAdminRequestAsync(Method.GET, "privacy", ("foo", "bar"));
             act.Should().Throw<MailmanHttpException>();
 
             _restClientMock.Verify();
@@ -158,7 +158,7 @@ namespace MailmanSharp.Tests
             expected.AddParameter("adminpw", _password)
                 .AddParameter("foo", "bar");
 
-            await _client.ExecutePostAdminRequestAsync("privacy", ("foo", "bar"));
+            await _client.ExecuteAdminRequestAsync(Method.POST, "privacy", ("foo", "bar"));
 
             _restClientMock.Verify();
             _passedRequest.Should().BeEquivalentTo(expected);
@@ -180,7 +180,7 @@ namespace MailmanSharp.Tests
             expected.AddParameter("adminpw", _password)
                 .AddParameter("foo", "bar");
 
-            Func<Task> act = async () => await _client.ExecutePostAdminRequestAsync("privacy", ("foo", "bar"));
+            Func<Task> act = async () => await _client.ExecuteAdminRequestAsync(Method.POST, "privacy", ("foo", "bar"));
             act.Should().Throw<MailmanHttpException>();
 
             _restClientMock.Verify();
