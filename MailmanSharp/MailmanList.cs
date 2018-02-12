@@ -141,9 +141,9 @@ namespace MailmanSharp
 
             foreach (var prop in _sectionProperties)
             {
-                var jsonProp = root.Property(prop.Name);
-                if (jsonProp != null)
-                    ((SectionBase)prop.GetValue(this)).LoadConfig(jsonProp);
+                var token = root.SelectToken(prop.Name);
+                if (token != null)
+                    ((SectionBase)prop.GetValue(this)).LoadConfig(token);
             }
         }
 

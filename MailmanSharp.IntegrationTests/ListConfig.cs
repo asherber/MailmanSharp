@@ -12,4 +12,11 @@ namespace MailmanSharp.IntegrationTests
         public static string Url => ConfigurationManager.AppSettings["Url"];
         public static string Password => ConfigurationManager.AppSettings["Password"];
     }
+
+    public class TestList: MailmanList
+    {
+        public TestList(): base(ListConfig.Url, ListConfig.Password)
+        {
+        }
+    }
 }

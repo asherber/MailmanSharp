@@ -1,0 +1,162 @@
+{
+  "Meta": {
+    "AdminUrl": "http://lists.sherber.com//admin.cgi/test-sherber.com",
+    "ExportedDate": "2018-02-13T18:13:35",
+    "MailmanVersion": "2.1.23",
+    "MailmanSharpVersion": "2.3.0.0"
+  },
+  "General": {
+    "RealName": "Test",
+    "Owner": [
+      "aaron@sherber.com"
+    ],
+    "Moderator": [
+      "68cf8715-05e0-4f00-b23a-75f64f090d82@example.com",
+      "d97fed0a-19eb-42b3-82c7-504940c45e51@example.com"
+    ],
+    "Description": "4273ef8d-b4dd-4398-91d4-7e7ec9de0d03",
+    "Info": "07172861-647c-4f73-af14-7aed68dbfc49",
+    "SubjectPrefix": "64de384e-7a4a-460c-bd46-edfc9681d08c",
+    "FromIsList": "WrapMessage",
+    "AnonymousList": true,
+    "FirstStripReplyTo": false,
+    "ReplyGoesToList": "ThisList",
+    "ReplyToAddress": "d96b685b-8290-4f7a-ac0c-724b45b68f93@example.com",
+    "UmbrellaList": false,
+    "UmbrellaMemberSuffix": "-owner",
+    "SendReminders": true,
+    "WelcomeMsg": "e4f3ca13-16db-4016-be08-3ca2fcb877f1",
+    "SendWelcomeMsg": false,
+    "GoodbyeMsg": "f38013d5-ab2f-4bd5-8f27-718fd8a6fa1a",
+    "SendGoodbyeMsg": false,
+    "AdminImmedNotify": false,
+    "AdminNotifyMchanges": true,
+    "RespondToPostRequests": false,
+    "Emergency": true,
+    "NewMemberOptions": "None",
+    "Administrivia": false,
+    "MaxMessageSize": 50,
+    "AdminMemberChunksize": 40,
+    "IncludeRfc2369Headers": true,
+    "IncludeListPostHeader": false,
+    "IncludeSenderHeader": true,
+    "MaxDaysToHold": 75
+  },
+  "NonDigest": {
+    "Nondigestable": true,
+    "Personalize": "No",
+    "MsgHeader": null,
+    "MsgFooter": null,
+    "ScrubNondigest": false,
+    "RegularExcludeLists": [],
+    "RegularExcludeIgnore": true,
+    "RegularIncludeLists": []
+  },
+  "Digest": {
+    "Digestable": false,
+    "DigestIsDefault": "Regular",
+    "MimeIsDefaultDigest": "Plain",
+    "DigestSizeThreshhold": 30,
+    "DigestSendPeriodic": true,
+    "DigestHeader": null,
+    "DigestFooter": "_______________________________________________\n%(real_name)s mailing list\n%(real_name)s@%(host_name)s\n%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s\n",
+    "DigestVolumeFrequency": "Monthly"
+  },
+  "Privacy": {
+    "Advertised": null,
+    "SubscribePolicy": null,
+    "SubscribeAutoApproval": [],
+    "UnubscribePolicy": null,
+    "BanList": [],
+    "PrivateRoster": null,
+    "ObscureAddresses": null,
+    "DefaultMemberModeration": null,
+    "MemberVerbosityThreshold": null,
+    "MemberVerbosityInterval": null,
+    "MemberModerationAction": null,
+    "MemberModerationNotice": null,
+    "DmarcModerationAction": null,
+    "DmarcQuarantineModerationAction": null,
+    "DmarcNoneModerationAction": null,
+    "DmarcModerationNotice": null,
+    "DmarcWrappedMessageText": null,
+    "EquivalentDomains": [],
+    "AcceptTheseNonmembers": [],
+    "HoldTheseNonmembers": [],
+    "RejectTheseNonmembers": [],
+    "DiscardTheseNonmembers": [],
+    "GenericNonmemberAction": null,
+    "ForwardAutoDiscards": null,
+    "NonmemberRejectionNotice": null,
+    "RequireExplicitDestination": null,
+    "AcceptableAliases": [],
+    "MaxNumRecipients": null,
+    "BounceMatchingHeaders": [
+      "# Lines that *start* with a '#' are comments.",
+      "to: friend@public.com",
+      "message-id: relay.comanche.denmark.eu",
+      "from: list@listme.com",
+      "from: .*@uplinkpro.com",
+      ""
+    ]
+  },
+  "BounceProcessing": {
+    "BounceProcessing": true,
+    "BounceScoreThreshold": 5.0,
+    "BounceInfoStaleAfter": 7,
+    "BounceYouAreDisabledWarnings": 3,
+    "BounceYouAreDisabledWarningsInterval": 7,
+    "BounceUnrecognizedGoesToListOwner": false,
+    "BounceNotifyOwnerOnBounceIncrement": false,
+    "BounceNotifyOwnerOnDisable": true,
+    "BounceNotifyOwnerOnRemoval": false
+  },
+  "Archiving": {
+    "Archive": true,
+    "ArchivePrivate": "Private",
+    "ArchiveVolumeFrequency": "Monthly"
+  },
+  "MailNewsGateways": {
+    "NntpHost": "",
+    "LinkedNewsgroup": "",
+    "GatewayToNews": false,
+    "GatewayToMail": false,
+    "NewPrefixSubjectToo": null
+  },
+  "AutoResponder": {
+    "AutorespondPostings": false,
+    "AutoresponsePostingsText": null,
+    "AutorespondAdmin": false,
+    "AutoresponseAdminText": null,
+    "AutorespondRequests": "No",
+    "AutoresponseRequestText": null,
+    "AutoresponseGraceperiod": 0
+  },
+  "ContentFiltering": {
+    "FilterContent": false,
+    "FilterMimeTypes": [],
+    "PassMimeTypes": [
+      "multipart/mixed",
+      "multipart/alternative",
+      "text/plain"
+    ],
+    "FilterFilenameExtensions": [
+      "exe",
+      "bat",
+      "cmd",
+      "com",
+      "pif",
+      "scr",
+      "vbs",
+      "cpl"
+    ],
+    "PassFilenameExtensions": [],
+    "CollapseAlternatives": true,
+    "ConvertHtmlToPlaintext": true,
+    "FilterAction": "Discard"
+  },
+  "Topics": {
+    "TopicsEnabled": false,
+    "TopicsBodylinesLimit": 0
+  }
+}

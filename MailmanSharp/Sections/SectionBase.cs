@@ -157,14 +157,13 @@ namespace MailmanSharp
             var obj = JObject.Parse(json);
             obj.CheckObjectName(this.SectionName);
 
-            var prop = obj.First as JProperty;
-            LoadConfig(prop);
+            var properties = obj.SelectToken(this.SectionName);
+            LoadConfig(properties);
         }
 
-        internal void LoadConfig(JProperty prop)
+        internal void LoadConfig(JToken properties)
         {
-            var properties = prop.First.ToString();
-            JsonConvert.PopulateObject(properties, this);
+            JsonConvert.PopulateObject(properties.ToString(), this);
         }
 
         protected async Task<Dictionary<string, HtmlDocument>> FetchHtmlDocumentsAsync()
