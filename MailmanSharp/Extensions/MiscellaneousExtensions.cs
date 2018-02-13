@@ -95,14 +95,17 @@ namespace MailmanSharp
             var result = new List<object>();
             var val = prop.GetValue(obj);
 
-            if (prop.PropertyType.GetCustomAttributes(typeof(FlagsAttribute), false).Any())
+            if (val != null)
             {
-                var vals = val.ToString().ToLower().Split(new string[] { ", " }, StringSplitOptions.None);
-                result.AddRange(vals);
-            }
-            else
-            {
-                result.Add((int)val);
+                if (Nullable.GetUnderlyingType(prop.PropertyType).GetCustomAttributes(typeof(FlagsAttribute), false).Any())
+                {
+                    var vals = val.ToString().ToLower().Split(new string[] { ", " }, StringSplitOptions.None);
+                    result.AddRange(vals);
+                }
+                else
+                {
+                    result.Add((int)val);
+                }
             }
 
             return result;

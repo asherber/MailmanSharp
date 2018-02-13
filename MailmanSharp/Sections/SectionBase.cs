@@ -128,7 +128,7 @@ namespace MailmanSharp
                     
                 foreach (var prop in propsToWrite)
                 {
-                    if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
+                    if (Nullable.GetUnderlyingType(prop.PropertyType)?.IsEnum == true)
                     {
                         foreach (var val in prop.GetEnumValues(this))
                             req.AddParameter(prop.Name.Decamel(), val);

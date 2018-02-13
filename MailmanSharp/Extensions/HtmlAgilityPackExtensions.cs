@@ -121,40 +121,38 @@ namespace MailmanSharp
 
         public static object GetInputEnumValue(this HtmlDocument doc, PropertyInfo prop)
         {
-            var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-            return doc.GetInputEnumValue(prop.Name.Decamel(), type);
+            var enumType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+            return doc.GetInputEnumValue(prop.Name.Decamel(), enumType);
         }
 
         public static object GetInputEnumValue(this HtmlDocument doc, string name, Type enumType)
         {
+            // Does the input even exist?
+            var inputExists = doc.GetInputValue(name) != null;
+            if (!inputExists)
+                return null;
+
+
             string xpath = String.Format("//input[@name='{0}' and @checked]", name);
             var nodes = doc.DocumentNode.SafeSelectNodes(xpath);
 
-            if (nodes.Any())
+            int result = 0;
+            foreach (var node in nodes)
             {
-                int result = 0;
-                foreach (var node in nodes)
-                {
-                    var val = node.Attributes["value"].Value;
-                    var enumVal = Enum.Parse(enumType, val, true);
-                    if (!Enum.IsDefined(enumType, enumVal))
-                        throw new ArgumentException($"{enumVal} is not a defined value for enum type {enumType}");
-                    result |= (int)enumVal;
-                }
-                return Enum.ToObject(enumType, result);
+                var val = node.Attributes["value"].Value;
+                var enumVal = Enum.Parse(enumType, val, true);
+                if (!Enum.IsDefined(enumType, enumVal))
+                    throw new ArgumentException($"{enumVal} is not a defined value for enum type {enumType}");
+                result |= (int)enumVal;
             }
-            else
-                return null;
+            return Enum.ToObject(enumType, result);
         }
 
-        public static T GetInputEnumValue<T>(this HtmlDocument doc, string name) where T : struct, IConvertible
+        public static Nullable<T> GetInputEnumValue<T>(this HtmlDocument doc, string name) where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum) throw new ArgumentException("T must be an enumerated type");
             var obj = doc.GetInputEnumValue(name, typeof(T));
-            if (obj != null)
-                return (T)obj;
-            else
-                throw new ArgumentOutOfRangeException(String.Format("Value {0} not found", name));
+            return (T?)obj;
         }
     }
 }

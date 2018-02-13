@@ -66,6 +66,9 @@ Line Two</textarea>
             <input name=""bool_prop"" checked value=""1"">
             <input name=""enum_prop"" checked value=""2"">
             <input name=""bad_enum_prop"" checked value=""90"">
+            <input name=""empty_flags"" value=""1"">
+            <input name=""flags_prop"" checked value=""1"">
+            <input name=""flags_prop"" checked value=""2"">
             </body>
             </html>";
 
@@ -248,13 +251,34 @@ Line Two</textarea>
         }
 
         [Fact]
-        public void GetInputEnumValue_WrongName_OutOfRangeException()
+        public void GetInputEnumValue_WrongName_OutOfRange_Returns_Null()
         {
             var doc = new CustomHtmlDocument();
             doc.LoadHtml(_nodeTestHtml);
 
-            Action act = () => doc.GetInputEnumValue<DigestVolumeFrequencyOption>("xyz");
-            act.Should().Throw<ArgumentOutOfRangeException>();
+            var output = doc.GetInputEnumValue<DigestVolumeFrequencyOption>("xyz");
+            output.Should().BeNull();
+        }
+
+        [Fact]
+        public void GetInputEnumValue_EmptyFlags_ShouldBeDefault()
+        {
+            var doc = new CustomHtmlDocument();
+            doc.LoadHtml(_nodeTestHtml);
+
+            var output = doc.GetInputEnumValue<NewMemberOptions>("empty_flags");
+            output.Should().Be(default(NewMemberOptions));
+        }
+
+        [Fact]
+        public void GetInputEnumValue_Flags()
+        {
+            var doc = new CustomHtmlDocument();
+            doc.LoadHtml(_nodeTestHtml);
+
+            var output = doc.GetInputEnumValue<NewMemberOptions>("flags_prop");
+            output.Should().HaveFlag(NewMemberOptions.Hide);
+            output.Should().HaveFlag(NewMemberOptions.Ack);
         }
     }
 }
