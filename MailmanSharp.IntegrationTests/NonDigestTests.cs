@@ -1,41 +1,43 @@
-﻿using FluentAssertions;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xunit;
+using FluentAssertions;
+using Newtonsoft.Json.Linq;
 
 namespace MailmanSharp.IntegrationTests
 {
-    public class GeneralTests : BaseTests
+    public class NonDigestTests : BaseTests
     {
-        private static GeneralSection _saved;
+        private static NonDigestSection _saved;
         private static string _config;
 
-        private GeneralSection Section => _list.General;
+        private NonDigestSection Section => _list.NonDigest;
 
         public override async Task P10_ReadValues()
         {
             await Section.ReadAsync();
 
-            Section.Description.Should().NotBeNull();
-            Section.SendReminders.Should().NotBeNull();
-            Section.MaxMessageSize.Should().NotBeNull();
+            Section.Nondigestable.Should().NotBeNull();
+            Section.Personalize.Should().NotBeNull();
+            Section.MsgHeader.Should().NotBeNull();
+            Section.MsgFooter.Should().NotBeNull();
+            Section.ScrubNondigest.Should().NotBeNull();
+            Section.RegularExcludeLists.Should().NotBeEmpty()
+                .And.HaveCountGreaterOrEqualTo(1);
 
             _saved = Section;
         }
 
         public override async Task P20_ChangeAndSave()
         {
-            _saved.Description = Guid.NewGuid().ToString();
-            _saved.SendReminders = !_saved.SendReminders.Value;
-            _saved.MaxMessageSize = Inc(_saved.MaxMessageSize);
-            _saved.FromIsList = Inc(_saved.FromIsList.Value);
-            _saved.Moderator = GuidEmailArray(2);
-            _saved.Info = Guid.NewGuid().ToString();
+            _saved.Nondigestable = !_saved.Nondigestable;
+            _saved.Personalize = Inc(_saved.Personalize.Value);
+            _saved.MsgHeader = Guid.NewGuid().ToString();
+            _saved.MsgFooter = Guid.NewGuid().ToString();
+            _saved.ScrubNondigest = !_saved.ScrubNondigest;
+            Section.RegularExcludeLists = GuidEmailArray(3);
 
             await _saved.WriteAsync();
         }
@@ -48,7 +50,7 @@ namespace MailmanSharp.IntegrationTests
 
         public override async Task P40_LoadJsonAndSave()
         {
-            _config = SampleConfig("General");
+            _config = SampleConfig("NonDigest");
             Section.LoadConfig(_config);
             await Section.WriteAsync();
         }

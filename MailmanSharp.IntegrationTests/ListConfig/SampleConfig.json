@@ -45,22 +45,25 @@
   "NonDigest": {
     "Nondigestable": true,
     "Personalize": "No",
-    "MsgHeader": null,
-    "MsgFooter": null,
+    "MsgHeader": "b534f967-d02c-410f-a584-d24221b3cc8e",
+    "MsgFooter": "82e4fb3c-a794-42f3-946b-b868a517b3a7",
     "ScrubNondigest": false,
-    "RegularExcludeLists": [],
+    "RegularExcludeLists": [
+      "68cf8715-05e0-4f00-b23a-75f64f090d82@example.com",
+      "d97fed0a-19eb-42b3-82c7-504940c45e51@example.com"
+    ],
     "RegularExcludeIgnore": true,
     "RegularIncludeLists": []
   },
   "Digest": {
-    "Digestable": false,
+    "Digestable": true,
     "DigestIsDefault": "Regular",
     "MimeIsDefaultDigest": "Plain",
     "DigestSizeThreshhold": 30,
-    "DigestSendPeriodic": true,
+    "DigestSendPeriodic": false,
     "DigestHeader": null,
-    "DigestFooter": "_______________________________________________\n%(real_name)s mailing list\n%(real_name)s@%(host_name)s\n%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s\n",
-    "DigestVolumeFrequency": "Monthly"
+    "DigestFooter": "b93b64d9-7e62-44c2-98f2-05fad9befb98\n95af3d87-5608-4e8d-8f4b-cfb313088ba6",
+    "DigestVolumeFrequency": "Weekly"
   },
   "Privacy": {
     "Advertised": null,

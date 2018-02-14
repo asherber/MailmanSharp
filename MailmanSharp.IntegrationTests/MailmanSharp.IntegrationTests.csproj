@@ -73,8 +73,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseTests.cs" />
+    <Compile Include="DigestTests.cs" />
     <Compile Include="GeneralTests.cs" />
     <Compile Include="ListConfig.cs" />
+    <Compile Include="NonDigestTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -7,35 +7,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Priority;
 
 namespace MailmanSharp.IntegrationTests
 {
-    public class GeneralTests : BaseTests
+    public class DigestTests : BaseTests
     {
-        private static GeneralSection _saved;
+        private static DigestSection _saved;
         private static string _config;
 
-        private GeneralSection Section => _list.General;
+        private DigestSection Section => _list.Digest;
 
         public override async Task P10_ReadValues()
         {
             await Section.ReadAsync();
 
-            Section.Description.Should().NotBeNull();
-            Section.SendReminders.Should().NotBeNull();
-            Section.MaxMessageSize.Should().NotBeNull();
+            Section.Digestable.Should().NotBeNull();
+            Section.DigestIsDefault.Should().NotBeNull();
+            Section.DigestFooter.Should().NotBeNull();
 
             _saved = Section;
         }
 
         public override async Task P20_ChangeAndSave()
         {
-            _saved.Description = Guid.NewGuid().ToString();
-            _saved.SendReminders = !_saved.SendReminders.Value;
-            _saved.MaxMessageSize = Inc(_saved.MaxMessageSize);
-            _saved.FromIsList = Inc(_saved.FromIsList.Value);
-            _saved.Moderator = GuidEmailArray(2);
-            _saved.Info = Guid.NewGuid().ToString();
+            _saved.Digestable = !_saved.Digestable;
+            _saved.DigestIsDefault = Inc(_saved.DigestIsDefault.Value);
+            _saved.DigestFooter = Guid.NewGuid().ToString();
 
             await _saved.WriteAsync();
         }
@@ -48,7 +46,7 @@ namespace MailmanSharp.IntegrationTests
 
         public override async Task P40_LoadJsonAndSave()
         {
-            _config = SampleConfig("General");
+            _config = SampleConfig("Digest");
             Section.LoadConfig(_config);
             await Section.WriteAsync();
         }
@@ -60,6 +58,20 @@ namespace MailmanSharp.IntegrationTests
             await Section.ReadAsync();
             var output = JObject.Parse(Section.CurrentConfig);
             output.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void NewVolume_Should_Work()
+        {
+            Func<Task> act = async () => await Section.NewVolumeAsync();
+            act.Should().NotThrow();
+        }
+
+        [Fact]
+        public void SendDigest_Should_Work()
+        {
+            Func<Task> act = async () => await Section.SendDigestNowAsync();
+            act.Should().NotThrow();
         }
     }
 }

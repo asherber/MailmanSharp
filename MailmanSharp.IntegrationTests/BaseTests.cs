@@ -41,6 +41,7 @@ namespace MailmanSharp.IntegrationTests
         }
 
         protected string GuidEmail() => $"{Guid.NewGuid()}@example.com";
+        protected List<string> GuidEmailArray(int count) => Enumerable.Range(0, count).Select(i => GuidEmail()).ToList();
 
         protected string SampleConfig(string section)
         {
