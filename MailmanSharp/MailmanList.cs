@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -111,11 +112,14 @@ namespace MailmanSharp
 
         private string GetCurrentConfig()
         {
+            var fvi = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            var fileVersion = $"{fvi.FileMajorPart}.{fvi.FileMinorPart}.{fvi.FileBuildPart}";
+
             var listProps = new JProperty("Meta", new JObject(
                 new JProperty("AdminUrl", this.AdminUrl),
                 new JProperty("ExportedDate", DateTime.Now.ToString("s")),
                 new JProperty("MailmanVersion", this.MailmanVersion.ToString()),
-                new JProperty("MailmanSharpVersion", Assembly.GetExecutingAssembly().GetName().Version.ToString())
+                new JProperty("MailmanSharpVersion", fileVersion)
             ));
 
             var root = new JObject(listProps);
