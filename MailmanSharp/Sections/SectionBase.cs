@@ -88,9 +88,9 @@ namespace MailmanSharp
 
             foreach (var kvp in docs)
             {
-                ResetProperties();
-
                 var propsToRead = docs.Count == 1 ? unignoredProps : unignoredProps.ForPath(kvp.Key);
+                ResetProperties(propsToRead);
+
                 var doc = kvp.Value;
                 foreach (var prop in propsToRead)
                 {
@@ -179,9 +179,9 @@ namespace MailmanSharp
             return result;
         }
 
-        protected void ResetProperties()
+        protected void ResetProperties(IEnumerable<PropertyInfo> props)
         {
-            foreach (var prop in _props.Where(p => p.CanWrite))
+            foreach (var prop in props.Where(p => p.CanWrite))
             {
                 var type = prop.PropertyType;
                 if (type == typeof(List<string>))

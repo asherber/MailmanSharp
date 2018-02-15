@@ -32,7 +32,7 @@ namespace MailmanSharp
         public bool? TopicsEnabled { get; set; }
         public ushort? TopicsBodylinesLimit { get; set; }
         [Ignore]
-        public List<Topic> TopicList { get; set; } = new List<Topic>();
+        public List<Topic> Topics { get; set; } = new List<Topic>();
 
         internal TopicsSection(MailmanList list) : base(list) { }
 
@@ -42,14 +42,14 @@ namespace MailmanSharp
 
         protected override void DoAfterRead(Dictionary<string, HtmlDocument> docs)
         {
-            // read topics
+            Topics.Clear();
             var doc = docs.Single().Value;
 
             int i = 0;
             while (doc.DocumentNode.SafeSelectNodes(String.Format("//input[@name='topic_delete_{0:D2}']", ++i)).Any())
             {
                 string index = i.ToString("D2");
-                this.TopicList.Add(new Topic()
+                this.Topics.Add(new Topic()
                 {
                     Name = (string)doc.GetInputValue(_nameTag + index),
                     Regexes = doc.GetTextAreaListValue(_regexTag + index),
@@ -61,9 +61,9 @@ namespace MailmanSharp
 
         protected override void DoBeforeFinishWrite(RestSharp.RestRequest req)
         {
-            for (int i = 0; i < this.TopicList.Count; ++i)
+            for (int i = 0; i < this.Topics.Count; ++i)
             {
-                var topic = this.TopicList[i];
+                var topic = this.Topics[i];
                 string index = (i + 1).ToString("D2");
                 req.AddParameter(_nameTag + index, topic.Name);
                 req.AddParameter(_regexTag + index, topic.Regexes.Cat());

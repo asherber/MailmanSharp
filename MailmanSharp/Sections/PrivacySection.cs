@@ -99,7 +99,7 @@ namespace MailmanSharp
         public List<string> BounceMatchingHeaders { get; set; } = new List<string>();
         [Path("spam")]
         [Ignore]
-        public List<HeaderFilter> FilterList { get; set; } = new List<HeaderFilter>();
+        public List<HeaderFilter> HeaderFilterRules { get; set; } = new List<HeaderFilter>();
 
         internal PrivacySection(MailmanList list) : base(list) { }
 
@@ -108,6 +108,7 @@ namespace MailmanSharp
 
         protected override void DoAfterRead(Dictionary<string, HtmlDocument> docs)
         {
+            HeaderFilterRules.Clear();
             var doc = docs.Single(d => d.Key == "privacy/spam").Value;
             
             int i = 0;
@@ -115,7 +116,7 @@ namespace MailmanSharp
             {
                 string index = i.ToString("D2");
 
-                this.FilterList.Add(new HeaderFilter()
+                this.HeaderFilterRules.Add(new HeaderFilter()
                 {
                     Regexes = doc.GetTextAreaListValue(_regexTag + index),
                     Action = doc.GetInputEnumValue<FilterAction>(_actionTag + index).Value,
@@ -125,9 +126,9 @@ namespace MailmanSharp
 
         protected override void DoBeforeFinishWrite(RestRequest req)
         {
-            for (int i = 0; i < this.FilterList.Count; ++i)
+            for (int i = 0; i < this.HeaderFilterRules.Count; ++i)
             {
-                var filter = this.FilterList[i];
+                var filter = this.HeaderFilterRules[i];
                 string index = (i + 1).ToString("D2");
                 req.AddParameter(_regexTag + index, filter.Regexes.Cat());
                 req.AddParameter(_actionTag + index, (int)filter.Action);
