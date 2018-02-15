@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="BaseTests.cs" />
     <Compile Include="DigestTests.cs" />
+    <Compile Include="PrivacyTests.cs" />
     <Compile Include="GeneralTests.cs" />
     <Compile Include="ListConfig.cs" />
     <Compile Include="NonDigestTests.cs" />
