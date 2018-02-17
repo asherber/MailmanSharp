@@ -19,4 +19,4 @@
 - [x] `ReadAsync` needs to start with a blank object
 - [ ] Ignore changes to `RealName`
 - [ ] Handle validation errors?
-- [ ] `CurrentConfig` needs to include ignored props
+- [x] `CurrentConfig` needs to include ignored props

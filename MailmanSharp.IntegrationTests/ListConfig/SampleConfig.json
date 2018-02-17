@@ -100,6 +100,21 @@
     "BounceMatchingHeaders": [
       "96b9a786-b6ce-454e-a323-c77976971f91",
       "f6bf031c-0867-4b04-bb5c-532634379d8b"
+    ],
+    "HeaderFilterRules": [
+      {
+        "Regexes": [
+          "updated",
+          "value"
+        ],
+        "Action": "Reject"
+      },
+      {
+        "Regexes": [
+          "foo"
+        ],
+        "Action": "Hold"
+      }
     ]
   },
   "BounceProcessing": {

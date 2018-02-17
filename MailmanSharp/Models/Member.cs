@@ -34,13 +34,13 @@ namespace MailmanSharp
     [DebuggerDisplay("Email = {Email}, RealName = {RealName}")]
     public class Member: IEquatable<Member>
     {
-        [Ignore]
+        [MailmanIgnore]
         public string Email { get; internal set; }
         public string RealName { get; set; }
         public bool Mod { get; set; }
         public bool Hide { get; set; }
         public bool NoMail { get; set; }
-        [Ignore]
+        [MailmanIgnore]
         public NoMailReason NoMailReason { get; set; }
         public bool Ack { get; set; }
         public bool NotMeToo { get; set; }

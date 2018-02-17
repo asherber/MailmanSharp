@@ -98,7 +98,7 @@ namespace MailmanSharp
         [Path("spam")]
         public List<string> BounceMatchingHeaders { get; set; } = new List<string>();
         [Path("spam")]
-        [Ignore]
+        [MailmanIgnore]
         public List<HeaderFilter> HeaderFilterRules { get; set; } = new List<HeaderFilter>();
 
         internal PrivacySection(MailmanList list) : base(list) { }

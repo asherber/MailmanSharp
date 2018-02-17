@@ -40,7 +40,7 @@ namespace MailmanSharp
         protected static IDictionary<Type, IEnumerable<PropertyInfo>> _propsDict = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
         protected IEnumerable<PropertyInfo> _props => _propsDict[this.GetType()];
         
-        [Ignore]
+        [JsonIgnore, MailmanIgnore]
         public string CurrentConfig => new JObject(GetCurrentConfigJProperty()).ToString();
 
         private string SectionName => this.GetType().Name.Replace("Section", "");

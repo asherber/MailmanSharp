@@ -31,7 +31,6 @@ namespace MailmanSharp
     {
         public MailmanJsonSerializer()
         {
-            ContractResolver = new MailmanContractResolver();
             Converters.Add(new StringEnumConverter());
         }
     }

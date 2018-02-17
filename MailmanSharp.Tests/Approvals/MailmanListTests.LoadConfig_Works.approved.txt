@@ -80,7 +80,8 @@
     "RequireExplicitDestination": false,
     "AcceptableAliases": [],
     "MaxNumRecipients": 0,
-    "BounceMatchingHeaders": []
+    "BounceMatchingHeaders": [],
+    "HeaderFilterRules": []
   },
   "BounceProcessing": {
     "BounceProcessing": false,
@@ -126,6 +127,7 @@
   },
   "Topics": {
     "TopicsEnabled": true,
-    "TopicsBodylinesLimit": 40
+    "TopicsBodylinesLimit": 40,
+    "Topics": []
   }
 }

@@ -83,20 +83,20 @@ namespace MailmanSharp.Tests
     
         private class NoUnignored
         {
-            [Ignore]
+            [MailmanIgnoreAttribute]
             public int Foo { get; set; }
         }
 
         private class OneUnignored
         {
-            [Ignore]
+            [MailmanIgnoreAttribute]
             public string Foo { get; set; }
             public int Bar { get; set; }
         }
 
         private class TwoUnignored
         {
-            [Ignore]
+            [MailmanIgnoreAttribute]
             public int Foor { get; set; }
             public int Bar { get; set; }
             public int Baz { get; set; }

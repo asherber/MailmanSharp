@@ -66,7 +66,7 @@ namespace MailmanSharp
 
         public static IEnumerable<PropertyInfo> Unignored(this IEnumerable<PropertyInfo> props)
         {
-            return props.Where(p => !p.GetCustomAttributes(false).OfType<IgnoreAttribute>().Any());
+            return props.Where(p => !p.GetCustomAttributes(false).OfType<MailmanIgnoreAttribute>().Any());
         }
 
         public static IEnumerable<PropertyInfo> ForPath(this IEnumerable<PropertyInfo> props, string path)
