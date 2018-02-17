@@ -33,7 +33,7 @@ namespace MailmanSharp.IntegrationTests
         public override async Task P20_ChangeAndSave()
         {
             _saved.Digestable = !_saved.Digestable;
-            _saved.DigestIsDefault = Inc(_saved.DigestIsDefault.Value);
+            _saved.DigestIsDefault = Inc(_saved.DigestIsDefault);
             _saved.DigestFooter = Guid.NewGuid().ToString();
 
             await _saved.WriteAsync();

@@ -30,9 +30,10 @@ namespace MailmanSharp.IntegrationTests
         [Fact]
         public abstract Task P50_ReadAndVerifyJson();
 
-        protected ushort Inc(ushort? value) => (ushort)(++value % 10);
-        
-        protected T Inc<T>(T input) where T: struct, IConvertible
+        protected ushort Inc(ushort? value) => (ushort)((value.Value + 1) % 10);
+        protected double Inc(double? value) => (double)((value.Value + 1) % 10);
+
+        protected T Inc<T>(T? input) where T: struct, IConvertible
         {
             var count = Enum.GetValues(typeof(T)).Length;
             var value = Convert.ToInt32(input);

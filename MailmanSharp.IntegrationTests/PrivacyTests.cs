@@ -48,20 +48,23 @@ namespace MailmanSharp.IntegrationTests
         public override async Task P20_ChangeAndSave()
         {
             _saved.Advertised = !_saved.Advertised;
-            _saved.SubscribePolicy = Inc(_saved.SubscribePolicy.Value);
+            _saved.SubscribePolicy = Inc(_saved.SubscribePolicy);
             _saved.SubscribeAutoApproval = GuidEmailArray(3);
 
             _saved.DefaultMemberModeration = !_saved.DefaultMemberModeration;
             _saved.MemberVerbosityThreshold = Inc(_saved.MemberVerbosityThreshold);
             _saved.MemberModerationNotice = Guid.NewGuid().ToString();
-            _saved.DmarcModerationAction = Inc(_saved.DmarcModerationAction.Value);
+            _saved.DmarcModerationAction = Inc(_saved.DmarcModerationAction);
 
             _saved.RequireExplicitDestination = !_saved.RequireExplicitDestination;
             _saved.AcceptableAliases = GuidEmailArray(4);
             _saved.MaxNumRecipients = Inc(_saved.MaxNumRecipients);
 
-            //_saved.HeaderFilterRules.Should().NotBeNull()
-            //    .And.HaveCountGreaterOrEqualTo(1);
+            _saved.HeaderFilterRules = new List<HeaderFilterRule>() { new HeaderFilterRule()
+            {
+                Action = FilterAction.Accept,
+                Regexes = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() }
+            } };
             _saved.BounceMatchingHeaders = GuidEmailArray(3);
 
             await _saved.WriteAsync();

@@ -34,7 +34,7 @@ namespace MailmanSharp.IntegrationTests
             _saved.Description = Guid.NewGuid().ToString();
             _saved.SendReminders = !_saved.SendReminders.Value;
             _saved.MaxMessageSize = Inc(_saved.MaxMessageSize);
-            _saved.FromIsList = Inc(_saved.FromIsList.Value);
+            _saved.FromIsList = Inc(_saved.FromIsList);
             _saved.Moderator = GuidEmailArray(2);
             _saved.Info = Guid.NewGuid().ToString();
 

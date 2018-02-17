@@ -99,7 +99,7 @@ namespace MailmanSharp
         public List<string> BounceMatchingHeaders { get; set; } = new List<string>();
         [Path("spam")]
         [MailmanIgnore]
-        public List<HeaderFilter> HeaderFilterRules { get; set; } = new List<HeaderFilter>();
+        public List<HeaderFilterRule> HeaderFilterRules { get; set; } = new List<HeaderFilterRule>();
 
         internal PrivacySection(MailmanList list) : base(list) { }
 
@@ -116,7 +116,7 @@ namespace MailmanSharp
             {
                 string index = i.ToString("D2");
 
-                this.HeaderFilterRules.Add(new HeaderFilter()
+                this.HeaderFilterRules.Add(new HeaderFilterRule()
                 {
                     Regexes = doc.GetTextAreaListValue(_regexTag + index),
                     Action = doc.GetInputEnumValue<FilterAction>(_actionTag + index).Value,

@@ -34,7 +34,7 @@ namespace MailmanSharp.IntegrationTests
         public override async Task P20_ChangeAndSave()
         {
             _saved.Nondigestable = !_saved.Nondigestable;
-            _saved.Personalize = Inc(_saved.Personalize.Value);
+            _saved.Personalize = Inc(_saved.Personalize);
             _saved.MsgHeader = Guid.NewGuid().ToString();
             _saved.MsgFooter = Guid.NewGuid().ToString();
             _saved.ScrubNondigest = !_saved.ScrubNondigest;

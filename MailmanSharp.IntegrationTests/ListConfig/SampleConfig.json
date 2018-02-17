@@ -104,14 +104,14 @@
     "HeaderFilterRules": [
       {
         "Regexes": [
-          "updated",
-          "value"
+          "7083ecfe-fcb4-4e78-81d2-af5ee53e9242",
+          "89e09562-859e-42be-8324-38b02297e9a9"
         ],
         "Action": "Reject"
       },
       {
         "Regexes": [
-          "foo"
+          "f4e70a60-0e50-47a1-b1d5-e8a09786195a"
         ],
         "Action": "Hold"
       }

@@ -29,14 +29,14 @@ namespace MailmanSharp
     public enum FilterAction { Defer = 0, Hold = 7, Reject = 2, Discard = 3, Accept = 6 }
 
     [DebuggerDisplay("Action = {Action}")]
-    public class HeaderFilter
+    public class HeaderFilterRule
     {
         public List<string> Regexes { get; set; }
         public FilterAction Action { get; set; }
 
-        public HeaderFilter() { }
+        public HeaderFilterRule() { }
 
-        public HeaderFilter(List<string> regexes, FilterAction action)
+        public HeaderFilterRule(List<string> regexes, FilterAction action)
         {
             this.Regexes = regexes;
             this.Action = action;
