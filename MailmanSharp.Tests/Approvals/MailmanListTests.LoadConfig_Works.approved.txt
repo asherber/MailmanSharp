@@ -55,7 +55,7 @@
     "Advertised": false,
     "SubscribePolicy": "Confirm",
     "SubscribeAutoApproval": [],
-    "UnubscribePolicy": false,
+    "UnsubscribePolicy": false,
     "BanList": [],
     "PrivateRoster": "Anyone",
     "ObscureAddresses": false,

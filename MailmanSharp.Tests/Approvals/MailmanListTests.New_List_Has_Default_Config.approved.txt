@@ -55,7 +55,7 @@
     "Advertised": null,
     "SubscribePolicy": null,
     "SubscribeAutoApproval": [],
-    "UnubscribePolicy": null,
+    "UnsubscribePolicy": null,
     "BanList": [],
     "PrivateRoster": null,
     "ObscureAddresses": null,

@@ -43,7 +43,7 @@ namespace MailmanSharp
         [Path("subscribing")]
         public List<string> SubscribeAutoApproval { get; set; } = new List<string>();
         [Path("subscribing")]
-        public bool? UnubscribePolicy { get; set; }
+        public bool? UnsubscribePolicy { get; set; }
         [Path("subscribing")]
         public List<string> BanList { get; set; } = new List<string>();
         [Path("subscribing")]
