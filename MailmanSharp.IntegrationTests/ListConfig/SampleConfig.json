@@ -118,42 +118,45 @@
     ]
   },
   "BounceProcessing": {
-    "BounceProcessing": true,
-    "BounceScoreThreshold": 5.0,
-    "BounceInfoStaleAfter": 7,
-    "BounceYouAreDisabledWarnings": 3,
-    "BounceYouAreDisabledWarningsInterval": 7,
+    "BounceProcessing": false,
+    "BounceScoreThreshold": 42.3,
+    "BounceInfoStaleAfter": 36,
+    "BounceYouAreDisabledWarnings": 96,
+    "BounceYouAreDisabledWarningsInterval": 42,
     "BounceUnrecognizedGoesToListOwner": false,
-    "BounceNotifyOwnerOnBounceIncrement": false,
+    "BounceNotifyOwnerOnBounceIncrement": true,
     "BounceNotifyOwnerOnDisable": true,
-    "BounceNotifyOwnerOnRemoval": false
+    "BounceNotifyOwnerOnRemoval": true
   },
   "Archiving": {
-    "Archive": true,
+    "Archive": false,
     "ArchivePrivate": "Private",
     "ArchiveVolumeFrequency": "Monthly"
   },
   "MailNewsGateways": {
-    "NntpHost": "",
-    "LinkedNewsgroup": "",
-    "GatewayToNews": false,
-    "GatewayToMail": false,
-    "NewPrefixSubjectToo": null
+    "NntpHost": "26a1d94a-3430-490e-ad9e-c6935683a3d5",
+    "LinkedNewsgroup": "87c3a915-50b2-4e36-b64d-21f261c54b38",
+    "GatewayToNews": true,
+    "GatewayToMail": true,
+    "NewsModeration":  "Moderated",
+    "NewsPrefixSubjectToo": false
   },
   "AutoResponder": {
     "AutorespondPostings": false,
-    "AutoresponsePostingsText": null,
-    "AutorespondAdmin": false,
-    "AutoresponseAdminText": null,
+    "AutoresponsePostingsText": "ba60dadb-4a78-4025-a335-c10cf6aaed56",
+    "AutorespondAdmin": true,
+    "AutoresponseAdminText": "b9b92e73-1bd3-496e-b300-b25104e112d5",
     "AutorespondRequests": "No",
-    "AutoresponseRequestText": null,
-    "AutoresponseGraceperiod": 0
+    "AutoresponseRequestText": "6a8bef9d-20df-4ae2-b2c9-2312218c8515",
+    "AutoresponseGraceperiod": 55
   },
   "ContentFiltering": {
     "FilterContent": false,
-    "FilterMimeTypes": [],
+    "FilterMimeTypes": [
+      "78a6e59f-4844-4ab3-88b0-f1dc63690c03"
+    ],
     "PassMimeTypes": [
-      "multipart/mixed",
+      "9b22ace9-949a-401f-944d-422965028534",
       "multipart/alternative",
       "text/plain"
     ],
@@ -162,7 +165,7 @@
       "bat",
       "cmd",
       "com",
-      "pif",
+      "8a008a25-56d6-434a-ad64-095181692cd6",
       "scr",
       "vbs",
       "cpl"
@@ -170,7 +173,7 @@
     "PassFilenameExtensions": [],
     "CollapseAlternatives": true,
     "ConvertHtmlToPlaintext": true,
-    "FilterAction": "Discard"
+    "FilterAction": "Reject"
   },
   "Topics": {
     "TopicsEnabled": false,

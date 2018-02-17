@@ -77,6 +77,11 @@
   <ItemGroup>
     <Compile Include="BaseTests.cs" />
     <Compile Include="DigestTests.cs" />
+    <Compile Include="BounceProcessingTests.cs" />
+    <Compile Include="ArchivingTests.cs" />
+    <Compile Include="AutoResponderTests.cs" />
+    <Compile Include="ContentFilteringTests.cs" />
+    <Compile Include="MailNewsGatewaysTests.cs" />
     <Compile Include="PrivacyTests.cs" />
     <Compile Include="GeneralTests.cs" />
     <Compile Include="ListConfig.cs" />

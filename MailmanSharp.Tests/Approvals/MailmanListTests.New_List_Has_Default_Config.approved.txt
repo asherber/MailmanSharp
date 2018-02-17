@@ -92,7 +92,7 @@
     "BounceUnrecognizedGoesToListOwner": null,
     "BounceNotifyOwnerOnBounceIncrement": null,
     "BounceNotifyOwnerOnDisable": null,
-    "BounceNotifyOwnerOnRemoval": false
+    "BounceNotifyOwnerOnRemoval": null
   },
   "Archiving": {
     "Archive": null,
@@ -104,7 +104,8 @@
     "LinkedNewsgroup": null,
     "GatewayToNews": null,
     "GatewayToMail": null,
-    "NewPrefixSubjectToo": null
+    "NewsModeration": null,
+    "NewsPrefixSubjectToo": null
   },
   "AutoResponder": {
     "AutorespondPostings": null,

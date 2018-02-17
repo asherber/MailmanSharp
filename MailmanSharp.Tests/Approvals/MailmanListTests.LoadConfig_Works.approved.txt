@@ -104,7 +104,8 @@
     "LinkedNewsgroup": "",
     "GatewayToNews": false,
     "GatewayToMail": true,
-    "NewPrefixSubjectToo": false
+    "NewsModeration": null,
+    "NewsPrefixSubjectToo": null
   },
   "AutoResponder": {
     "AutorespondPostings": false,

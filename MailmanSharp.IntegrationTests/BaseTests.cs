@@ -31,7 +31,7 @@ namespace MailmanSharp.IntegrationTests
         public abstract Task P50_ReadAndVerifyJson();
 
         protected ushort Inc(ushort? value) => (ushort)((value.Value + 1) % 10);
-        protected double Inc(double? value) => (double)((value.Value + 1) % 10);
+        protected double Inc(double? value) => ((Math.Truncate(value.Value) + 1) % 10) + 0.5;
 
         protected T Inc<T>(T? input) where T: struct, IConvertible
         {

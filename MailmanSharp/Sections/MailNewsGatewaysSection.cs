@@ -36,8 +36,8 @@ namespace MailmanSharp
         public string LinkedNewsgroup { get; set; }
         public bool? GatewayToNews { get; set; }
         public bool? GatewayToMail { get; set; }
-        private NewsModerationOption? NewsModeration { get; set; }
-        public bool? NewPrefixSubjectToo { get; set; }
+        public NewsModerationOption? NewsModeration { get; set; }
+        public bool? NewsPrefixSubjectToo { get; set; }
         
         public Task MassCatchup()
         {

@@ -11,33 +11,32 @@ using FluentAssertions.Json;
 
 namespace MailmanSharp.IntegrationTests
 {
-    public class GeneralTests : BaseTests
+    public class AutoResponderTests : BaseTests
     {
-        private static GeneralSection _saved;
+        private static AutoResponderSection _saved;
         private static string _config;
 
-        private GeneralSection Section => _list.General;
+        private AutoResponderSection Section => _list.AutoResponder;
 
         public override async Task P10_ReadValues()
         {
             await Section.ReadAsync();
 
-            Section.Description.Should().NotBeNull();
-            Section.SendReminders.Should().NotBeNull();
-            Section.MaxMessageSize.Should().NotBeNull();
+            Section.AutorespondPostings.Should().NotBeNull();
+            Section.AutoresponseAdminText.Should().NotBeNull();
+            Section.AutorespondRequests.Should().NotBeNull();
+            Section.AutoresponseGraceperiod.Should().NotBeNull();
 
             _saved = Section;
         }
 
         public override async Task P20_ChangeAndSave()
         {
-            _saved.Description = Guid.NewGuid().ToString();
-            _saved.SendReminders = !_saved.SendReminders;
-            _saved.MaxMessageSize = Inc(_saved.MaxMessageSize);
-            _saved.FromIsList = Inc(_saved.FromIsList);
-            _saved.Moderator = GuidEmailArray(2);
-            _saved.Info = Guid.NewGuid().ToString();
-
+            _saved.AutorespondPostings = !_saved.AutorespondPostings;
+            _saved.AutoresponseAdminText = Guid.NewGuid().ToString();
+            _saved.AutorespondRequests = Inc(_saved.AutorespondRequests);
+            _saved.AutoresponseGraceperiod = Inc(_saved.AutoresponseGraceperiod);
+            
             await _saved.WriteAsync();
         }
 
@@ -49,7 +48,7 @@ namespace MailmanSharp.IntegrationTests
 
         public override async Task P40_LoadJsonAndSave()
         {
-            _config = SampleConfig("General");
+            _config = SampleConfig("AutoResponder");
             Section.LoadConfig(_config);
             await Section.WriteAsync();
         }
