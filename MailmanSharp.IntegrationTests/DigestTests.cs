@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Priority;
+using FluentAssertions.Json;
 
 namespace MailmanSharp.IntegrationTests
 {

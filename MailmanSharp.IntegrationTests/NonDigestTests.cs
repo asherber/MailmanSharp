@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json.Linq;
+using FluentAssertions.Json;
 
 namespace MailmanSharp.IntegrationTests
 {
