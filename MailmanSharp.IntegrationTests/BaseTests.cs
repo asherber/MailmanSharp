@@ -21,13 +21,15 @@ namespace MailmanSharp.IntegrationTests
         static BaseTests()
         {
             var rand = new Random();
-            var randInt = rand.Next(20, 120);
-            var randDouble = (rand.Next(100, 999) / 10.0);
+            var randInt = rand.Next(20, 120).ToString();
+            var randDouble = (rand.Next(100, 999) / 10.0).ToString();
+            if (randDouble.EndsWith("0"))
+                randDouble = randDouble.Substring(0, 3) + "5";
 
             var configString = File.ReadAllText("SampleConfig.json");
             configString = configString.Replace("guid", Guid.NewGuid().ToString());
-            configString = Regex.Replace(configString, "(?<=: )99.9", randDouble.ToString());
-            configString = Regex.Replace(configString, "(?<=: )99", randInt.ToString());
+            configString = Regex.Replace(configString, "(?<=: )99.9", randDouble);
+            configString = Regex.Replace(configString, "(?<=: )99", randInt);
 
             _configObj = JObject.Parse(configString);
         }

@@ -170,6 +170,13 @@
   },
   "Topics": {
     "TopicsEnabled": false,
-    "TopicsBodylinesLimit": 99
+    "TopicsBodylinesLimit": 99,
+    "Topics": [
+      {
+        "Name": "guid",
+        "Regexes": [ "guid" ],
+        "Description":  "guid"
+      }
+    ]
   }
 }
