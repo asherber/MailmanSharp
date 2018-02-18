@@ -20,4 +20,4 @@
 - [ ] Ignore changes to `RealName`
 - [ ] Handle validation errors?
 - [x] `CurrentConfig` needs to include ignored props
-- [ ] `Privacy.EquivalentDomains` should be a list of lists
+- [x] `Privacy.EquivalentDomains` should be a list of lists

@@ -69,7 +69,7 @@
     "DmarcNoneModerationAction": false,
     "DmarcModerationNotice": "Moderation Notice",
     "DmarcWrappedMessageText": "",
-    "EquivalentDomains": "foo,bar",
+    "EquivalentDomains": [],
     "AcceptTheseNonmembers": [],
     "HoldTheseNonmembers": [],
     "RejectTheseNonmembers": [],

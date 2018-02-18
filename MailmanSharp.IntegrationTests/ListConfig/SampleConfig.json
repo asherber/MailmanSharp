@@ -83,7 +83,10 @@
     "DmarcNoneModerationAction": false,
     "DmarcModerationNotice": "guid",
     "DmarcWrappedMessageText": "guid",
-    "EquivalentDomains": "guid,guid",
+    "EquivalentDomains": [
+      [ "guid", "guid" ],
+      [ "guid", "guid" ]
+    ],
     "AcceptTheseNonmembers": [ "guid@example.com" ],
     "HoldTheseNonmembers": [ "guid@example.com" ],
     "RejectTheseNonmembers": [ "guid@example.com" ],

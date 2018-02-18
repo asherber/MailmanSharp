@@ -72,7 +72,8 @@ namespace MailmanSharp
         [Path("sender")]
         public string DmarcWrappedMessageText { get; set; }
         [Path("sender")]
-        public string EquivalentDomains { get; set; }
+        [MailmanIgnore]
+        public List<List<string>> EquivalentDomains { get; set; } = new List<List<string>>();
         [Path("sender")]
         public List<string> AcceptTheseNonmembers { get; set; } = new List<string>();
         [Path("sender")]
@@ -105,6 +106,7 @@ namespace MailmanSharp
 
         private static readonly string _regexTag = "hdrfilter_rebox_";
         private static readonly string _actionTag = "hdrfilter_action_";
+        private static readonly string _equivalentDomainsTag = "equivalent_domains";
 
         protected override void DoAfterRead(Dictionary<string, HtmlDocument> docs)
         {
@@ -122,6 +124,19 @@ namespace MailmanSharp
                     Action = doc.GetInputEnumValue<FilterAction>(_actionTag + index).Value,
                 });
             }
+
+            EquivalentDomains.Clear();
+            doc = docs.Single(d => d.Key == "privacy/sender").Value;
+            var allGroups = doc.GetTextAreaStringValue(_equivalentDomainsTag);
+            if (!String.IsNullOrWhiteSpace(allGroups))
+            {
+                var groups = allGroups.Split(';');
+                foreach (var group in groups)
+                {
+                    var domains = group.Split(',').Select(d => d.Trim());
+                    EquivalentDomains.Add(domains.ToList());
+                }
+            }
         }
 
         protected override void DoBeforeFinishWrite(RestRequest req)
@@ -133,6 +148,10 @@ namespace MailmanSharp
                 req.AddParameter(_regexTag + index, filter.Regexes.Cat());
                 req.AddParameter(_actionTag + index, (int)filter.Action);
             }
+
+            var groups = EquivalentDomains.Select(g => String.Join(",", g));
+            var all = String.Join(";", groups);
+            req.AddParameter(_equivalentDomainsTag, all);
         }
     }
 }
