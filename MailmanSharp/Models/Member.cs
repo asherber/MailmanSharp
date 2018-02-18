@@ -41,7 +41,7 @@ namespace MailmanSharp
         public bool Hide { get; set; }
         public bool NoMail { get; set; }
         [MailmanIgnore]
-        public NoMailReason NoMailReason { get; set; }
+        public NoMailReason NoMailReason { get; private set; }
         public bool Ack { get; set; }
         public bool NotMeToo { get; set; }
         public bool NoDupes { get; set; }

@@ -81,6 +81,7 @@
     <Compile Include="ArchivingTests.cs" />
     <Compile Include="AutoResponderTests.cs" />
     <Compile Include="ContentFilteringTests.cs" />
+    <Compile Include="MembershipTests.cs" />
     <Compile Include="TopicsTests.cs" />
     <Compile Include="MailNewsGatewaysTests.cs" />
     <Compile Include="PrivacyTests.cs" />

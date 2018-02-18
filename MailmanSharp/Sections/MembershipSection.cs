@@ -87,7 +87,17 @@ namespace MailmanSharp
             _emailListPopulated = true;
         }
 
-        public Task ModerateAllAsync(bool moderate)
+        public Task ModerateAllAsync()
+        {
+            return ToggleModerateAllAsync(true);
+        }
+
+        public Task UnmoderateAllAsync()
+        {
+            return ToggleModerateAllAsync(false);
+        }
+
+        public Task ToggleModerateAllAsync(bool moderate)
         {
             var req = new RestRequest(Method.POST);
             req.AddParameter("allmodbit_val", moderate ? 1 : 0);
@@ -128,6 +138,14 @@ namespace MailmanSharp
         {
             return UnsubscribeAsync(members.Cat(), options);
         }
+
+        public async Task<UnsubscribeResult> UnsubscribeAllAsync(UnsubscribeOptions options = UnsubscribeOptions.None)
+        {
+            if (!_emailListPopulated)
+                await PopulateEmailListAsync().ConfigureAwait(false);
+
+            return await UnsubscribeAsync(EmailList, options).ConfigureAwait(false);
+            }
 
         private enum SubscribeAction { Subscribe, Invite }
         private async Task<SubscribeResult> SubscribeOrInviteAsync(string members, SubscribeAction action, SubscribeOptions options = SubscribeOptions.None)
@@ -190,7 +208,7 @@ namespace MailmanSharp
             return InviteAsync(members.Cat());
         }
 
-        public async Task<IEnumerable<Member>> GetMembersAsync(string search)
+        public async Task<IEnumerable<Member>> FindMembersAsync(string search)
         {
             var req = new RestRequest(Method.GET);
             req.AddParameter("findmember", search);
@@ -215,9 +233,9 @@ namespace MailmanSharp
                 return ExtractMembersFromPage(doc);
         }
 
-        public Task<IEnumerable<Member>> GetMembersAsync()
+        public Task<IEnumerable<Member>> GetAllMembersAsync()
         {
-            return GetMembersAsync("");
+            return FindMembersAsync(null);
         }
 
 
@@ -279,13 +297,18 @@ namespace MailmanSharp
 
         public Task SaveMembersAsync(IEnumerable<Member> members)
         {
-            var req = new RestRequest(Method.POST);
-            req.AddParameter("setmemberopts_btn", 1);
+            if (members.Any())
+            {
+                var req = new RestRequest(Method.POST);
+                req.AddParameter("setmemberopts_btn", 1);
 
-            foreach (var member in members)
-                req.Parameters.AddRange(member.ToParameters());
+                foreach (var member in members)
+                    req.Parameters.AddRange(member.ToParameters());
 
-            return this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req);
+                return this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req);
+            }
+            else
+                return Task.CompletedTask;
         }
 
         public Task SaveMembersAsync(params Member[] members)

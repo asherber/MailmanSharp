@@ -21,3 +21,5 @@
 - [ ] Handle validation errors?
 - [x] `CurrentConfig` needs to include ignored props
 - [x] `Privacy.EquivalentDomains` should be a list of lists
+- [ ] Add test for `General.NewMemberOptions`
+- [ ] Allow additional text for subscription notice
