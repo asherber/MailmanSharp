@@ -11,23 +11,23 @@
       "aaron@sherber.com"
     ],
     "Moderator": [
-      "68cf8715-05e0-4f00-b23a-75f64f090d82@example.com",
-      "d97fed0a-19eb-42b3-82c7-504940c45e51@example.com"
+      "guid@example.com",
+      "guid@example.com"
     ],
-    "Description": "4273ef8d-b4dd-4398-91d4-7e7ec9de0d03",
-    "Info": "07172861-647c-4f73-af14-7aed68dbfc49",
-    "SubjectPrefix": "64de384e-7a4a-460c-bd46-edfc9681d08c",
+    "Description": "guid",
+    "Info": "guid",
+    "SubjectPrefix": "guid",
     "FromIsList": "WrapMessage",
     "AnonymousList": true,
     "FirstStripReplyTo": false,
     "ReplyGoesToList": "ThisList",
-    "ReplyToAddress": "d96b685b-8290-4f7a-ac0c-724b45b68f93@example.com",
+    "ReplyToAddress": "guid@example.com",
     "UmbrellaList": false,
-    "UmbrellaMemberSuffix": "-owner",
+    "UmbrellaMemberSuffix": "-guid",
     "SendReminders": true,
-    "WelcomeMsg": "e4f3ca13-16db-4016-be08-3ca2fcb877f1",
+    "WelcomeMsg": "guid",
     "SendWelcomeMsg": false,
-    "GoodbyeMsg": "f38013d5-ab2f-4bd5-8f27-718fd8a6fa1a",
+    "GoodbyeMsg": "guid",
     "SendGoodbyeMsg": false,
     "AdminImmedNotify": false,
     "AdminNotifyMchanges": true,
@@ -35,83 +35,83 @@
     "Emergency": true,
     "NewMemberOptions": "None",
     "Administrivia": false,
-    "MaxMessageSize": 50,
-    "AdminMemberChunksize": 40,
+    "MaxMessageSize": 99,
+    "AdminMemberChunksize": 99,
     "IncludeRfc2369Headers": true,
     "IncludeListPostHeader": false,
     "IncludeSenderHeader": true,
-    "MaxDaysToHold": 75
+    "MaxDaysToHold": 99
   },
   "NonDigest": {
     "Nondigestable": true,
     "Personalize": "No",
-    "MsgHeader": "b534f967-d02c-410f-a584-d24221b3cc8e",
-    "MsgFooter": "82e4fb3c-a794-42f3-946b-b868a517b3a7",
+    "MsgHeader": "guid",
+    "MsgFooter": "guid",
     "ScrubNondigest": false,
     "RegularExcludeLists": [
-      "68cf8715-05e0-4f00-b23a-75f64f090d82@example.com",
-      "d97fed0a-19eb-42b3-82c7-504940c45e51@example.com"
+      "guid@example.com",
+      "guid@example.com"
     ],
     "RegularExcludeIgnore": true,
-    "RegularIncludeLists": []
+    "RegularIncludeLists": [ "guid@example.com" ]
   },
   "Digest": {
     "Digestable": true,
     "DigestIsDefault": "Regular",
     "MimeIsDefaultDigest": "Plain",
-    "DigestSizeThreshhold": 30,
+    "DigestSizeThreshhold": 99,
     "DigestSendPeriodic": false,
-    "DigestHeader": null,
-    "DigestFooter": "b93b64d9-7e62-44c2-98f2-05fad9befb98\n95af3d87-5608-4e8d-8f4b-cfb313088ba6",
+    "DigestHeader": "guid",
+    "DigestFooter": "guid\nguid",
     "DigestVolumeFrequency": "Weekly"
   },
   "Privacy": {
     "Advertised": false,
     "SubscribePolicy": "Confirm",
-    "SubscribeAutoApproval": [ "641f3011-e26b-4a5c-b1ad-f59a10eba0f3@example.com" ],
+    "SubscribeAutoApproval": [ "guid@example.com" ],
     "UnsubscribePolicy": true,
-    "BanList": [],
+    "BanList": [ "guid@example.com" ],
     "PrivateRoster": "ListMembers",
     "ObscureAddresses": true,
     "DefaultMemberModeration": true,
-    "MemberVerbosityThreshold": 40,
-    "MemberVerbosityInterval": 350,
+    "MemberVerbosityThreshold": 99,
+    "MemberVerbosityInterval": 99,
     "MemberModerationAction": "Hold",
-    "MemberModerationNotice": "e1779a82-d2a3-4ec4-b59d-3ed3640a6eb8",
+    "MemberModerationNotice": "guid",
     "DmarcModerationAction": "Accept",
     "DmarcQuarantineModerationAction": true,
     "DmarcNoneModerationAction": false,
-    "DmarcModerationNotice": null,
-    "DmarcWrappedMessageText": "10a363e9-1d85-405d-83ea-1b782b9652ed",
-    "EquivalentDomains": [],
-    "AcceptTheseNonmembers": [],
-    "HoldTheseNonmembers": [],
-    "RejectTheseNonmembers": [],
-    "DiscardTheseNonmembers": [],
+    "DmarcModerationNotice": "guid",
+    "DmarcWrappedMessageText": "guid",
+    "EquivalentDomains": "guid,guid",
+    "AcceptTheseNonmembers": [ "guid@example.com" ],
+    "HoldTheseNonmembers": [ "guid@example.com" ],
+    "RejectTheseNonmembers": [ "guid@example.com" ],
+    "DiscardTheseNonmembers": [ "guid@example.com" ],
     "GenericNonmemberAction": "Hold",
     "ForwardAutoDiscards": true,
-    "NonmemberRejectionNotice": null,
+    "NonmemberRejectionNotice": "guid",
     "RequireExplicitDestination": true,
     "AcceptableAliases": [
-      "1ec2c0e6-0c2d-4bca-8d2e-29f899e3abdf@example.com",
-      "734f17a2-0851-4c34-82ef-b96fc98d3cff@example.com"
+      "guid@example.com",
+      "guid@example.com"
     ],
-    "MaxNumRecipients": 14,
+    "MaxNumRecipients": 99,
     "BounceMatchingHeaders": [
-      "96b9a786-b6ce-454e-a323-c77976971f91",
-      "f6bf031c-0867-4b04-bb5c-532634379d8b"
+      "guid",
+      "guid"
     ],
     "HeaderFilterRules": [
       {
         "Regexes": [
-          "7083ecfe-fcb4-4e78-81d2-af5ee53e9242",
-          "89e09562-859e-42be-8324-38b02297e9a9"
+          "guid",
+          "guid"
         ],
         "Action": "Reject"
       },
       {
         "Regexes": [
-          "f4e70a60-0e50-47a1-b1d5-e8a09786195a"
+          "guid"
         ],
         "Action": "Hold"
       }
@@ -119,10 +119,10 @@
   },
   "BounceProcessing": {
     "BounceProcessing": false,
-    "BounceScoreThreshold": 42.3,
-    "BounceInfoStaleAfter": 36,
-    "BounceYouAreDisabledWarnings": 96,
-    "BounceYouAreDisabledWarningsInterval": 42,
+    "BounceScoreThreshold": 99.9,
+    "BounceInfoStaleAfter": 99,
+    "BounceYouAreDisabledWarnings": 99,
+    "BounceYouAreDisabledWarningsInterval": 99,
     "BounceUnrecognizedGoesToListOwner": false,
     "BounceNotifyOwnerOnBounceIncrement": true,
     "BounceNotifyOwnerOnDisable": true,
@@ -134,8 +134,8 @@
     "ArchiveVolumeFrequency": "Monthly"
   },
   "MailNewsGateways": {
-    "NntpHost": "26a1d94a-3430-490e-ad9e-c6935683a3d5",
-    "LinkedNewsgroup": "87c3a915-50b2-4e36-b64d-21f261c54b38",
+    "NntpHost": "guid",
+    "LinkedNewsgroup": "guid",
     "GatewayToNews": true,
     "GatewayToMail": true,
     "NewsModeration":  "Moderated",
@@ -143,40 +143,33 @@
   },
   "AutoResponder": {
     "AutorespondPostings": false,
-    "AutoresponsePostingsText": "ba60dadb-4a78-4025-a335-c10cf6aaed56",
+    "AutoresponsePostingsText": "guid",
     "AutorespondAdmin": true,
-    "AutoresponseAdminText": "b9b92e73-1bd3-496e-b300-b25104e112d5",
+    "AutoresponseAdminText": "guid",
     "AutorespondRequests": "No",
-    "AutoresponseRequestText": "6a8bef9d-20df-4ae2-b2c9-2312218c8515",
-    "AutoresponseGraceperiod": 55
+    "AutoresponseRequestText": "guid",
+    "AutoresponseGraceperiod": 99
   },
   "ContentFiltering": {
     "FilterContent": false,
     "FilterMimeTypes": [
-      "78a6e59f-4844-4ab3-88b0-f1dc63690c03"
+      "guid"
     ],
     "PassMimeTypes": [
-      "9b22ace9-949a-401f-944d-422965028534",
-      "multipart/alternative",
-      "text/plain"
+      "guid",
+      "guid",
+      "guid"
     ],
     "FilterFilenameExtensions": [
-      "exe",
-      "bat",
-      "cmd",
-      "com",
-      "8a008a25-56d6-434a-ad64-095181692cd6",
-      "scr",
-      "vbs",
-      "cpl"
+      "guid"
     ],
-    "PassFilenameExtensions": [],
+    "PassFilenameExtensions": [ "guid" ],
     "CollapseAlternatives": true,
     "ConvertHtmlToPlaintext": true,
     "FilterAction": "Reject"
   },
   "Topics": {
     "TopicsEnabled": false,
-    "TopicsBodylinesLimit": 0
+    "TopicsBodylinesLimit": 99
   }
 }

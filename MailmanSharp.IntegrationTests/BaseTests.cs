@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Priority;
@@ -14,6 +15,23 @@ namespace MailmanSharp.IntegrationTests
     public abstract class BaseTests
     {
         protected IMailmanList _list = new TestList();
+
+        private static JObject _configObj;
+        
+        static BaseTests()
+        {
+            var rand = new Random();
+            var randInt = rand.Next(20, 120);
+            var randDouble = (rand.Next(100, 999) / 10.0);
+
+            var configString = File.ReadAllText("SampleConfig.json");
+            configString = configString.Replace("guid", Guid.NewGuid().ToString());
+            configString = Regex.Replace(configString, "(?<=: )99.9", randDouble.ToString());
+            configString = Regex.Replace(configString, "(?<=: )99", randInt.ToString());
+
+            _configObj = JObject.Parse(configString);
+        }
+
 
         [Fact]
         public abstract Task P10_ReadValues();
@@ -46,8 +64,7 @@ namespace MailmanSharp.IntegrationTests
 
         protected string SampleConfig(string section)
         {
-            var obj = JObject.Parse(File.ReadAllText("SampleConfig.json"));
-            return new JObject(obj.Property(section)).ToString();
+            return new JObject(_configObj.Property(section)).ToString();
         }
     }
 }

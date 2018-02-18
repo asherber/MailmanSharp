@@ -69,7 +69,7 @@
     "DmarcNoneModerationAction": null,
     "DmarcModerationNotice": null,
     "DmarcWrappedMessageText": null,
-    "EquivalentDomains": [],
+    "EquivalentDomains": null,
     "AcceptTheseNonmembers": [],
     "HoldTheseNonmembers": [],
     "RejectTheseNonmembers": [],

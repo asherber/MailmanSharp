@@ -72,7 +72,7 @@ namespace MailmanSharp
         [Path("sender")]
         public string DmarcWrappedMessageText { get; set; }
         [Path("sender")]
-        public List<string> EquivalentDomains { get; set; } = new List<string>();
+        public string EquivalentDomains { get; set; }
         [Path("sender")]
         public List<string> AcceptTheseNonmembers { get; set; } = new List<string>();
         [Path("sender")]
