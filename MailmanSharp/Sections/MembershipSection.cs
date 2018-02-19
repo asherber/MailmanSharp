@@ -145,10 +145,10 @@ namespace MailmanSharp
                 await PopulateEmailListAsync().ConfigureAwait(false);
 
             return await UnsubscribeAsync(EmailList, options).ConfigureAwait(false);
-            }
+        }
 
         private enum SubscribeAction { Subscribe, Invite }
-        private async Task<SubscribeResult> SubscribeOrInviteAsync(string members, SubscribeAction action, SubscribeOptions options = SubscribeOptions.None)
+        private async Task<SubscribeResult> SubscribeOrInviteAsync(string members, string message, SubscribeAction action, SubscribeOptions options = SubscribeOptions.None)
         {
             var result = new SubscribeResult();
 
@@ -158,7 +158,14 @@ namespace MailmanSharp
                 req.AddParameter("subscribees", members);
                 req.AddParameter("subscribe_or_invite", action == SubscribeAction.Subscribe ? 0 : 1);
                 req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOptions.SendWelcomeMessage).ToInt());
-                req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt());                
+                req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt()); 
+                
+                if (!String.IsNullOrWhiteSpace(message))
+                {
+                    // want to end with two CR, to separate from the message body
+                    message = message.TrimEnd() + "\n\n";
+                    req.AddParameter("invitation", message);
+                }
 
                 var resp = await this.GetClient().ExecuteAdminRequestAsync(_addPage, req).ConfigureAwait(false);
                 var doc = resp.Content.GetHtmlDocument();
@@ -190,7 +197,12 @@ namespace MailmanSharp
 
         public Task<SubscribeResult> SubscribeAsync(string members, SubscribeOptions options = SubscribeOptions.None)
         {
-            return SubscribeOrInviteAsync(members, SubscribeAction.Subscribe, options);
+            return SubscribeOrInviteAsync(members, null, SubscribeAction.Subscribe, options);
+        }
+
+        public Task<SubscribeResult> SubscribeAsync(string members, string message, SubscribeOptions options = SubscribeOptions.None)
+        {
+            return SubscribeOrInviteAsync(members, message, SubscribeAction.Subscribe, options);
         }
 
         public Task<SubscribeResult> SubscribeAsync(IEnumerable<string> members, SubscribeOptions options = SubscribeOptions.None)
@@ -198,14 +210,29 @@ namespace MailmanSharp
             return SubscribeAsync(members.Cat(), options);
         }
 
+        public Task<SubscribeResult> SubscribeAsync(IEnumerable<string> members, string message, SubscribeOptions options = SubscribeOptions.None)
+        {
+            return SubscribeAsync(members.Cat(), message, options);
+        }
+
         public Task<SubscribeResult> InviteAsync(string members)
         {
-            return SubscribeOrInviteAsync(members, SubscribeAction.Invite);
+            return SubscribeOrInviteAsync(members, null, SubscribeAction.Invite);
+        }
+
+        public Task<SubscribeResult> InviteAsync(string members, string message)
+        {
+            return SubscribeOrInviteAsync(members, message, SubscribeAction.Invite);
         }
 
         public Task<SubscribeResult> InviteAsync(IEnumerable<string> members)
         {
             return InviteAsync(members.Cat());
+        }
+
+        public Task<SubscribeResult> InviteAsync(IEnumerable<string> members, string message)
+        {
+            return InviteAsync(members.Cat(), message);
         }
 
         public async Task<IEnumerable<Member>> FindMembersAsync(string search)
