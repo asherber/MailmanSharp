@@ -37,6 +37,7 @@ namespace MailmanSharp.IntegrationTests
             _saved.FromIsList = Inc(_saved.FromIsList);
             _saved.Moderator = GuidEmailArray(2);
             _saved.Info = Guid.NewGuid().ToString();
+            _saved.NewMemberOptions = NewMemberOptions.None;
 
             await _saved.WriteAsync();
         }

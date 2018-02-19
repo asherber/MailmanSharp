@@ -33,7 +33,7 @@
     "AdminNotifyMchanges": true,
     "RespondToPostRequests": false,
     "Emergency": true,
-    "NewMemberOptions": "None",
+    "NewMemberOptions": "NotMeToo, NoDupes",
     "Administrivia": false,
     "MaxMessageSize": 99,
     "AdminMemberChunksize": 99,
