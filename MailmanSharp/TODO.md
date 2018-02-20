@@ -25,7 +25,7 @@
 - [x] Allow additional text for subscription notice
 - [ ] Unit tests for other section functions
 - [ ] Lists should default to null as well
-- [ ] Change all addresses to example.com?
+- [x] Change all addresses to example.com?
 - [ ] Clean up all xmldoc
 
 

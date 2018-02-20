@@ -64,8 +64,8 @@ namespace MailmanSharp.IntegrationTests
 
         [Theory, Priority(30)]
         [InlineData("^a", 66)]
-        [InlineData("bar.com", 378)]
-        [InlineData("@bar.com", 189)]
+        [InlineData("com", 193)]
+        [InlineData("example.com", 189)]
         [InlineData("st", 52)]
         public async Task Find_Should_Return_Correct_Number(string search, int expected)
         {
