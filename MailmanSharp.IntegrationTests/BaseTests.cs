@@ -23,8 +23,8 @@ namespace MailmanSharp.IntegrationTests
             var rand = new Random();
             var randInt = rand.Next(20, 120).ToString();
             var randDouble = (rand.Next(100, 999) / 10.0).ToString();
-            if (randDouble.EndsWith("0"))
-                randDouble = randDouble.Substring(0, 3) + "5";
+            if (randDouble.Length == 2)
+                randDouble = randDouble + ".5";
 
             var configString = File.ReadAllText("SampleConfig.json");
             configString = configString.Replace("guid", Guid.NewGuid().ToString());
