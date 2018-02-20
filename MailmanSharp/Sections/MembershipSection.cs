@@ -100,7 +100,7 @@ namespace MailmanSharp
         public Task ToggleModerateAllAsync(bool moderate)
         {
             var req = new RestRequest(Method.POST);
-            req.AddParameter("allmodbit_val", moderate ? 1 : 0);
+            req.AddParameter("allmodbit_val", Convert.ToInt32(moderate));
             req.AddParameter("allmodbit_btn", 1);
             return this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req);
         }
