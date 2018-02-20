@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using FluentAssertions.Json;
+using Xunit;
 
 namespace MailmanSharp.IntegrationTests
 {
@@ -63,6 +64,28 @@ namespace MailmanSharp.IntegrationTests
             await Section.ReadAsync();
             var output = JObject.Parse(Section.CurrentConfig);
             output.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task RegularIncludeLists_Must_Be_Email()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.RegularIncludeLists.Add(guid);
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option regular_include_lists: {guid}");
+        }
+
+        [Fact]
+        public async Task RegularExcludeLists_Must_Be_Email()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.RegularExcludeLists.Add(guid);
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option regular_exclude_lists: {guid}");
         }
     }
 }

@@ -18,7 +18,8 @@
 - [x] Switch to JSON
 - [x] `ReadAsync` needs to start with a blank object
 - [ ] Ignore changes to `RealName`
-- [ ] Handle validation errors? See below
+- [x] Handle validation errors? See below
+- [x] **Multiple validation errors**
 - [x] `CurrentConfig` needs to include ignored props
 - [x] `Privacy.EquivalentDomains` should be a list of lists
 - [x] Add test for `General.NewMemberOptions`
@@ -27,6 +28,7 @@
 - [ ] Lists should default to null as well
 - [x] Change all addresses to example.com?
 - [ ] Clean up all xmldoc
+- [ ] Randomize bools and enums for IT
 
 
 
@@ -46,7 +48,7 @@
 - `Privacy.HoldTheseNonmembers` has to be email
 - `Privacy.RejectTheseNonmembers` has to be email
 - `Privacy.DiscardTheseNonmembers` has to be email
-- `Privacy.AcceptableAliases` has to be email
+- ~~`Privacy.AcceptableAliases` has to be email~~
 - `MailNews` Can't enable gatewaying unless `NntpHost` and `LinkedNewsgroup` are both filled in
 
 

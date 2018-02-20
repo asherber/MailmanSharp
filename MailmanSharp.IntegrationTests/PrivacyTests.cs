@@ -91,5 +91,70 @@ namespace MailmanSharp.IntegrationTests
             var output = JObject.Parse(Section.CurrentConfig);
             output.Should().BeEquivalentTo(expected);
         }
+
+        [Fact]
+        public async Task SubscribeAutoApproval_Must_Be_Email()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.SubscribeAutoApproval.Add(guid);
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option subscribe_auto_approval: {guid}");
+        }
+
+        [Fact]
+        public async Task BanList_Must_Be_Email()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.BanList.Add(guid);
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option ban_list: {guid}");
+        }
+
+        [Fact]
+        public async Task AcceptTheseNonmembers_Must_Be_Email()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.AcceptTheseNonmembers.Add(guid);
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option accept_these_nonmembers: {guid}");
+        }
+        [Fact]
+        public async Task HoldTheseNonmembers_Must_Be_Email()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.HoldTheseNonmembers.Add(guid);
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option hold_these_nonmembers: {guid}");
+        }
+
+        [Fact]
+        public async Task RejectTheseNonmembers_Must_Be_Email()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.RejectTheseNonmembers.Add(guid);
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option reject_these_nonmembers: {guid}");
+        }
+
+        [Fact]
+        public async Task DiscardTheseNonmembers_Must_Be_Email()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.DiscardTheseNonmembers.Add(guid);
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option discard_these_nonmembers: {guid}");
+        }
     }
 }

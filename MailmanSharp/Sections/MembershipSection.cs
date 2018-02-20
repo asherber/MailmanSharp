@@ -351,7 +351,7 @@ namespace MailmanSharp
         /// <param name="newAddress"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public async Task<ChangeAddressResult> ChangeMemberAddressAsync(string oldAddress, string newAddress, ChangeNotificationOptions options = ChangeNotificationOptions.None)
+        public async Task ChangeMemberAddressAsync(string oldAddress, string newAddress, ChangeNotificationOptions options = ChangeNotificationOptions.None)
         {
             var req = new RestRequest(Method.POST);
             req.AddParameter("change_from", oldAddress);
@@ -362,12 +362,9 @@ namespace MailmanSharp
                 req.AddParameter("notice_new", "yes");
 
             var resp = await this.GetClient().ExecuteAdminRequestAsync(_changePage, req).ConfigureAwait(false);
-            var doc = resp.Content.GetHtmlDocument();
-
-            string xpath = "//body/h3";
-            var nodes = doc.DocumentNode.SafeSelectNodes(xpath);
-
-            return new ChangeAddressResult(nodes.FirstOrDefault().InnerText);
+            var msg = resp.GetH3NonWarnings();
+            if (!String.IsNullOrWhiteSpace(msg) && !msg.Contains("changed to"))
+                throw new MailmanException(msg);
         }
     }
 }

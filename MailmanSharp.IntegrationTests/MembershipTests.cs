@@ -135,9 +135,8 @@ namespace MailmanSharp.IntegrationTests
             var email2 = Guid.NewGuid().ToString() + "@example.com";
             await _membership.SubscribeAsync(email1);
 
-            var response = await _membership.ChangeMemberAddressAsync(email1, email2);
-            response.Success.Should().BeTrue();
-            response.Message.Should().Be($"Address {email1} changed to {email2}");
+            Func<Task> act = async () => await _membership.ChangeMemberAddressAsync(email1, email2);
+            act.Should().NotThrow();
         }
 
         [Fact, Priority(80)]
@@ -147,9 +146,8 @@ namespace MailmanSharp.IntegrationTests
             var email2 = Guid.NewGuid().ToString();
             await _membership.SubscribeAsync(email1);
 
-            var response = await _membership.ChangeMemberAddressAsync(email1, email2);
-            response.Success.Should().BeFalse();
-            response.Message.Should().Be($"{email2} is not a valid email address.");
+            Func<Task> act = async () => await _membership.ChangeMemberAddressAsync(email1, email2);
+            act.Should().Throw<MailmanException>().WithMessage($"{email2} is not a valid email address.");
         }
 
         [Fact, Priority(80)]
@@ -159,9 +157,8 @@ namespace MailmanSharp.IntegrationTests
             var guid = Guid.NewGuid().ToString();
             await _membership.SubscribeAsync(email);
 
-            var response = await _membership.ChangeMemberAddressAsync(guid, "foo@example.com");
-            response.Success.Should().BeFalse();
-            response.Message.Should().Be($"{guid} is not a member");
+            Func<Task> act = async () => await _membership.ChangeMemberAddressAsync(guid, "foo@example.com");
+            act.Should().Throw<MailmanException>().WithMessage($"{guid} is not a member");
         }
 
         [Fact, Priority(90)]

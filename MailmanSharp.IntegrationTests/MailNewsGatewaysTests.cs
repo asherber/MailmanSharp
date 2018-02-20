@@ -62,5 +62,17 @@ namespace MailmanSharp.IntegrationTests
             var output = JObject.Parse(Section.CurrentConfig);
             output.Should().BeEquivalentTo(expected);
         }
+
+        [Fact]
+        public async Task Gatewaying_Requires_Fields()
+        {
+            await Section.ReadAsync();
+            Section.NntpHost = "";
+            Section.LinkedNewsgroup = "";
+            Section.GatewayToMail = true;
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"You cannot enable gatewaying unless both the news server field and the linked newsgroup fields are filled in.");
+        }
     }
 }

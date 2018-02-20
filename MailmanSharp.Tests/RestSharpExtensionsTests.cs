@@ -96,5 +96,37 @@ namespace MailmanSharp.Tests
             Action act = () => response.CheckResponseAndThrowIfNeeded();
             act.Should().Throw<Exception>().WithMessage("foobar");
         }
+
+        [Fact]
+        public void CheckAndThrow_Should_Throw_For_H3_Error()
+        {
+            var response = new RestResponse()
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = "<html><body><h3>Error: Houston, we have a problem</h3></body></html>"
+            };
+
+            Action act = () => response.CheckResponseAndThrowIfNeeded();
+            act.Should().Throw<MailmanException>().WithMessage("Houston, we have a problem");
+        }
+
+        [Theory]
+        [InlineData("<h3>foobar</h3>", "foobar")]
+        [InlineData(null, null)]
+        [InlineData("<h3></h3>", "")]
+        [InlineData("<h1>Nothing here</h1>", null)]
+        [InlineData("<h3>This  is\na \ntest", "This is a test")]
+        [InlineData("<h3>This is one error.</h3><h3>This is another error.</h3>", "This is one error. This is another error.")]
+        public void GetH3NonWarnings_Should_Work(string body, string expected)
+        {
+            var response = new RestResponse()
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = $"<html><body>{body}</body></html>"
+            };
+
+            var output = response.GetH3NonWarnings();
+            output.Should().Be(expected);
+        }
     }
 }

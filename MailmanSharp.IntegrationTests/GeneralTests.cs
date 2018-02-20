@@ -63,5 +63,49 @@ namespace MailmanSharp.IntegrationTests
             var output = JObject.Parse(Section.CurrentConfig);
             output.Should().BeEquivalentTo(expected);
         }
+
+        [Fact]
+        public async Task Bad_Moderator_Should_Throw()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.Moderator.Add(guid);
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option moderator: {guid}");
+        }
+
+        [Fact]
+        public async Task Bad_Owner_Should_Throw()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.Owner.Add(guid);
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option owner: {guid}");
+        }
+
+        [Fact]
+        public async Task Bad_ReplyTo_Should_Throw()
+        {
+            await Section.ReadAsync();
+            var guid = Guid.NewGuid().ToString();
+            Section.ReplyToAddress = guid;
+
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage($"Bad email address for option reply_to_address: {guid}");
+        }
+
+        [Fact]
+        public async Task ReplyToList_Needs_ReplyToAddress()
+        {
+            await Section.ReadAsync();
+            Section.ReplyGoesToList = ReplyGoesToListOption.ExplicitAddress;
+            Section.ReplyToAddress = "";
+            
+            Func<Task> act = async () => await Section.WriteAsync();
+            act.Should().Throw<MailmanException>().WithMessage("You cannot add a Reply-To: to an explicit address if that address is blank. Resetting these values.");
+        }
     }
 }

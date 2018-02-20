@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MailmanSharp
@@ -58,6 +59,33 @@ namespace MailmanSharp
             response.EnsureSuccessStatusCode();
             if (response.ErrorException != null)
                 throw response.ErrorException;
+
+            var msg = response.GetH3NonWarnings();
+            if (msg?.StartsWith("Error:") == true)
+            {
+                msg = msg.Substring(6).Trim();
+                throw new MailmanException(msg);
+            }
+        }
+
+        private static Regex _whitespaceRegex = new Regex(@"\s+");
+        public static string GetH3NonWarnings(this IRestResponse response)
+        {
+            var doc = response.Content.GetHtmlDocument();
+
+            string xpath = "//body/h3";
+            var nodes = doc.DocumentNode.SafeSelectNodes(xpath);
+
+            string msg = null;
+            if (nodes.Any())
+            {
+                var messages = nodes.Select(n => n.InnerText);
+                var nonWarnings = messages.Where(m => !m.StartsWith("Warning"));
+                msg = String.Join(" ", nonWarnings);
+                if (!String.IsNullOrEmpty(msg))
+                    msg = _whitespaceRegex.Replace(msg, " ");
+            }
+            return msg;
         }
     }
 }
