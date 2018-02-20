@@ -118,14 +118,10 @@ namespace MailmanSharp
 
             var resp = await _client.ExecuteTaskAsync(request).ConfigureAwait(false);
 
-            resp.EnsureSuccessStatusCode();
-            if (resp.ErrorException != null)
-                throw resp.ErrorException;
-            else
-            {
-                _list.SetMailmanVersion(_versionRe.Match(resp.Content).Value);
-                return resp;
-            }
+            resp.CheckResponseAndThrowIfNeeded();
+
+            _list.SetMailmanVersion(_versionRe.Match(resp.Content).Value);
+            return resp;            
         }
 
         public Task<IRestResponse> ExecuteAdminRequestAsync(Method method, string path, params (string Name, object Value)[] parms)
@@ -151,7 +147,11 @@ namespace MailmanSharp
             var resource = String.Format("{0}/{1}", this.GetRosterPath(), _listName);
             var req = new RestRequest(resource);
             req.AddParameter("adminpw", this.AdminPassword);
-            return await _client.ExecuteTaskAsync(req).ConfigureAwait(false);
+            var resp = await _client.ExecuteTaskAsync(req).ConfigureAwait(false);
+
+            resp.CheckResponseAndThrowIfNeeded();
+
+            return resp;
         }
 
         internal bool HasAdminCookie()

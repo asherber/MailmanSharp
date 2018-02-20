@@ -11,7 +11,7 @@
 - [ ] Introduce some kind of internal 'tested with' property?
 - [ ] ~~Don't let RestSharp leak through~~
 - [x] Parameters as tuples
-- [ ] RosterRequest should check status code
+- [x] RosterRequest should check status code
 - [x] Implement `IEquatable` on `Member`
 - [x] Differentiate `textarea` strings and lists
 - [x] Make all properties nullable
@@ -23,6 +23,10 @@
 - [x] `Privacy.EquivalentDomains` should be a list of lists
 - [x] Add test for `General.NewMemberOptions`
 - [x] Allow additional text for subscription notice
+- [ ] Unit tests for other section functions
+- [ ] Lists should default to null as well
+- [ ] Change all addresses to example.com?
+- [ ] Clean up all xmldoc
 
 
 
@@ -33,7 +37,7 @@
 - `General.Moderator` has to be email
 - `General.ReplyToAddress` has to be email
 - `General.ReplyGoesToList` can't be `ExplicitAddress` without a `ReplyToAddress`
-- Passwords have to match
+- ~~Passwords have to match (this won't happen in practice)~~
 - `Nondigest.RegularIncludeLists` have to be email
 - `Nondigest.RegularExcludeLists` have to be email
 - `Privacy.SubscribeAutoApproval` has to be email
@@ -47,3 +51,5 @@
 
 
 Errors are in an `h3` right under `Body`. See `Membership.ChangeMemberAddressAsync()`
+
+The rest of the post is successful, even if one field gets rejected.

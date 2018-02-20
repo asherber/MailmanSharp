@@ -52,5 +52,12 @@ namespace MailmanSharp
                 throw new MailmanHttpException(response.StatusCode, $"{(int)response.StatusCode}: {response.StatusDescription}");
             }
         }
+
+        public static void CheckResponseAndThrowIfNeeded(this IRestResponse response)
+        {
+            response.EnsureSuccessStatusCode();
+            if (response.ErrorException != null)
+                throw response.ErrorException;
+        }
     }
 }

@@ -98,6 +98,32 @@ namespace MailmanSharp.Tests
         }
 
         [Fact]
+        public void ExecuteRosterRequest_Should_Fail()
+        {
+            SetupCallback(HttpStatusCode.BadRequest);
+
+            var cookies = new CookieContainer();
+            cookies.Add(new Uri("http://example.com/"), new Cookie("foo-list+admin", "foobar"));
+            _restClientMock.Setup(r => r.CookieContainer).Returns(cookies);
+
+            _client.AdminUrl = _adminUrl;
+            _client.AdminPassword = _password;
+
+            var expected = new RestRequest()
+            {
+                Method = Method.GET,
+                Resource = "roster.cgi/foo-list",
+            };
+            expected.AddParameter("adminpw", _password);
+
+            Func<Task> act = async () => await _client.ExecuteRosterRequestAsync();
+            act.Should().Throw<MailmanHttpException>();
+
+            _restClientMock.Verify();
+            _passedRequest.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
         public async Task ExecuteGetAdminRequest()
         {
             SetupCallback();

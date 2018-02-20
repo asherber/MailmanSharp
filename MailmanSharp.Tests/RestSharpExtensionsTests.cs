@@ -67,5 +67,34 @@ namespace MailmanSharp.Tests
             else
                 act.Should().Throw<MailmanHttpException>();
         }
+
+        [Theory]
+        [MemberData(nameof(HttpStatuses))]
+        public void CheckAndThrow_Should_Work(HttpStatusCode statusCode, bool success)
+        {
+            var response = new RestResponse()
+            {
+                StatusCode = statusCode
+            };
+
+            Action act = () => response.CheckResponseAndThrowIfNeeded();
+            if (success)
+                act.Should().NotThrow();
+            else
+                act.Should().Throw<MailmanHttpException>();
+        }
+
+        [Fact]
+        public void CheckAndThrow_Should_Raise_ErrorException()
+        {
+            var response = new RestResponse()
+            {
+                StatusCode = HttpStatusCode.OK,
+                ErrorException = new Exception("foobar")
+            };
+
+            Action act = () => response.CheckResponseAndThrowIfNeeded();
+            act.Should().Throw<Exception>().WithMessage("foobar");
+        }
     }
 }
