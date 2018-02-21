@@ -25,10 +25,10 @@
 - [x] Add test for `General.NewMemberOptions`
 - [x] Allow additional text for subscription notice
 - [ ] Unit tests for other section functions
-- [ ] Lists should default to null as well
+- [ ] ~~Lists should default to null as well~~
 - [x] Change all addresses to example.com?
 - [ ] Clean up all xmldoc
-- [ ] Randomize bools and enums for IT
+- [x] Randomize bools and enums for IT
 
 
 

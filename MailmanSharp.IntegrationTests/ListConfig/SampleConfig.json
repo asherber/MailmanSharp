@@ -17,37 +17,37 @@
     "Description": "guid",
     "Info": "guid",
     "SubjectPrefix": "guid",
-    "FromIsList": "WrapMessage",
+    "FromIsList": "enumFromIsListOption",
     "AnonymousList": true,
-    "FirstStripReplyTo": false,
-    "ReplyGoesToList": "ThisList",
+    "FirstStripReplyTo": true,
+    "ReplyGoesToList": "enumReplyGoesToListOption",
     "ReplyToAddress": "guid@example.com",
-    "UmbrellaList": false,
+    "UmbrellaList": true,
     "UmbrellaMemberSuffix": "-guid",
     "SendReminders": true,
     "WelcomeMsg": "guid",
-    "SendWelcomeMsg": false,
+    "SendWelcomeMsg": true,
     "GoodbyeMsg": "guid",
-    "SendGoodbyeMsg": false,
-    "AdminImmedNotify": false,
+    "SendGoodbyeMsg": true,
+    "AdminImmedNotify": true,
     "AdminNotifyMchanges": true,
-    "RespondToPostRequests": false,
+    "RespondToPostRequests": true,
     "Emergency": true,
-    "NewMemberOptions": "NotMeToo, NoDupes",
-    "Administrivia": false,
+    "NewMemberOptions": "enumNewMemberOptions",
+    "Administrivia": true,
     "MaxMessageSize": 99,
     "AdminMemberChunksize": 99,
     "IncludeRfc2369Headers": true,
-    "IncludeListPostHeader": false,
+    "IncludeListPostHeader": true,
     "IncludeSenderHeader": true,
     "MaxDaysToHold": 99
   },
   "NonDigest": {
     "Nondigestable": true,
-    "Personalize": "No",
+    "Personalize": "enumPersonalizeOption",
     "MsgHeader": "guid",
     "MsgFooter": "guid",
-    "ScrubNondigest": false,
+    "ScrubNondigest": true,
     "RegularExcludeLists": [
       "guid@example.com",
       "guid@example.com"
@@ -57,17 +57,17 @@
   },
   "Digest": {
     "Digestable": true,
-    "DigestIsDefault": "Regular",
+    "DigestIsDefault": "enumDigestIsDefaultOption",
     "MimeIsDefaultDigest": "Plain",
     "DigestSizeThreshhold": 99,
-    "DigestSendPeriodic": false,
+    "DigestSendPeriodic": true,
     "DigestHeader": "guid",
     "DigestFooter": "guid\nguid",
-    "DigestVolumeFrequency": "Weekly"
+    "DigestVolumeFrequency": "enumDigestVolumeFrequencyOption"
   },
   "Privacy": {
-    "Advertised": false,
-    "SubscribePolicy": "Confirm",
+    "Advertised": true,
+    "SubscribePolicy": "enumSubscribePolicyOption",
     "SubscribeAutoApproval": [ "guid@example.com" ],
     "UnsubscribePolicy": true,
     "BanList": [ "guid@example.com" ],
@@ -76,11 +76,11 @@
     "DefaultMemberModeration": true,
     "MemberVerbosityThreshold": 99,
     "MemberVerbosityInterval": 99,
-    "MemberModerationAction": "Hold",
+    "MemberModerationAction": "enumMemberModerationActionOption",
     "MemberModerationNotice": "guid",
-    "DmarcModerationAction": "Accept",
+    "DmarcModerationAction": "enumDmarcModerationActionOption",
     "DmarcQuarantineModerationAction": true,
-    "DmarcNoneModerationAction": false,
+    "DmarcNoneModerationAction": true,
     "DmarcModerationNotice": "guid",
     "DmarcWrappedMessageText": "guid",
     "EquivalentDomains": [
@@ -91,7 +91,7 @@
     "HoldTheseNonmembers": [ "guid@example.com" ],
     "RejectTheseNonmembers": [ "guid@example.com" ],
     "DiscardTheseNonmembers": [ "guid@example.com" ],
-    "GenericNonmemberAction": "Hold",
+    "GenericNonmemberAction": "enumGenericNonmemberActionOption",
     "ForwardAutoDiscards": true,
     "NonmemberRejectionNotice": "guid",
     "RequireExplicitDestination": true,
@@ -110,51 +110,51 @@
           "guid",
           "guid"
         ],
-        "Action": "Reject"
+        "Action": "enumHeaderFilterAction"
       },
       {
         "Regexes": [
           "guid"
         ],
-        "Action": "Hold"
+        "Action": "enumHeaderFilterAction"
       }
     ]
   },
   "BounceProcessing": {
-    "BounceProcessing": false,
+    "BounceProcessing": true,
     "BounceScoreThreshold": 99.9,
     "BounceInfoStaleAfter": 99,
     "BounceYouAreDisabledWarnings": 99,
     "BounceYouAreDisabledWarningsInterval": 99,
-    "BounceUnrecognizedGoesToListOwner": false,
+    "BounceUnrecognizedGoesToListOwner": true,
     "BounceNotifyOwnerOnBounceIncrement": true,
     "BounceNotifyOwnerOnDisable": true,
     "BounceNotifyOwnerOnRemoval": true
   },
   "Archiving": {
-    "Archive": false,
-    "ArchivePrivate": "Private",
-    "ArchiveVolumeFrequency": "Monthly"
+    "Archive": true,
+    "ArchivePrivate": "enumArchivePrivateOption",
+    "ArchiveVolumeFrequency": "enumArchiveVolumeFrequencyOption"
   },
   "MailNewsGateways": {
     "NntpHost": "guid",
     "LinkedNewsgroup": "guid",
     "GatewayToNews": true,
     "GatewayToMail": true,
-    "NewsModeration":  "Moderated",
-    "NewsPrefixSubjectToo": false
+    "NewsModeration": "enumNewsModerationOption",
+    "NewsPrefixSubjectToo": true
   },
   "AutoResponder": {
-    "AutorespondPostings": false,
+    "AutorespondPostings": true,
     "AutoresponsePostingsText": "guid",
     "AutorespondAdmin": true,
     "AutoresponseAdminText": "guid",
-    "AutorespondRequests": "No",
+    "AutorespondRequests": "enumAutorespondRequestsOption",
     "AutoresponseRequestText": "guid",
     "AutoresponseGraceperiod": 99
   },
   "ContentFiltering": {
-    "FilterContent": false,
+    "FilterContent": true,
     "FilterMimeTypes": [
       "guid"
     ],
@@ -169,10 +169,10 @@
     "PassFilenameExtensions": [ "guid" ],
     "CollapseAlternatives": true,
     "ConvertHtmlToPlaintext": true,
-    "FilterAction": "Reject"
+    "FilterAction": "enumFilterActionOption"
   },
   "Topics": {
-    "TopicsEnabled": false,
+    "TopicsEnabled": true,
     "TopicsBodylinesLimit": 99,
     "Topics": [
       {

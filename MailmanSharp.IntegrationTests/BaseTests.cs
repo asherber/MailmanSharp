@@ -21,15 +21,32 @@ namespace MailmanSharp.IntegrationTests
         static BaseTests()
         {
             var rand = new Random();
-            var randInt = rand.Next(20, 120).ToString();
-            var randDouble = (rand.Next(100, 999) / 10.0).ToString();
-            if (randDouble.Length == 2)
-                randDouble = randDouble + ".5";
+            string randDouble(Match m)
+            {
+                var d = (rand.Next(100, 999) / 10.0).ToString();
+                if (d.Length == 2)
+                    d = d + ".5";
+                return d;
+            }
+            string randInt(Match m) => rand.Next(20, 120).ToString();
+            string randBool(Match m) => Convert.ToBoolean(rand.Next(0, 2)).ToString().ToLower();
 
+            var mailmanSharp = AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "MailmanSharp");
+            string randEnum(Match m)
+            {
+                var name = m.Groups["name"].Value;
+                var type = mailmanSharp.GetType($"MailmanSharp.{name}");
+
+                var values = Enum.GetNames(type);
+                return values[rand.Next(0, values.Length)];
+            }
+            
             var configString = File.ReadAllText("SampleConfig.json");
             configString = configString.Replace("guid", Guid.NewGuid().ToString());
             configString = Regex.Replace(configString, "(?<=: )99.9", randDouble);
             configString = Regex.Replace(configString, "(?<=: )99", randInt);
+            configString = Regex.Replace(configString, "true", randBool);
+            configString = Regex.Replace(configString, @"(enum)(?<name>\w+)", randEnum);
 
             _configObj = JObject.Parse(configString);
         }
