@@ -24,7 +24,7 @@
 - [x] `Privacy.EquivalentDomains` should be a list of lists
 - [x] Add test for `General.NewMemberOptions`
 - [x] Allow additional text for subscription notice
-- [ ] Unit tests for other section functions
+- [x] Unit tests for other section functions
 - [ ] ~~Lists should default to null as well~~
 - [x] Change all addresses to example.com?
 - [ ] Clean up all xmldoc

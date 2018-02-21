@@ -101,6 +101,7 @@
     <Compile Include="MembershipTests.cs" />
     <Compile Include="MailmanListTests.cs" />
     <Compile Include="MemberTests.cs" />
+    <Compile Include="PasswordsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MiscellaneousExtensionsTests.cs" />
     <Compile Include="RestSharpExtensionsTests.cs" />

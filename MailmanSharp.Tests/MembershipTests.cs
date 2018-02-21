@@ -22,6 +22,7 @@ namespace MailmanSharp.Tests
         private readonly Mock<IMailmanClientInternal> _clientMock;
         private readonly IMailmanList _list;
         private IRestRequest _request;
+        private IEnumerable<string> _parmStrings => _request.Parameters.Select(p => p.ToString());
 
         public MembershipTests()
         {
@@ -56,8 +57,8 @@ namespace MailmanSharp.Tests
             await _list.Membership.ToggleModerateAllAsync(value);
 
             _request.Should().NotBeNull();
-            _request.Parameters.Should().Contain(p => p.ToString() == "allmodbit_btn=1");
-            _request.Parameters.Should().Contain(p => p.ToString() == $"allmodbit_val={value.ToInt()}");
+            _parmStrings.Should().Contain("allmodbit_btn=1");
+            _parmStrings.Should().Contain($"allmodbit_val={value.ToInt()}");
         }
 
         [Theory]
@@ -73,9 +74,9 @@ namespace MailmanSharp.Tests
             var owner = options.HasFlag(UnsubscribeOptions.NotifyOwner);
 
             _request.Should().NotBeNull();
-            _request.Parameters.Should().Contain(p => p.ToString() == "unsubscribees=foo");
-            _request.Parameters.Should().Contain(p => p.ToString() == $"send_unsub_ack_to_this_batch={ack.ToInt()}");
-            _request.Parameters.Should().Contain(p => p.ToString() == $"send_unsub_notifications_to_list_owner={owner.ToInt()}");
+            _parmStrings.Should().Contain("unsubscribees=foo");
+            _parmStrings.Should().Contain($"send_unsub_ack_to_this_batch={ack.ToInt()}");
+            _parmStrings.Should().Contain($"send_unsub_notifications_to_list_owner={owner.ToInt()}");
         }
 
         [Fact]
@@ -84,7 +85,7 @@ namespace MailmanSharp.Tests
             await _list.Membership.UnsubscribeAllAsync();
 
             _request.Should().NotBeNull();
-            _request.Parameters.Should().Contain(p => p.ToString() == "unsubscribees=aaron@sherber.com\naaron.sherber@sterlingts.com");
+            _parmStrings.Should().Contain("unsubscribees=aaron@sherber.com\naaron.sherber@sterlingts.com");
         }
 
         [Theory]
@@ -104,12 +105,12 @@ namespace MailmanSharp.Tests
             var owner = options.HasFlag(SubscribeOptions.NotifyOwner);
 
             _request.Should().NotBeNull();
-            _request.Parameters.Should().Contain(p => p.ToString() == "subscribees=bob@example.com");
-            _request.Parameters.Should().Contain(p => p.ToString() == "subscribe_or_invite=0");
-            _request.Parameters.Should().Contain(p => p.ToString() == $"send_welcome_msg_to_this_batch={welcome.ToInt()}");
-            _request.Parameters.Should().Contain(p => p.ToString() == $"send_notifications_to_list_owner={owner.ToInt()}");
+            _parmStrings.Should().Contain("subscribees=bob@example.com");
+            _parmStrings.Should().Contain("subscribe_or_invite=0");
+            _parmStrings.Should().Contain($"send_welcome_msg_to_this_batch={welcome.ToInt()}");
+            _parmStrings.Should().Contain($"send_notifications_to_list_owner={owner.ToInt()}");
             if (!String.IsNullOrEmpty(message))
-                _request.Parameters.Should().Contain(p => p.ToString() == $"invitation={message}\n\n");
+                _parmStrings.Should().Contain($"invitation={message}\n\n");
         }
 
         [Theory]
@@ -120,10 +121,10 @@ namespace MailmanSharp.Tests
             await _list.Membership.InviteAsync("bob@example.com", message);
 
             _request.Should().NotBeNull();
-            _request.Parameters.Should().Contain(p => p.ToString() == "subscribees=bob@example.com");
-            _request.Parameters.Should().Contain(p => p.ToString() == "subscribe_or_invite=1");
+            _parmStrings.Should().Contain("subscribees=bob@example.com");
+            _parmStrings.Should().Contain("subscribe_or_invite=1");
             if (!String.IsNullOrEmpty(message))
-                _request.Parameters.Should().Contain(p => p.ToString() == $"invitation={message}\n\n");
+                _parmStrings.Should().Contain($"invitation={message}\n\n");
         }
     }
 }
