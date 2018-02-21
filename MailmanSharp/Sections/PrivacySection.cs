@@ -121,7 +121,7 @@ namespace MailmanSharp
                 this.HeaderFilterRules.Add(new HeaderFilterRule()
                 {
                     Regexes = doc.GetTextAreaListValue(_regexTag + index),
-                    Action = doc.GetInputEnumValue<FilterAction>(_actionTag + index).Value,
+                    Action = doc.GetInputEnumValue<HeaderFilterAction>(_actionTag + index).Value,
                 });
             }
 

@@ -62,7 +62,7 @@ namespace MailmanSharp.IntegrationTests
 
             _saved.HeaderFilterRules = new List<HeaderFilterRule>() { new HeaderFilterRule()
             {
-                Action = FilterAction.Accept,
+                Action = HeaderFilterAction.Accept,
                 Regexes = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() }
             } };
             _saved.BounceMatchingHeaders = GuidEmailArray(3);
