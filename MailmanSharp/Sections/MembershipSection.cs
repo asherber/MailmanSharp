@@ -235,7 +235,7 @@ namespace MailmanSharp
             return InviteAsync(members.Cat(), message);
         }
 
-        public async Task<IEnumerable<Member>> FindMembersAsync(string search)
+        public async Task<IEnumerable<Member>> SearchMembersAsync(string search)
         {
             var req = new RestRequest(Method.GET);
             req.AddParameter("findmember", search);
@@ -262,7 +262,7 @@ namespace MailmanSharp
 
         public Task<IEnumerable<Member>> GetAllMembersAsync()
         {
-            return FindMembersAsync(null);
+            return SearchMembersAsync(null);
         }
 
 

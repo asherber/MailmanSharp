@@ -67,10 +67,10 @@ namespace MailmanSharp.IntegrationTests
         [InlineData("com", 193)]
         [InlineData("example.com", 189)]
         [InlineData("st", 52)]
-        public async Task Find_Should_Return_Correct_Number(string search, int expected)
+        public async Task Search_Should_Return_Correct_Number(string search, int expected)
         {
             await EnsureMembers();
-            var output = await _membership.FindMembersAsync(search);
+            var output = await _membership.SearchMembersAsync(search);
             output.Should().HaveCount(expected);
         }
 
@@ -79,7 +79,7 @@ namespace MailmanSharp.IntegrationTests
         {
             await EnsureMembers();
             await _membership.ModerateAllAsync();
-            var output = await _membership.FindMembersAsync($"^{RandomLetter}");
+            var output = await _membership.SearchMembersAsync($"^{RandomLetter}");
             output.Select(m => m.Mod).Should().AllBeEquivalentTo(true);
         }
 
@@ -88,7 +88,7 @@ namespace MailmanSharp.IntegrationTests
         {
             await EnsureMembers();
             await _membership.UnmoderateAllAsync();
-            var output = await _membership.FindMembersAsync($"^{RandomLetter}");
+            var output = await _membership.SearchMembersAsync($"^{RandomLetter}");
             output.Select(m => m.Mod).Should().AllBeEquivalentTo(false);
         }
 
@@ -108,7 +108,7 @@ namespace MailmanSharp.IntegrationTests
             var subscribeResponse = await _membership.SubscribeAsync(email);
             subscribeResponse.Subscribed.Should().ContainSingle().And.OnlyContain(s => s == email);
 
-            var found = await _membership.FindMembersAsync(email);
+            var found = await _membership.SearchMembersAsync(email);
             found.Should().ContainSingle();
             var member = found.Single();
 
@@ -123,7 +123,7 @@ namespace MailmanSharp.IntegrationTests
             member.NoMail = !member.NoMail;
             await _membership.SaveMembersAsync(member);
 
-            var output = (await _membership.FindMembersAsync(email)).Single();
+            var output = (await _membership.SearchMembersAsync(email)).Single();
             output.Should().BeEquivalentTo(member, opt => opt.Excluding(o => o.NoMailReason));
             output.NoMailReason.Should().Be(output.NoMail ? NoMailReason.Administrator : NoMailReason.None);
         }
