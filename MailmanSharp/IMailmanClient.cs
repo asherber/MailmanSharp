@@ -41,9 +41,29 @@ namespace MailmanSharp
         bool UseSynchronizationContext { get; set; }
         CookieContainer CookieContainer { get; set; }
 
+        /// <summary>
+        /// Reset client to default values.
+        /// </summary>
         void Reset();
+        /// <summary>
+        /// Execute a request against the Mailman admin pages.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         Task<IRestResponse> ExecuteAdminRequestAsync(string path, IRestRequest request);
+        /// <summary>
+        /// Execute a request against the Mailman admin pages.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="path"></param>
+        /// <param name="parms"></param>
+        /// <returns></returns>
         Task<IRestResponse> ExecuteAdminRequestAsync(Method method, string path, params (string Name, object Value)[] parms);
+        /// <summary>
+        /// Execute a request to retrieve the list of subscribers.
+        /// </summary>
+        /// <returns></returns>
         Task<IRestResponse> ExecuteRosterRequestAsync();
     }
 

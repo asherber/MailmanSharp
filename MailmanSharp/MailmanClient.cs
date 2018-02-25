@@ -93,12 +93,22 @@ namespace MailmanSharp
             return result;
         }
 
+        /// <summary>
+        /// Reset client to default values.
+        /// </summary>
         public void Reset()
         {
             _list.ResetClient();
         }
 
         private static Regex _versionRe = new Regex(@"(?<=Delivered by Mailman.*version ).*(?=<)");
+
+        /// <summary>
+        /// Execute a request against the Mailman admin pages.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<IRestResponse> ExecuteAdminRequestAsync(string path, IRestRequest request)
         {
             if (request == null)
@@ -118,6 +128,13 @@ namespace MailmanSharp
             return resp;            
         }
 
+        /// <summary>
+        /// Execute a request against the Mailman admin pages.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="path"></param>
+        /// <param name="parms"></param>
+        /// <returns></returns>
         public Task<IRestResponse> ExecuteAdminRequestAsync(Method method, string path, params (string Name, object Value)[] parms)
         {
             var req = new RestRequest(method);
@@ -133,7 +150,11 @@ namespace MailmanSharp
         { 
             return _adminPath.Replace("admin", "roster"); 
         }
-        
+
+        /// <summary>
+        /// Execute a request to retrieve the list of subscribers.
+        /// </summary>
+        /// <returns></returns>
         public async Task<IRestResponse> ExecuteRosterRequestAsync()
         {
             if (!HasAdminCookie())
