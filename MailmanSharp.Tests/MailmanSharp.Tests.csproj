@@ -49,6 +49,9 @@
     <Reference Include="FluentAssertions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentAssertions.5.0.0\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="FluentAssertions.Json, Version=5.0.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.Json.5.0.0\lib\net451\FluentAssertions.Json.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.6.13.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.6.13\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>

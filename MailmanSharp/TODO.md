@@ -29,7 +29,7 @@
 - [x] Change all addresses to example.com?
 - [x] Clean up all xmldoc
 - [x] Randomize bools and enums for IT
-- [ ] Test `Reset()`
+- [x] Test `Reset()` (client and list)
 
 
 

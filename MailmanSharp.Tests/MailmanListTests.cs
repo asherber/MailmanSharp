@@ -14,6 +14,10 @@ using Newtonsoft.Json.Linq;
 using ApprovalTests;
 using ApprovalTests.Reporters;
 using ApprovalTests.Namers;
+using RestSharp.Authenticators;
+using System.Security.Cryptography.X509Certificates;
+using System.Net;
+using FluentAssertions.Json;
 
 namespace MailmanSharp.Tests
 {
@@ -132,6 +136,56 @@ namespace MailmanSharp.Tests
             // Membership doesn't post
             _clientMock.Verify(c => c.ExecuteAdminRequestAsync(It.IsAny<string>(), It.IsAny<IRestRequest>()), 
                 Times.Exactly(14));
+        }
+
+        [Fact]
+        public void ResetClient_Should_Work()
+        {
+            var list = new MailmanList();
+            list.Client.Authenticator = new SimpleAuthenticator(null, null, null, null);
+            list.Client.ClientCertificates = new X509CertificateCollection(new[] { new X509Certificate() });
+            list.Client.FollowRedirects = false;
+            list.Client.MaxRedirects = 99;
+            list.Client.Proxy = new WebProxy();
+            list.Client.Timeout = 42;
+            list.Client.UserAgent = Guid.NewGuid().ToString();
+            list.Client.UseSynchronizationContext = true;
+
+            list.ResetClient();
+
+            var expected = new MailmanList().Client;
+
+            list.Client.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void Reset_Should_Work()
+        {
+            var guid = Guid.NewGuid().ToString();
+            _list.Archiving.Archive = true;
+            _list.AutoResponder.AutoresponsePostingsText = guid;
+            _list.BounceProcessing.BounceNotifyOwnerOnBounceIncrement = true;
+            _list.ContentFiltering.FilterMimeTypes.Add(guid);
+            _list.Digest.DigestFooter = guid;            
+            _list.General.Description = Guid.NewGuid().ToString();
+            _list.MailNewsGateways.LinkedNewsgroup = guid;
+            _list.NonDigest.MsgFooter = guid;
+            _list.Privacy.AcceptTheseNonmembers.Add(guid);
+            _list.Topics.TopicsBodylinesLimit = 42;
+            _list.AdminPassword = guid;
+            _list.AdminUrl = guid;
+            _list.Reset();
+            
+
+            var expected = new MailmanList();
+            _list.AdminPassword.Should().Be(expected.AdminPassword);
+            _list.AdminUrl.Should().Be(expected.AdminUrl);
+
+            var config = JObject.Parse(_list.CurrentConfig);
+            config["Meta"]["ExportedDate"] = DateTime.Today;
+            var expectedConfig = JObject.Parse(expected.CurrentConfig);
+            expectedConfig["Meta"]["ExportedDate"] = DateTime.Today;
+            config.Should().BeEquivalentTo(expectedConfig);
         }
     }
 }
