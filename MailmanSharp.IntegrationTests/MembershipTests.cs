@@ -106,7 +106,7 @@ namespace MailmanSharp.IntegrationTests
         {
             var email = Guid.NewGuid().ToString() + "@example.com";
             var subscribeResponse = await _membership.SubscribeAsync(email);
-            subscribeResponse.Subscribed.Should().ContainSingle().And.OnlyContain(s => s == email);
+            subscribeResponse.Subscribed.Should().ContainSingle(email);
 
             var found = await _membership.SearchMembersAsync(email);
             found.Should().ContainSingle();
@@ -162,6 +162,19 @@ namespace MailmanSharp.IntegrationTests
         }
 
         [Fact, Priority(90)]
+        public async Task Subscribe_Successful()
+        {
+            await _membership.UnsubscribeAllAsync();
+            var email = Guid.NewGuid().ToString() + "@example.com";
+            var output = await _membership.SubscribeAsync(email);
+
+            output.Subscribed.Should().ContainSingle(email);
+            output.BadEmails.Should().BeEmpty();
+            output.AlreadyMembers.Should().BeEmpty();
+            _membership.Emails.Should().Be(email);
+        }
+
+        [Fact, Priority(90)]
         public async Task Subscribe_Already_Member()
         {
             var email = Guid.NewGuid().ToString() + "@example.com";
@@ -170,7 +183,7 @@ namespace MailmanSharp.IntegrationTests
 
             output.Subscribed.Should().BeEmpty();
             output.BadEmails.Should().BeEmpty();
-            output.AlreadyMembers.Should().ContainSingle().And.OnlyContain(a => a == email);
+            output.AlreadyMembers.Should().ContainSingle(email);
         }
 
         [Fact, Priority(90)]
@@ -181,7 +194,20 @@ namespace MailmanSharp.IntegrationTests
 
             output.Subscribed.Should().BeEmpty();
             output.AlreadyMembers.Should().BeEmpty();
-            output.BadEmails.Should().ContainSingle().And.OnlyContain(a => a == guid);
+            output.BadEmails.Should().ContainSingle(guid);
+        }
+
+        [Fact, Priority(90)]
+        public async Task Unsubscribe_Successful()
+        {
+            await _membership.UnsubscribeAllAsync();
+            var email = Guid.NewGuid().ToString() + "@example.com";
+            await _membership.SubscribeAsync(email);
+            var output = await _membership.UnsubscribeAsync(email);
+
+            output.Unsubscribed.Should().ContainSingle(email);
+            output.NonMembers.Should().BeEmpty();
+            _membership.Emails.Should().BeEmpty();
         }
 
         [Fact, Priority(90)]
@@ -191,7 +217,7 @@ namespace MailmanSharp.IntegrationTests
             var output = await _membership.UnsubscribeAsync(email);
             
             output.Unsubscribed.Should().BeEmpty();
-            output.NonMembers.Should().ContainSingle().And.OnlyContain(a => a == email);
+            output.NonMembers.Should().ContainSingle(email);
         }
     }
 }
