@@ -43,8 +43,7 @@ namespace MailmanSharp
         public int Timeout { get => _client.Timeout; set => _client.Timeout = value; }
         public string UserAgent { get => _client.UserAgent; set => _client.UserAgent = value; }
         public bool UseSynchronizationContext { get => _client.UseSynchronizationContext; set => _client.UseSynchronizationContext = value; }
-        public CookieContainer CookieContainer { get => _client.CookieContainer; set => _client.CookieContainer = value; }
-
+        
 
         private string _listName;
         private string _adminPath;
@@ -84,8 +83,8 @@ namespace MailmanSharp
                 UseSynchronizationContext = this.UseSynchronizationContext,
             };
 
-            foreach (var cookie in this.CookieContainer.GetCookies(_client.BaseUrl))
-                result.CookieContainer.Add((Cookie)cookie);
+            foreach (var cookie in _client.CookieContainer.GetCookies(_client.BaseUrl))
+                result._client.CookieContainer.Add((Cookie)cookie);
             
             foreach (var param in _client.DefaultParameters)
                 result._client.DefaultParameters.Add(param);
@@ -171,7 +170,7 @@ namespace MailmanSharp
 
         internal bool HasAdminCookie()
         {
-            var cookies = CookieContainer.GetCookies(_client.BaseUrl);
+            var cookies = _client.CookieContainer.GetCookies(_client.BaseUrl);
             return cookies.Cast<Cookie>().Any(c => c.Name == String.Format("{0}+admin", _listName));
         }
         

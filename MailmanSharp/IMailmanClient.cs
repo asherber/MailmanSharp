@@ -39,8 +39,7 @@ namespace MailmanSharp
         int Timeout { get; set; }
         string UserAgent { get; set; }
         bool UseSynchronizationContext { get; set; }
-        CookieContainer CookieContainer { get; set; }
-
+        
         /// <summary>
         /// Reset client to default values.
         /// </summary>
