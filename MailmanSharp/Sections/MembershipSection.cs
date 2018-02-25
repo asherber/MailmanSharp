@@ -35,14 +35,20 @@ namespace MailmanSharp
     [Flags]
     public enum UnsubscribeOptions { None = 0, SendAcknowledgement = 1, NotifyOwner = 2 }
     [Flags]
-    public enum ChangeNotificationOptions { None = 0, OldAddress = 1, NewAddress = 2 }
+    public enum ChangeNotificationOptions { None = 0, SendToOldAddress = 1, SendToNewAddress = 2 }
     
 
     [Path("members")]
     [Order(4)]
     public class MembershipSection: SectionBase
     {
+        /// <summary>
+        /// List of all subscribed addresses, separated by newline.
+        /// </summary>
         public string Emails { get { return _emailList.Cat(); } }
+        /// <summary>
+        /// List of all subscribed addresses.
+        /// </summary>
         public IEnumerable<string> EmailList { get { return _emailList; } }
 
         protected static string _addPage = "members/add";
@@ -86,18 +92,31 @@ namespace MailmanSharp
             }
             _emailListPopulated = true;
         }
-
+        
+        /// <summary>
+        /// Set the moderation bit for all members to on.
+        /// </summary>
+        /// <returns></returns>
         public Task ModerateAllAsync()
         {
-            return ToggleModerateAllAsync(true);
+            return SetModerateAllAsync(true);
         }
 
+        /// <summary>
+        /// Set the moderation bit for all members to off.
+        /// </summary>
+        /// <returns></returns>
         public Task UnmoderateAllAsync()
         {
-            return ToggleModerateAllAsync(false);
+            return SetModerateAllAsync(false);
         }
 
-        public Task ToggleModerateAllAsync(bool moderate)
+        /// <summary>
+        /// Set the moderation bit for all members to the specified value.
+        /// </summary>
+        /// <param name="moderate"></param>
+        /// <returns></returns>
+        public Task SetModerateAllAsync(bool moderate)
         {
             var req = new RestRequest(Method.POST);
             req.AddParameter("allmodbit_val", Convert.ToInt32(moderate));
@@ -105,14 +124,20 @@ namespace MailmanSharp
             return this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req);
         }
 
-        public async Task<UnsubscribeResult> UnsubscribeAsync(string members, UnsubscribeOptions options = UnsubscribeOptions.None)
+        /// <summary>
+        /// Unsubscribe a newline-separated list of addresses.
+        /// </summary>
+        /// <param name="addresses"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public async Task<UnsubscribeResult> UnsubscribeAsync(string addresses, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
             var result = new UnsubscribeResult();
 
-            if (!String.IsNullOrWhiteSpace(members))
+            if (!String.IsNullOrWhiteSpace(addresses))
             {
                 var req = new RestRequest(Method.POST);
-                req.AddParameter("unsubscribees", members);
+                req.AddParameter("unsubscribees", addresses);
                 req.AddParameter("send_unsub_ack_to_this_batch", options.HasFlag(UnsubscribeOptions.SendAcknowledgement).ToInt());
                 req.AddParameter("send_unsub_notifications_to_list_owner", options.HasFlag(UnsubscribeOptions.NotifyOwner).ToInt());
 
@@ -134,11 +159,22 @@ namespace MailmanSharp
             return result;
         }
 
+        /// <summary>
+        /// Unsubscribe a list of members.
+        /// </summary>
+        /// <param name="members"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<string> members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
             return UnsubscribeAsync(members.Cat(), options);
         }
 
+        /// <summary>
+        /// Unsubscribe all members.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public async Task<UnsubscribeResult> UnsubscribeAllAsync(UnsubscribeOptions options = UnsubscribeOptions.None)
         {
             if (!_emailListPopulated)
@@ -195,50 +231,96 @@ namespace MailmanSharp
             return result;
         }
 
-        public Task<SubscribeResult> SubscribeAsync(string members, SubscribeOptions options = SubscribeOptions.None)
+        /// <summary>
+        /// Subscribe a newline-separated list of addresses.
+        /// </summary>
+        /// <param name="addresses"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public Task<SubscribeResult> SubscribeAsync(string addresses, SubscribeOptions options = SubscribeOptions.None)
         {
-            return SubscribeOrInviteAsync(members, null, SubscribeAction.Subscribe, options);
+            return SubscribeOrInviteAsync(addresses, null, SubscribeAction.Subscribe, options);
+        }
+        /// <summary>
+        /// Subscribe a newline-separated list of addresses, with additional text for the notification. 
+        /// </summary>
+        /// <param name="addresses"></param>
+        /// <param name="message"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public Task<SubscribeResult> SubscribeAsync(string addresses, string message, SubscribeOptions options = SubscribeOptions.None)
+        {
+            return SubscribeOrInviteAsync(addresses, message, SubscribeAction.Subscribe, options);
+        }
+        /// <summary>
+        /// Subscribe a list of addresses.
+        /// </summary>
+        /// <param name="addresses"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public Task<SubscribeResult> SubscribeAsync(IEnumerable<string> addresses, SubscribeOptions options = SubscribeOptions.None)
+        {
+            return SubscribeAsync(addresses.Cat(), options);
+        }
+        /// <summary>
+        /// Subscribe a list of addresses, with additional text for the notification.
+        /// </summary>
+        /// <param name="addresses"></param>
+        /// <param name="message"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public Task<SubscribeResult> SubscribeAsync(IEnumerable<string> addresses, string message, SubscribeOptions options = SubscribeOptions.None)
+        {
+            return SubscribeAsync(addresses.Cat(), message, options);
+        }
+        /// <summary>
+        /// Invite a newline-separated list of addresses.
+        /// </summary>
+        /// <param name="addresses"></param>
+        /// <returns></returns>
+        public Task<SubscribeResult> InviteAsync(string addresses)
+        {
+            return SubscribeOrInviteAsync(addresses, null, SubscribeAction.Invite);
+        }
+        /// <summary>
+        /// Invite a newline-separated list of addresses, with additional text for the invitation.
+        /// </summary>
+        /// <param name="addresses"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public Task<SubscribeResult> InviteAsync(string addresses, string message)
+        {
+            return SubscribeOrInviteAsync(addresses, message, SubscribeAction.Invite);
+        }
+        /// <summary>
+        /// Invite a list of addresses.
+        /// </summary>
+        /// <param name="addresses"></param>
+        /// <returns></returns>
+        public Task<SubscribeResult> InviteAsync(IEnumerable<string> addresses)
+        {
+            return InviteAsync(addresses.Cat());
+        }
+        /// <summary>
+        /// Invite a list of addresses, with additional text for the invitation.
+        /// </summary>
+        /// <param name="addresses"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public Task<SubscribeResult> InviteAsync(IEnumerable<string> addresses, string message)
+        {
+            return InviteAsync(addresses.Cat(), message);
         }
 
-        public Task<SubscribeResult> SubscribeAsync(string members, string message, SubscribeOptions options = SubscribeOptions.None)
-        {
-            return SubscribeOrInviteAsync(members, message, SubscribeAction.Subscribe, options);
-        }
-
-        public Task<SubscribeResult> SubscribeAsync(IEnumerable<string> members, SubscribeOptions options = SubscribeOptions.None)
-        {
-            return SubscribeAsync(members.Cat(), options);
-        }
-
-        public Task<SubscribeResult> SubscribeAsync(IEnumerable<string> members, string message, SubscribeOptions options = SubscribeOptions.None)
-        {
-            return SubscribeAsync(members.Cat(), message, options);
-        }
-
-        public Task<SubscribeResult> InviteAsync(string members)
-        {
-            return SubscribeOrInviteAsync(members, null, SubscribeAction.Invite);
-        }
-
-        public Task<SubscribeResult> InviteAsync(string members, string message)
-        {
-            return SubscribeOrInviteAsync(members, message, SubscribeAction.Invite);
-        }
-
-        public Task<SubscribeResult> InviteAsync(IEnumerable<string> members)
-        {
-            return InviteAsync(members.Cat());
-        }
-
-        public Task<SubscribeResult> InviteAsync(IEnumerable<string> members, string message)
-        {
-            return InviteAsync(members.Cat(), message);
-        }
-
-        public async Task<IEnumerable<Member>> SearchMembersAsync(string search)
+        /// <summary>
+        /// Search for members.
+        /// </summary>
+        /// <param name="regexp"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Member>> SearchMembersAsync(string regexp)
         {
             var req = new RestRequest(Method.GET);
-            req.AddParameter("findmember", search);
+            req.AddParameter("findmember", regexp);
             var resp = await this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req).ConfigureAwait(false);
 
             // Do we have multiple letters to look at?
@@ -251,7 +333,7 @@ namespace MailmanSharp
                 var bag = new ConcurrentBag<IEnumerable<Member>>();
                 var tasks = letters.Select(async letter =>
                 {
-                    bag.Add(await GetMembersForLetterAsync(search, letter).ConfigureAwait(false));                    
+                    bag.Add(await GetMembersForLetterAsync(regexp, letter).ConfigureAwait(false));                    
                 });
                 await Task.WhenAll(tasks);
                 return bag.SelectMany(b => b).OrderBy(m => m.Email);
@@ -259,7 +341,10 @@ namespace MailmanSharp
             else
                 return ExtractMembersFromPage(doc);
         }
-
+        /// <summary>
+        /// Get a list of all members.
+        /// </summary>
+        /// <returns></returns>
         public Task<IEnumerable<Member>> GetAllMembersAsync()
         {
             return SearchMembersAsync(null);
@@ -322,6 +407,11 @@ namespace MailmanSharp
             return result;
         }
 
+        /// <summary>
+        /// Save changes to a list of members. Changes to the email address are not allowed.
+        /// </summary>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public Task SaveMembersAsync(IEnumerable<Member> members)
         {
             if (members.Any())
@@ -337,7 +427,11 @@ namespace MailmanSharp
             else
                 return Task.CompletedTask;
         }
-
+        /// <summary>
+        /// Save changes to an list of members.
+        /// </summary>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public Task SaveMembersAsync(params Member[] members)
         {
             return SaveMembersAsync(members.ToList());
@@ -356,9 +450,9 @@ namespace MailmanSharp
             var req = new RestRequest(Method.POST);
             req.AddParameter("change_from", oldAddress);
             req.AddParameter("change_to", newAddress);
-            if (options.HasFlag(ChangeNotificationOptions.OldAddress))
+            if (options.HasFlag(ChangeNotificationOptions.SendToOldAddress))
                 req.AddParameter("notice_old", "yes");
-            if (options.HasFlag(ChangeNotificationOptions.NewAddress))
+            if (options.HasFlag(ChangeNotificationOptions.SendToNewAddress))
                 req.AddParameter("notice_new", "yes");
 
             var resp = await this.GetClient().ExecuteAdminRequestAsync(_changePage, req).ConfigureAwait(false);

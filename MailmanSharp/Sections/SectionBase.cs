@@ -39,7 +39,10 @@ namespace MailmanSharp
 
         protected static IDictionary<Type, IEnumerable<PropertyInfo>> _propsDict = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
         protected IEnumerable<PropertyInfo> _props => _propsDict[this.GetType()];
-        
+
+        /// <summary>
+        /// Current configuration of object as JSON.
+        /// </summary>
         [JsonIgnore, MailmanIgnore]
         public string CurrentConfig => new JObject(GetCurrentConfigJProperty()).ToString();
 
@@ -81,6 +84,10 @@ namespace MailmanSharp
             return att?.Value;
         }
 
+        /// <summary>
+        /// Read properties for this section from Mailman.
+        /// </summary>
+        /// <returns></returns>
         public virtual async Task ReadAsync()
         {
             var docs = await FetchHtmlDocumentsAsync().ConfigureAwait(false);
@@ -116,6 +123,10 @@ namespace MailmanSharp
             DoAfterRead(docs);
         }
 
+        /// <summary>
+        /// Write properties for this section to Mailman.
+        /// </summary>
+        /// <returns></returns>
         public virtual async Task WriteAsync()
         {
             var unignoredProps = _props.Unignored();
@@ -152,6 +163,10 @@ namespace MailmanSharp
             return new JProperty(SectionName, allProperties);
         }
 
+        /// <summary>
+        /// Load configuration for this section from JSON string.
+        /// </summary>
+        /// <param name="json"></param>
         public void LoadConfig(string json)
         {
             var obj = JObject.Parse(json);

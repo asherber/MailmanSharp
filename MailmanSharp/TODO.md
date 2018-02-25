@@ -27,8 +27,9 @@
 - [x] Unit tests for other section functions
 - [ ] ~~Lists should default to null as well~~
 - [x] Change all addresses to example.com?
-- [ ] Clean up all xmldoc
+- [x] Clean up all xmldoc
 - [x] Randomize bools and enums for IT
+- [ ] Test `Reset()`
 
 
 

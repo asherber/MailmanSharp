@@ -54,7 +54,7 @@ namespace MailmanSharp.Tests
         [InlineData(false)]
         public async Task Toggle_Moderate_Sends_Right_Params(bool value)
         {
-            await _list.Membership.ToggleModerateAllAsync(value);
+            await _list.Membership.SetModerateAllAsync(value);
 
             _request.Should().NotBeNull();
             _parmStrings.Should().Contain("allmodbit_btn=1");

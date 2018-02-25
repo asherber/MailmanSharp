@@ -31,7 +31,13 @@ namespace MailmanSharp
     [DebuggerDisplay("Action = {Action}")]
     public class HeaderFilterRule
     {
+        /// <summary>
+        /// List of regexes to match against the headers of a message.
+        /// </summary>
         public List<string> Regexes { get; set; }
+        /// <summary>
+        /// Action to take if a message matches.
+        /// </summary>
         public HeaderFilterAction Action { get; set; }
 
         public HeaderFilterRule() { }

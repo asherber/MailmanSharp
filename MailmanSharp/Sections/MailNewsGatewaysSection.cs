@@ -32,13 +32,35 @@ namespace MailmanSharp
     [Order(10)]
     public class MailNewsGatewaysSection: SectionBase
     {
+        /// <summary>
+        /// The hostname of the machine your news server is running on. 
+        /// </summary>
         public string NntpHost { get; set; }
+        /// <summary>
+        /// The name of the Usenet group to gateway to and/or from.
+        /// </summary>
         public string LinkedNewsgroup { get; set; }
+        /// <summary>
+        /// Should new posts to the mailing list be sent to the newsgroup? 
+        /// </summary>
         public bool? GatewayToNews { get; set; }
+        /// <summary>
+        /// Should new posts to the newsgroup be sent to the mailing list?
+        /// </summary>
         public bool? GatewayToMail { get; set; }
+        /// <summary>
+        /// The moderation policy of the newsgroup. 
+        /// </summary>
         public NewsModerationOption? NewsModeration { get; set; }
+        /// <summary>
+        /// Prefix Subject: headers on postings gated to news?
+        /// </summary>
         public bool? NewsPrefixSubjectToo { get; set; }
         
+        /// <summary>
+        /// Perform a catchup on the newsgroup.
+        /// </summary>
+        /// <returns></returns>
         public Task MassCatchup()
         {
             return this.GetClient().ExecuteAdminRequestAsync(Method.POST, _paths.First(), ("_mass_catchup", 1));

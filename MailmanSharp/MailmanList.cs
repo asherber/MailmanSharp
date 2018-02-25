@@ -45,7 +45,7 @@ namespace MailmanSharp
         /// </summary>
         public string AdminPassword { get { return InternalClient.AdminPassword; } set { InternalClient.AdminPassword = value; } }
         /// <summary>
-        /// Current configuration of object as XML.
+        /// Current configuration of object as JSON.
         /// </summary>
         public string CurrentConfig { get { return GetCurrentConfig(); } }
         /// <summary>
@@ -68,6 +68,9 @@ namespace MailmanSharp
 
         //public LanguageSection Language { get; private set; }   // Won't implement
 
+        /// <summary>
+        /// Client which communicates with Mailman.
+        /// </summary>
         public IMailmanClient Client => InternalClient;
         internal IMailmanClientInternal InternalClient { get; private set; }
 
@@ -93,7 +96,7 @@ namespace MailmanSharp
         }
 
         /// <summary>
-        /// Read all list values from web site.
+        /// Read properties for all sections from Mailman.
         /// </summary>
         public async Task ReadAsync()
         {            
@@ -102,7 +105,7 @@ namespace MailmanSharp
         }
 
         /// <summary>
-        /// Write all values to list.
+        /// Write properties for all sections to Mailman.
         /// </summary>
         public async Task WriteAsync()
         {
@@ -133,12 +136,12 @@ namespace MailmanSharp
             return root.ToString();
         }
 
-               
+
 
         /// <summary>
-        /// Overwrite current configuration with values from JSON.
+        /// Load configuration for this list from JSON string.
         /// </summary>
-        /// <param name="json">Config JSON with values to load.</param>
+        /// <param name="json"></param>
         public void LoadConfig(string json)
         {
             var root = JObject.Parse(json);
@@ -200,6 +203,9 @@ namespace MailmanSharp
             }
         }
 
+        /// <summary>
+        /// Reset all properties to defaults.
+        /// </summary>
         public void Reset()
         {
             this.ResetClient();

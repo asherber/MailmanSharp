@@ -29,8 +29,17 @@ namespace MailmanSharp
     [Order(13)]
     public class TopicsSection: SectionBase
     {
+        /// <summary>
+        /// Should the topic filter be enabled or disabled?
+        /// </summary>
         public bool? TopicsEnabled { get; set; }
+        /// <summary>
+        /// How many body lines should the topic matcher scan? 
+        /// </summary>
         public ushort? TopicsBodylinesLimit { get; set; }
+        /// <summary>
+        /// Topics to match against each message.
+        /// </summary>
         [MailmanIgnore]
         public List<Topic> Topics { get; set; } = new List<Topic>();
 

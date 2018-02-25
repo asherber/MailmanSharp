@@ -29,6 +29,9 @@ namespace MailmanSharp
     public class Topic
     {
         public string Name { get; set; }
+        /// <summary>
+        /// Topic keywords, one per line, to match against each message.
+        /// </summary>
         public List<string> Regexes { get; set; }
         public string Description { get; set; }
 

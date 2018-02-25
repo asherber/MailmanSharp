@@ -30,13 +30,39 @@ namespace MailmanSharp
     [Order(5)]
     public class NonDigestSection: SectionBase
     {
+        /// <summary>
+        /// Can subscribers choose to receive mail immediately, rather than in batched digests? 
+        /// </summary>
         public bool? Nondigestable { get; set; }
+        /// <summary>
+        /// Should Mailman personalize each non-digest delivery? 
+        /// </summary>
         public PersonalizeOption? Personalize { get; set; }
+        /// <summary>
+        /// Header added to mail sent to regular list members.
+        /// </summary>
         public string MsgHeader { get; set; }
+        /// <summary>
+        /// Footer added to mail sent to regular list members.
+        /// </summary>
         public string MsgFooter { get; set; }
+        /// <summary>
+        /// Scrub attachments of regular delivery message? 
+        /// </summary>
         public bool? ScrubNondigest { get; set; }
+        /// <summary>
+        /// Other mailing lists on this site whose members are excluded from the regular 
+        /// (non-digest) delivery if those list addresses appear in a To: or Cc: header.
+        /// </summary>
         public List<string> RegularExcludeLists { get; set; } = new List<string>();
+        /// <summary>
+        /// Ignore regular_exclude_lists of which the poster is not a member. 
+        /// </summary>
         public bool? RegularExcludeIgnore { get; set; }
+        /// <summary>
+        /// Other mailing lists on this site whose members are included in the regular 
+        /// (non-digest) delivery if those list addresses don't appear in a To: or Cc: header. 
+        /// </summary>
         public List<string> RegularIncludeLists { get; set; } = new List<string>();
 
         internal NonDigestSection(MailmanList list) : base(list) { }

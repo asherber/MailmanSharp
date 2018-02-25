@@ -161,14 +161,14 @@ namespace MailmanSharp.Tests
         private class EnumValuesClass
         {
             public SubscribePolicyOption? SubscribePolicy { get; set; } = SubscribePolicyOption.RequireApproval;
-            public ChangeNotificationOptions? ChangeNotification { get; set; } = ChangeNotificationOptions.NewAddress | ChangeNotificationOptions.OldAddress;
+            public ChangeNotificationOptions? ChangeNotification { get; set; } = ChangeNotificationOptions.SendToNewAddress | ChangeNotificationOptions.SendToOldAddress;
             public SubscribePolicyOption? SubscribePolicyNull { get; set; } = null;
             public ChangeNotificationOptions? ChangeNotificationNull { get; set; } = null;
         }
 
         [Theory]
         [InlineData("SubscribePolicy", new object[] { SubscribePolicyOption.RequireApproval })]
-        [InlineData("ChangeNotification", new object[] { "newaddress", "oldaddress"})]
+        [InlineData("ChangeNotification", new object[] { "sendtonewaddress", "sendtooldaddress"})]
         [InlineData("SubscribePolicyNull", new object[0])]
         [InlineData("ChangeNotificationNull", new object[0])]
         public void Prop_GetEnumValues(string propName, object[] expectedValue)

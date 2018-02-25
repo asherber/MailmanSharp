@@ -30,14 +30,8 @@ namespace MailmanSharp
 {
     public class MailmanClient: IMailmanClientInternal
     {
-        /// <summary>
-        /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
-        /// </summary>
         string IMailmanClientInternal.AdminUrl { get { return GetAdminUrl(); } set { SetAdminUrl(value); } }
         private string AdminUrl { get => ((IMailmanClientInternal)this).AdminUrl; set => ((IMailmanClientInternal)this).AdminUrl = value; }
-        /// <summary>
-        /// Administrator password for list.
-        /// </summary>
         string IMailmanClientInternal.AdminPassword { get; set; }
         private string AdminPassword { get => ((IMailmanClientInternal)this).AdminPassword; set => ((IMailmanClientInternal)this).AdminPassword = value; }
 

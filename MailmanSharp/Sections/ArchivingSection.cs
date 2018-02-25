@@ -31,8 +31,17 @@ namespace MailmanSharp
     [Order(9)]
     public class ArchivingSection: SectionBase
     {
+        /// <summary>
+        /// Archive messages?
+        /// </summary>
         public bool? Archive { get; set; }
+        /// <summary>
+        /// Is archive file source for public or private archival?
+        /// </summary>
         public ArchivePrivateOption? ArchivePrivate { get; set; }
+        /// <summary>
+        /// How often should a new archive volume be started?
+        /// </summary>
         public ArchiveVolumeFrequencyOption? ArchiveVolumeFrequency { get; set; }
 
         internal ArchivingSection(MailmanList list) : base(list) { }
