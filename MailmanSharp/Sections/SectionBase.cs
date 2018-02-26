@@ -176,7 +176,7 @@ namespace MailmanSharp
             LoadConfig(properties);
         }
 
-        internal void LoadConfig(JToken properties)
+        internal virtual void LoadConfig(JToken properties)
         {
             JsonConvert.PopulateObject(properties.ToString(), this);
         }

@@ -1,6 +1,6 @@
 ﻿{
   "General": {
-    "RealName": "",
+    "RealName": null,
     "Owner": [],
     "Moderator": [],
     "Description": null,

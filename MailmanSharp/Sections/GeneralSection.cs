@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace MailmanSharp
 {
@@ -158,7 +159,7 @@ namespace MailmanSharp
         /// </summary>
         public ushort? MaxDaysToHold { get; set; }
 
-        private string _realName = "";
+        private string _realName = null;
 
         internal GeneralSection(MailmanList list) : base(list) { }
 
@@ -172,6 +173,13 @@ namespace MailmanSharp
                 else
                     _realName = value;
             }
+        }
+
+        internal override void LoadConfig(JToken properties)
+        {
+            if (properties is JObject obj)
+                obj.Remove("RealName");
+            base.LoadConfig(properties);
         }
     }
 }

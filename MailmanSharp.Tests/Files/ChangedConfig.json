@@ -3,7 +3,7 @@
     "RealName": "MyList",
     "Owner": [],
     "Moderator": [],
-    "Description": "",
+    "Description": "e4256e3a-1359-48b2-aee5-e886b64e609c",
     "Info": "",
     "SubjectPrefix": "",
     "FromIsList": "No",
@@ -12,7 +12,7 @@
     "ReplyGoesToList": "Poster",
     "ReplyToAddress": "",
     "UmbrellaList": false,
-    "UmbrellaMemberSuffix": "",
+    "UmbrellaMemberSuffix": "0e07a379-fbdb-47e2-ab46-310176b173e4",
     "SendReminders": false,
     "WelcomeMsg": "",
     "SendWelcomeMsg": false,
@@ -34,7 +34,7 @@
   "NonDigest": {
     "Nondigestable": false,
     "Personalize": "No",
-    "MsgHeader": "",
+    "MsgHeader": "54bf5f70-b307-4ce6-a083-6b9ae819e85e",
     "MsgFooter": "Footer of message",
     "ScrubNondigest": true,
     "RegularExcludeLists": [],
@@ -48,7 +48,7 @@
     "DigestSizeThreshhold": 0,
     "DigestSendPeriodic": true,
     "DigestHeader": "Digest Header",
-    "DigestFooter": "",
+    "DigestFooter": "cf2ae64e-43b1-41b6-b749-43c391cec0f1",
     "DigestVolumeFrequency": "Yearly"
   },
   "Privacy": {
@@ -100,7 +100,7 @@
   },
   "MailNewsGateways": {
     "NntpHost": "",
-    "LinkedNewsgroup": "",
+    "LinkedNewsgroup": "4d565e0f-3375-4fd8-b934-808e8b5e7451",
     "GatewayToNews": false,
     "GatewayToMail": true,
     "NewPrefixSubjectToo": false
@@ -116,7 +116,7 @@
   },
   "ContentFiltering": {
     "FilterContent": true,
-    "FilterMimeTypes": [],
+    "FilterMimeTypes": [ "c3158021-313c-4881-98ce-ad8908ee48a9" ],
     "PassMimeTypes": [],
     "FilterFilenameExtensions": [],
     "PassFilenameExtensions": [],

@@ -17,7 +17,7 @@
 - [x] Make all properties nullable
 - [x] Switch to JSON
 - [x] `ReadAsync` needs to start with a blank object
-- [ ] Ignore changes to `RealName`
+- [x] Ignore changes to `RealName`
 - [x] Handle validation errors? See below
 - [x] **Multiple validation errors**
 - [x] `CurrentConfig` needs to include ignored props

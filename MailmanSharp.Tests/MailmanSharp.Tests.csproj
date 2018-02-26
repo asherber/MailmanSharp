@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HtmlAgilityPackExtensionsTests.cs" />
+    <Compile Include="LoadConfigTests.cs" />
     <Compile Include="MailmanClientTests.cs" />
     <Compile Include="MembershipTests.cs" />
     <Compile Include="MailmanListTests.cs" />
