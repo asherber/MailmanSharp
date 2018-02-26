@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
+using System.Web;
 
 namespace MailmanSharp
 {
@@ -326,7 +326,7 @@ namespace MailmanSharp
             // Do we have multiple letters to look at?
             // General approach from http://www.msapiro.net/mailman-subscribers.py
             var doc = resp.Content.GetHtmlDocument();
-            var letters = GetHrefValuesForParam(doc, "letter");
+            var letters = GetQueryStringValuesForParam(doc, "letter");
 
             if (letters.Any())
             {
@@ -358,33 +358,47 @@ namespace MailmanSharp
             int maxChunk = 0;
             var req = new RestRequest(Method.GET);
             req.AddParameter("findmember", search);
+            req.AddParameter("letter", letter);
 
             while (currentChunk <= maxChunk)
             {
-                req.AddOrSetParameter("letter", letter);
                 req.AddOrSetParameter("chunk", currentChunk);
                 var resp = await this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req).ConfigureAwait(false);
                 var doc = resp.Content.GetHtmlDocument();
                 
                 result.AddRange(ExtractMembersFromPage(doc));
 
-                // More chunks?
-                var nextChunk = GetHrefValuesForParam(doc, "chunk").SingleOrDefault();
-                if (nextChunk != null)
-                    maxChunk = Math.Max(maxChunk, Convert.ToInt32(nextChunk));
+                // How many chunks?
+                if (maxChunk == 0)
+                    maxChunk = GetQueryStringValuesForParam(doc, "chunk").Count();
+                
                 currentChunk++;
             }
 
             return result;
         }
 
-        private static IEnumerable<string> GetHrefValuesForParam(HtmlDocument doc, string param)
+        private static IEnumerable<string> GetQueryStringValuesForParam(HtmlDocument doc, string param)
         {
-            string re = String.Format("(?<={0}=).", param);
             var aNodes = doc.DocumentNode.SafeSelectNodes("//a[@href]");
-            var values = aNodes.Select(a => a.Attributes["href"].Value)
-                .Where(h => h.Contains(param + "="))
-                .Select(h => Regex.Match(h, re).Value).Distinct();
+            var urlStrings = aNodes.Select(a => a.Attributes["href"].Value)
+                .Where(h => h.Contains($"{param}="));
+
+            /**
+             * Some recent versions have a bug which causes the links at the bottom
+             * to look like u'http://foo.com'
+             */
+            var fixedStrings = urlStrings.Select(s =>
+            {
+                if (s.StartsWith("u'"))
+                    return s.Trim('u', '\'');
+                else
+                    return s;
+            });
+
+            var uris = fixedStrings.Select(u => new Uri(u));
+            var values = uris.Select(u => HttpUtility.ParseQueryString(u.Query))
+                .Select(nvc => nvc[param]).Distinct();
 
             return values;
         }

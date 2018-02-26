@@ -97,6 +97,7 @@ namespace MailmanSharp.IntegrationTests
         {
             await EnsureMembers();
             var members = await _membership.GetAllMembersAsync();
+            
             members.Should().HaveSameCount(_emails);
             members.Select(m => m.Email).Should().BeEquivalentTo(_emails);
         }
