@@ -160,14 +160,36 @@ namespace MailmanSharp
         }
 
         /// <summary>
+        /// Unsubscribe a list of addresses.
+        /// </summary>
+        /// <param name="addresses"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<string> addresses, UnsubscribeOptions options = UnsubscribeOptions.None)
+        {
+            return UnsubscribeAsync(addresses.Cat(), options);
+        }
+
+        /// <summary>
         /// Unsubscribe a list of members.
         /// </summary>
         /// <param name="members"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<string> members, UnsubscribeOptions options = UnsubscribeOptions.None)
+        public Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<Member> members, UnsubscribeOptions options = UnsubscribeOptions.None)
         {
-            return UnsubscribeAsync(members.Cat(), options);
+            return UnsubscribeAsync(members.Select(m => m.Email), options);
+        }
+
+        /// <summary>
+        /// Unsubscribe a single member.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public Task<UnsubscribeResult> UnsubscribeAsync(Member member, UnsubscribeOptions options = UnsubscribeOptions.None)
+        {
+            return UnsubscribeAsync(member.Email, options);
         }
 
         /// <summary>
@@ -184,14 +206,14 @@ namespace MailmanSharp
         }
 
         private enum SubscribeAction { Subscribe, Invite }
-        private async Task<SubscribeResult> SubscribeOrInviteAsync(string members, string message, SubscribeAction action, SubscribeOptions options = SubscribeOptions.None)
+        private async Task<SubscribeResult> SubscribeOrInviteAsync(string addresses, string message, SubscribeAction action, SubscribeOptions options = SubscribeOptions.None)
         {
             var result = new SubscribeResult();
 
-            if (!String.IsNullOrWhiteSpace(members))
+            if (!String.IsNullOrWhiteSpace(addresses))
             {
                 var req = new RestRequest(Method.POST);
-                req.AddParameter("subscribees", members);
+                req.AddParameter("subscribees", addresses);
                 req.AddParameter("subscribe_or_invite", action == SubscribeAction.Subscribe ? 0 : 1);
                 req.AddParameter("send_welcome_msg_to_this_batch", options.HasFlag(SubscribeOptions.SendWelcomeMessage).ToInt());
                 req.AddParameter("send_notifications_to_list_owner", options.HasFlag(SubscribeOptions.NotifyOwner).ToInt()); 
@@ -442,13 +464,13 @@ namespace MailmanSharp
                 return Task.CompletedTask;
         }
         /// <summary>
-        /// Save changes to an list of members.
+        /// Save changes to a member.
         /// </summary>
         /// <param name="members"></param>
         /// <returns></returns>
-        public Task SaveMembersAsync(params Member[] members)
+        public Task SaveMemberAsync(Member member)
         {
-            return SaveMembersAsync(members.ToList());
+            return SaveMembersAsync(new[] { member });
         }
 
         /// <summary>
