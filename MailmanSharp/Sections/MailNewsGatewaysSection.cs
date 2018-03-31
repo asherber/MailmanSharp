@@ -61,7 +61,7 @@ namespace MailmanSharp
         /// Perform a catchup on the newsgroup.
         /// </summary>
         /// <returns></returns>
-        public Task MassCatchup()
+        public Task MassCatchupAsync()
         {
             return this.GetClient().ExecuteAdminRequestAsync(Method.POST, _paths.First(), ("_mass_catchup", 1));
         }
