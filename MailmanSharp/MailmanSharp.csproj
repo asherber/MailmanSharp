@@ -8,7 +8,7 @@
     <Description>A C# library for configuration and manipulation of Mailman mailing lists by controlling the admin web interface.
 
 Features include: all Mailman settings available as object properties, bulk subscribe/unsubscribe, change settings for individual members or groups of members, save or load list configuration from XML, and async methods for longer-running operations (.NET 4.5 only).</Description>
-    <PackageIconUrl>https://github.com/asherber/MailmanSharp/raw/master/NuGet/xunit-priority-64.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/asherber/MailmanSharp/master/MailmanSharp-64.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/asherber/MailmanSharp</PackageProjectUrl>
     <PackageLicenseUrl>http://www.gnu.org/licenses/gpl.txt</PackageLicenseUrl>
     <Copyright>Copyright 2014-2018</Copyright>

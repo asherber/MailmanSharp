@@ -1,4 +1,4 @@
-![Icon](https://github.com/asherber/MailmanSharp/raw/master/MailmanSharp-64.png)
+![Icon](https://raw.githubusercontent.com/asherber/MailmanSharp/master/MailmanSharp-64.png)
 
 # MailmanSharp [![NuGet](https://img.shields.io/nuget/v/MailmanSharp.svg)](https://nuget.org/packages/MailmanSharp) ![TestedWithMailman](https://img.shields.io/badge/tested%20with%20mailman-2.1.23-brightgreen.svg) ![ShouldWorkWith](https://img.shields.io/badge/should%20work%20with%20mailman-2.1.26-yellow.svg)
 
@@ -35,9 +35,9 @@ await myList.Membership.SubscribeAsync(newMembers);
 List<string> currentMembers = myList.Membership.EmailList;  
 
 // Change a member's settings
-Member bob = await myList.Membership.FindMembersAsync("bob@example.com").Single();
+Member bob = await myList.Membership.SearchMembersAsync("bob@example.com").Single();
 bob.NoMail = true;
-await myList.Membership.SaveMembersAsync(bob);
+await myList.Membership.SaveMemberAsync(bob);
 
 // Work with configuration as JSON
 string listConfig = myList.CurrentConfig;
