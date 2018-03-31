@@ -16,7 +16,7 @@ For a list of changes in v3 of this library, please see https://github.com/asher
 * All Mailman settings are available as object properties
 * Bulk subscribe/unsubscribe
 * Change settings for individual members, or groups of members
-* Save or load list configuration from JSON
+* Save or load list configuration using JSON
 
 ## Sample Code
 ```csharp
