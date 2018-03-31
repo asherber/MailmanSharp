@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014-5 Aaron Sherber
+ * Copyright 2014-2018 Aaron Sherber
  * 
  * This file is part of MailmanSharp.
  *
@@ -17,11 +17,13 @@
  * along with MailmanSharp. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
@@ -35,22 +37,24 @@ namespace MailmanSharp
 
         internal PasswordsSection(MailmanList list) : base(list) { }
 
-        public override void Read()
+        public override Task ReadAsync()
         {
+            ResetProperties(_props);
             // Nothing to read
+            return Task.CompletedTask;
         }
 
-        public override void Write()
+        public override Task WriteAsync()
         {
-            var req = new RestRequest();
+            var req = new RestRequest(Method.POST);
             SetParams("", this.Administrator, req);
             SetParams("mod", this.Moderator, req);
             SetParams("post", this.Poster, req);
 
-            this.GetClient().ExecuteGetAdminRequest(_paths.Single(), req);
+            return this.GetClient().ExecuteAdminRequestAsync(_paths.Single(), req);
         }
 
-        internal override string GetCurrentConfig()
+        internal override JProperty GetCurrentConfigJProperty()
         {
             return null;
         }

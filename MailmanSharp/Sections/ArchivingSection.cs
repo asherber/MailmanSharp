@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014-5 Aaron Sherber
+ * Copyright 2014-2018 Aaron Sherber
  * 
  * This file is part of MailmanSharp.
  *
@@ -31,9 +31,18 @@ namespace MailmanSharp
     [Order(9)]
     public class ArchivingSection: SectionBase
     {
-        public bool Archive { get; set; }
-        public ArchivePrivateOption ArchivePrivate { get; set; }
-        public ArchiveVolumeFrequencyOption ArchiveVolumeFrequency { get; set; }
+        /// <summary>
+        /// Archive messages?
+        /// </summary>
+        public bool? Archive { get; set; }
+        /// <summary>
+        /// Is archive file source for public or private archival?
+        /// </summary>
+        public ArchivePrivateOption? ArchivePrivate { get; set; }
+        /// <summary>
+        /// How often should a new archive volume be started?
+        /// </summary>
+        public ArchiveVolumeFrequencyOption? ArchiveVolumeFrequency { get; set; }
 
         internal ArchivingSection(MailmanList list) : base(list) { }
     }

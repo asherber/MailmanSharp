@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014-5 Aaron Sherber
+ * Copyright 2014-2018 Aaron Sherber
  * 
  * This file is part of MailmanSharp.
  *
@@ -30,13 +30,36 @@ namespace MailmanSharp
     [Order(11)]
     public class AutoResponderSection: SectionBase
     {
-        public bool AutorespondPostings { get; set; }
-        public List<string> AutoresponsePostingsText { get; set; }
-        public bool AutorespondAdmin { get; set; }
-        public List<string> AutoresponseAdminText { get; set; }
-        public AutorespondRequestsOption AutorespondRequests { get; set; }
-        public List<string> AutoresponseRequestText { get; set; }
-        public ushort AutoresponseGraceperiod { get; set; }
+        /// <summary>
+        /// Should Mailman send an auto-response to mailing list posters?
+        /// </summary>
+        public bool? AutorespondPostings { get; set; }
+        /// <summary>
+        /// Auto-response text to send to mailing list posters.
+        /// </summary>
+        public string AutoresponsePostingsText { get; set; }
+        /// <summary>
+        /// Should Mailman send an auto-response to emails sent to the -owner address?
+        /// </summary>
+        public bool? AutorespondAdmin { get; set; }
+        /// <summary>
+        /// Auto-response text to send to -owner emails.
+        /// </summary>
+        public string AutoresponseAdminText { get; set; }
+        /// <summary>
+        /// Should Mailman send an auto-response to emails sent to the -request address? 
+        /// </summary>
+        public AutorespondRequestsOption? AutorespondRequests { get; set; }
+        /// <summary>
+        /// Auto-response text to send to -request emails.
+        /// </summary>
+        public string AutoresponseRequestText { get; set; }
+        /// <summary>
+        /// Number of days between auto-responses to either the mailing list or -request/-owner 
+        /// address from the same poster. Set to zero (or negative) for no grace period 
+        /// (i.e. auto-respond to every message).
+        /// </summary>
+        public ushort? AutoresponseGraceperiod { get; set; }
 
 
         internal AutoResponderSection(MailmanList list) : base(list) { }

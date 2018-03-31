@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014-5 Aaron Sherber
+ * Copyright 2014-2018 Aaron Sherber
  * 
  * This file is part of MailmanSharp.
  *
@@ -18,8 +18,11 @@
  */
 
 using HtmlAgilityPack;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -29,27 +32,38 @@ using System.Xml.Linq;
 namespace MailmanSharp
 {
     [Path("")]
-    public abstract class SectionBase
+    public abstract class SectionBase: ISectionBase
     {
         protected MailmanList _list;
         protected HashSet<string> _paths = new HashSet<string>();
+
+        protected static IDictionary<Type, IEnumerable<PropertyInfo>> _propsDict = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
+        protected IEnumerable<PropertyInfo> _props => _propsDict[this.GetType()];
+
+        /// <summary>
+        /// Current configuration of object as JSON.
+        /// </summary>
+        [JsonIgnore, MailmanIgnore]
+        public string CurrentConfig => new JObject(GetCurrentConfigJProperty()).ToString();
+
+        private string SectionName => this.GetType().Name.Replace("Section", "");
+        private static JsonSerializer Serializer = new MailmanJsonSerializer();
         
-        [Ignore]
-        public string CurrentConfig { get { return GetCurrentConfig(); } }
-        
+
         internal SectionBase(MailmanList list)
         {
-            if (list == null)
-                throw new ArgumentNullException("list");
-
-            _list = list;
+            _list = list ?? throw new ArgumentNullException("list");
+            
+            if (!_propsDict.ContainsKey(this.GetType()))
+            {
+                _propsDict[this.GetType()] = this.GetType().GetProperties();
+            }
             
             // Start with path on the class
             var basePath = GetPathValue(this.GetType().GetCustomAttributes(false));
 
             // Now see if we have subpaths on properties
-            var props = this.GetType().GetProperties();
-            foreach (var prop in props)
+            foreach (var prop in _props)
             {
                 var subPath = GetPathValue(prop.GetCustomAttributes(false));
                 if (subPath != null)
@@ -57,312 +71,139 @@ namespace MailmanSharp
             }
             if (!_paths.Any())
                 _paths.Add(basePath);
-
-            // Initialize any reference types
-            foreach (var prop in props.Where(p => p.CanWrite))
-            {
-                if (prop.PropertyType.GetConstructor(Type.EmptyTypes) != null)
-                    prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, null), null);
-                else if (prop.PropertyType == typeof(string))
-                    prop.SetValue(this, "", null);
-            }
         }
 
-        protected MailmanClient GetClient()
+        protected IMailmanClient GetClient()
         {
-            return _list.Client.Clone();
+            return _list.InternalClient.Clone();
         }
 
         private string GetPathValue(object[] attributes)
         {
             var att = attributes.OfType<PathAttribute>().FirstOrDefault();
-            return att != null ? att.Value : null;
+            return att?.Value;
         }
 
-        public virtual void Read()
+        /// <summary>
+        /// Read properties for this section from Mailman.
+        /// </summary>
+        /// <returns></returns>
+        public virtual async Task ReadAsync()
         {
-            var docs = FetchHtmlDocuments();
-            var props = this.GetType().GetUnignoredProps();
+            var docs = await FetchHtmlDocumentsAsync().ConfigureAwait(false);
+            var unignoredProps = _props.Unignored();
 
             foreach (var kvp in docs)
             {
-                var propsToRead = docs.Count == 1 ? props : GetPropsForPath(props, kvp.Key);
+                var propsToRead = docs.Count == 1 ? unignoredProps : unignoredProps.ForPath(kvp.Key);
+                ResetProperties(propsToRead);
+
                 var doc = kvp.Value;
                 foreach (var prop in propsToRead)
                 {
-                    if (prop.PropertyType == typeof(string))
-                        SetPropValue(prop, GetNodeStringValue(doc, prop));
-                    else if (prop.PropertyType == typeof(ushort))
-                        SetPropValue(prop, GetNodeIntValue(doc, prop));
-                    else if (prop.PropertyType == typeof(double))
-                        SetPropValue(prop, GetNodeDoubleValue(doc, prop));
-                    else if (prop.PropertyType == typeof(bool))
-                        SetPropValue(prop, GetNodeBoolValue(doc, prop));
-                    else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
-                        SetPropValue(prop, GetNodeEnumValue(doc, prop));
-                    else if (prop.PropertyType == typeof(List<string>))
-                        SetPropValue(prop, GetNodeListValue(doc, prop));
+                    var type = prop.PropertyType;
+                    if (type == typeof(string))
+                    {
+                        var val = doc.GetInputStringValue(prop) ?? doc.GetTextAreaStringValue(prop);
+                        prop.SetValue(this, val);
+                    }
+                    else if (type == typeof(ushort?))
+                        prop.SetValue(this, doc.GetInputIntValue(prop));
+                    else if (type == typeof(double?))
+                        prop.SetValue(this, doc.GetInputDoubleValue(prop));
+                    else if (type == typeof(bool?))
+                        prop.SetValue(this, doc.GetInputBoolValue(prop));
+                    else if (Nullable.GetUnderlyingType(type)?.IsEnum == true)
+                        prop.SetValue(this, doc.GetInputEnumValue(prop));
+                    else if (type == typeof(List<string>))
+                        prop.SetValue(this, doc.GetTextAreaListValue(prop));
                 }
             }
 
             DoAfterRead(docs);
         }
 
-        public virtual void Write()
+        /// <summary>
+        /// Write properties for this section to Mailman.
+        /// </summary>
+        /// <returns></returns>
+        public virtual async Task WriteAsync()
         {
-            var props = this.GetType().GetUnignoredProps();
+            var unignoredProps = _props.Unignored();
             var client = this.GetClient();
 
             foreach (var path in _paths)
             {
-                var req = new RestRequest();
-                var propsToWrite = _paths.Count == 1 ? props : GetPropsForPath(props, path);
+                var req = new RestRequest(Method.POST);
+                var propsToWrite = _paths.Count == 1 ? unignoredProps : unignoredProps.ForPath(path);
                     
                 foreach (var prop in propsToWrite)
                 {
-                    if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
+                    if (Nullable.GetUnderlyingType(prop.PropertyType)?.IsEnum == true)
                     {
-                        foreach (var val in GetPropertyEnumValues(prop))
+                        foreach (var val in prop.GetEnumValues(this))
                             req.AddParameter(prop.Name.Decamel(), val);
                     }
                     else
-                        req.AddParameter(prop.Name.Decamel(), GetPropertyObjectValue(prop));
+                        req.AddParameter(prop.Name.Decamel(), prop.GetSimpleValue(this));
                 }
 
                 DoBeforeFinishWrite(req);
-                client.ExecutePostAdminRequest(path, req);
+                await client.ExecuteAdminRequestAsync(path, req).ConfigureAwait(false);
             }
         }
-
-#if NET45
-        public Task ReadAsync()
-        {
-            return Task.Run(() => this.Read());
-        }
-
-        public Task WriteAsync()
-        {
-            return Task.Run(() => this.Write());
-        }
-#endif
 
         protected virtual void DoAfterRead(Dictionary<string, HtmlDocument> docs) { }
         protected virtual void DoBeforeFinishWrite(RestRequest req) { }
 
-        protected IEnumerable<PropertyInfo> GetPropsForPath(IEnumerable<PropertyInfo> props, string path)
-        {
-            return props.Where(p => p.GetCustomAttributes(false).OfType<PathAttribute>().Any(a => path.Contains(a.Value)));
-        }
-
         
-
-        internal virtual string GetCurrentConfig()
+        internal virtual JProperty GetCurrentConfigJProperty()
         {
-            var result = new XElement(GetSectionName());
-            var props = this.GetType().GetUnignoredProps();
-
-            foreach (var prop in props)
-            {
-                var val = prop.GetValue(this, null);
-                if (val is List<string>)
-                    val = ((List<string>)val).Cat();
-                    
-                result.Add(new XElement(prop.Name, val));
-            }
-            return result.ToString();
+            var allProperties = JToken.FromObject(this, Serializer);
+            return new JProperty(SectionName, allProperties);
         }
 
-        public void LoadConfig(string xml)
+        /// <summary>
+        /// Load configuration for this section from JSON string.
+        /// </summary>
+        /// <param name="json"></param>
+        public void LoadConfig(string json)
         {
-            var root = XElement.Parse(xml);
-            root.CheckElementName(GetSectionName());
+            var obj = JObject.Parse(json);
+            obj.CheckObjectName(this.SectionName);
 
-            var props = this.GetType().GetUnignoredProps();
-            foreach (var prop in props)
-            {
-                var el = root.Element(prop.Name);
-                //if (el != null && !String.IsNullOrEmpty(el.Value))
-                if (el != null)
-                {
-                    if (prop.PropertyType == typeof(bool))
-                        prop.SetValue(this, Convert.ToBoolean(el.Value), null);
-                    else if (prop.PropertyType == typeof(ushort))
-                        prop.SetValue(this, Convert.ToUInt16(el.Value), null);
-                    else if (prop.PropertyType == typeof(double))
-                        prop.SetValue(this, Convert.ToDouble(el.Value), null);
-                    else if (prop.PropertyType == typeof(List<string>))
-                    {
-                        var list = el.Value.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
-                        prop.SetValue(this, list, null);
-                    }
-                    else if (prop.PropertyType.IsSubclassOf(typeof(Enum)))
-                        prop.SetValue(this, Enum.Parse(prop.PropertyType, el.Value, true), null);
-                    else
-                        prop.SetValue(this, el.Value, null);
-                }
-            }
+            var properties = obj.SelectToken(this.SectionName);
+            LoadConfig(properties);
         }
 
-        private string GetSectionName()
+        internal virtual void LoadConfig(JToken properties)
         {
-            return this.GetType().Name.Replace("Section", "");
+            JsonConvert.PopulateObject(properties.ToString(), this);
         }
 
-        private object GetPropertyObjectValue(PropertyInfo prop)
-        {
-            var val = prop.GetValue(this, null);
-            if (prop.PropertyType == typeof(bool))
-                return Convert.ToInt32(val);
-            else if (prop.PropertyType == typeof(List<string>))
-                return ((List<string>)val).Cat();
-            else
-                return val;
-        }
-
-        private IEnumerable<object> GetPropertyEnumValues(PropertyInfo prop)
-        {
-            var result = new List<object>();
-            var val = prop.GetValue(this, null);
-
-            if (prop.PropertyType.GetCustomAttributes(typeof(FlagsAttribute), false).Any())
-            {
-                var vals = val.ToString().ToLower().Split(new string[] { ", " }, StringSplitOptions.None);
-                result.AddRange(vals);
-            }
-            else
-            {
-                result.Add((int)val);
-            }
-            
-            return result;
-        }
-
-        protected Dictionary<string, HtmlDocument> FetchHtmlDocuments()
+        protected async Task<Dictionary<string, HtmlDocument>> FetchHtmlDocumentsAsync()
         {
             var result = new Dictionary<string, HtmlDocument>();
             var client = this.GetClient();  // to avoid unneccessary cloning
             foreach (var path in _paths)
             {
-                var resp = client.ExecuteGetAdminRequest(path);
-                var doc = GetHtmlDocument(resp.Content);
+                var resp = await client.ExecuteAdminRequestAsync(Method.GET, path).ConfigureAwait(false);
+                var doc = resp.Content.GetHtmlDocument();
                 result.Add(path, doc);
             }
             return result;
         }
 
-        protected static HtmlDocument GetHtmlDocument(string content = null)
+        protected void ResetProperties(IEnumerable<PropertyInfo> props)
         {
-            var doc = new HtmlDocument()
+            foreach (var prop in props.Where(p => p.CanWrite))
             {
-                OptionFixNestedTags = true
-            };
-
-            if (!String.IsNullOrEmpty(content))
-                doc.LoadHtml(content);
-            return doc;
-        }
-
-        #region Reading helpers
-        protected void SetPropValue(PropertyInfo prop, object value)
-        {
-            if (value != null)
-                prop.SetValue(this, value, null);
-        }
-
-        protected object GetNodeValue(HtmlDocument doc, PropertyInfo prop)
-        {
-            return GetNodeValue(doc, prop.Name.Decamel());
-        }
-
-        protected object GetNodeValue(HtmlDocument doc, string name)
-        {
-            string xpath = String.Format("//input[@name='{0}']", name);
-            var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
-
-            return node != null ? node.Attributes["value"].Value : null;
-        }
-
-        protected object GetNodeStringValue(HtmlDocument doc, PropertyInfo prop)
-        {
-            return GetNodeValue(doc, prop);
-        }
-
-        protected object GetNodeIntValue(HtmlDocument doc, PropertyInfo prop)
-        {
-            var val = GetNodeValue(doc, prop);
-            return val != null ? (object)ushort.Parse(val.ToString()) : null;
-        }
-
-        protected object GetNodeDoubleValue(HtmlDocument doc, PropertyInfo prop)
-        {
-            var val = GetNodeValue(doc, prop);
-            return val != null ? (object)double.Parse(val.ToString()) : null;
-        }
-
-        protected List<string> GetNodeListValue(HtmlDocument doc, PropertyInfo prop)
-        {
-            return GetNodeListValue(doc, prop.Name.Decamel());           
-        }
-
-        protected List<string> GetNodeListValue(HtmlDocument doc, string name)
-        {
-            string xpath = String.Format("//textarea[@name='{0}']", name);
-            var node = doc.DocumentNode.SafeSelectNodes(xpath).FirstOrDefault();
-
-            if (node != default(HtmlNode))
-            {
-                if (String.IsNullOrEmpty(node.InnerText))
-                    return new List<string>();
-                else
-                    return node.InnerText.Split(new string[] { "\n" }, StringSplitOptions.None).ToList();
+                var type = prop.PropertyType;
+                if (type == typeof(List<string>))
+                    prop.SetValue(this, new List<string>());
+                else if (type == typeof(string) || Nullable.GetUnderlyingType(type) != null)
+                    prop.SetValue(this, null);
             }
-            return null;
         }
-
-        protected object GetNodeBoolValue(HtmlDocument doc, PropertyInfo prop)
-        {
-            var dname = prop.Name.Decamel();
-            string xpath = String.Format("//input[@name='{0}' and @checked]", dname);
-            var node = doc.DocumentNode.SafeSelectNodes(xpath).SingleOrDefault();
-
-            return node != null ? (object)(node.Attributes["value"].Value == "1") : null;
-        }
-
-        protected object GetNodeEnumValue(HtmlDocument doc, PropertyInfo prop)
-        {
-            return GetNodeEnumValue(doc, prop.Name.Decamel(), prop.PropertyType);
-        }
-
-        protected object GetNodeEnumValue(HtmlDocument doc, string name, Type enumType)
-        {
-            string xpath = String.Format("//input[@name='{0}' and @checked]", name);
-            var nodes = doc.DocumentNode.SafeSelectNodes(xpath);
-
-            if (nodes.Any())
-            {
-                int result = 0;
-                foreach (var node in nodes)
-                {
-                    var val = node.Attributes["value"].Value;
-                    var enumVal = Enum.Parse(enumType, val, true);
-                    result |= (int)enumVal;
-                }
-                return Enum.ToObject(enumType, result);
-            }
-            else
-                return null;
-        }
-
-        protected T GetNodeEnumValue<T>(HtmlDocument doc, string name) where T: struct, IConvertible 
-        {
-            if (!typeof(T).IsEnum) throw new ArgumentException("T must be an enumerated type");
-            var obj = GetNodeEnumValue(doc, name, typeof(T));
-            if (obj != null)
-                return (T)obj;
-            else
-                throw new Exception(String.Format("Value {0} not found", name));
-        }
-        #endregion
-
     }
 }

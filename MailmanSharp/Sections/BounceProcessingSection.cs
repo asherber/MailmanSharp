@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014-5 Aaron Sherber
+ * Copyright 2014-2018 Aaron Sherber
  * 
  * This file is part of MailmanSharp.
  *
@@ -28,14 +28,47 @@ namespace MailmanSharp
     [Order(8)]
     public class BounceProcessingSection: SectionBase
     {
-        public bool BounceProcessing { get; set; }
-        public double BounceScoreThreshold { get; set; }
-        public ushort BounceInfoStaleAfter { get; set; }
-        public ushort BounceYouAreDisabledWarnings { get; set; }
-        public ushort BounceYouAreDisabledWarningsInterval { get; set; }
-        public bool BounceUnrecognizedGoesToListOwner { get; set; }
-        public bool BounceNotifyOwnerOnDisable { get; set; }
-        public bool BounceNotifyOwnerOnRemoval { get; set; }
+        /// <summary>
+        /// Should Mailman perform automatic bounce processing?
+        /// </summary>
+        public bool? BounceProcessing { get; set; }
+        /// <summary>
+        /// The maximum member bounce score before the member's subscription is disabled. 
+        /// </summary>
+        public double? BounceScoreThreshold { get; set; }
+        /// <summary>
+        /// The number of days after which a member's bounce information is discarded, 
+        /// if no new bounces have been received in the interim. 
+        /// </summary>
+        public ushort? BounceInfoStaleAfter { get; set; }
+        /// <summary>
+        /// How many Your Membership Is Disabled warnings a disabled member should get before 
+        /// their address is removed from the mailing list. Set to 0 to immediately remove 
+        /// an address from the list once their bounce score exceeds the threshold. 
+        /// </summary>
+        public ushort? BounceYouAreDisabledWarnings { get; set; }
+        /// <summary>
+        /// The number of days between sending the Your Membership Is Disabled warnings. 
+        /// </summary>
+        public ushort? BounceYouAreDisabledWarningsInterval { get; set; }
+        /// <summary>
+        ///  Should Mailman send the list owner any bounce messages that failed to be 
+        ///  detected by the bounce processor? Yes is recommended.
+        /// </summary>
+        public bool? BounceUnrecognizedGoesToListOwner { get; set; }
+        /// <summary>
+        /// Should Mailman notify the list owner when bounces cause a member's 
+        /// bounce score to be incremented?
+        /// </summary>
+        public bool? BounceNotifyOwnerOnBounceIncrement { get; set; }
+        /// <summary>
+        /// Should Mailman notify the list owner when bounces cause a member's subscription to be disabled?
+        /// </summary>
+        public bool? BounceNotifyOwnerOnDisable { get; set; }
+        /// <summary>
+        /// Should Mailman notify the list owner when bounces cause a member to be unsubscribed?
+        /// </summary>
+        public bool? BounceNotifyOwnerOnRemoval { get; set; }
 
         internal BounceProcessingSection(MailmanList list) : base(list) { }
     }

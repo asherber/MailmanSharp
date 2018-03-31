@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014-5 Aaron Sherber
+ * Copyright 2014-2018 Aaron Sherber
  * 
  * This file is part of MailmanSharp.
  *
@@ -29,10 +29,19 @@ namespace MailmanSharp
     [Order(13)]
     public class TopicsSection: SectionBase
     {
-        public bool TopicsEnabled { get; set; }
-        public ushort TopicsBodylinesLimit { get; set; }
-        [Ignore]
-        public List<Topic> TopicList { get; set; }
+        /// <summary>
+        /// Should the topic filter be enabled or disabled?
+        /// </summary>
+        public bool? TopicsEnabled { get; set; }
+        /// <summary>
+        /// How many body lines should the topic matcher scan? 
+        /// </summary>
+        public ushort? TopicsBodylinesLimit { get; set; }
+        /// <summary>
+        /// Topics to match against each message.
+        /// </summary>
+        [MailmanIgnore]
+        public List<Topic> Topics { get; set; } = new List<Topic>();
 
         internal TopicsSection(MailmanList list) : base(list) { }
 
@@ -42,18 +51,18 @@ namespace MailmanSharp
 
         protected override void DoAfterRead(Dictionary<string, HtmlDocument> docs)
         {
-            // read topics
+            Topics.Clear();
             var doc = docs.Single().Value;
 
             int i = 0;
             while (doc.DocumentNode.SafeSelectNodes(String.Format("//input[@name='topic_delete_{0:D2}']", ++i)).Any())
             {
                 string index = i.ToString("D2");
-                this.TopicList.Add(new Topic()
+                this.Topics.Add(new Topic()
                 {
-                    Name = (string)GetNodeValue(doc, _nameTag + index),
-                    Regexes = GetNodeListValue(doc, _regexTag + index),
-                    Description = GetNodeListValue(doc, _descTag + index).Cat(),
+                    Name = (string)doc.GetInputValue(_nameTag + index),
+                    Regexes = doc.GetTextAreaListValue(_regexTag + index),
+                    Description = doc.GetTextAreaListValue(_descTag + index).Cat(),
                 });
             }
 
@@ -61,9 +70,9 @@ namespace MailmanSharp
 
         protected override void DoBeforeFinishWrite(RestSharp.RestRequest req)
         {
-            for (int i = 0; i < this.TopicList.Count; ++i)
+            for (int i = 0; i < this.Topics.Count; ++i)
             {
-                var topic = this.TopicList[i];
+                var topic = this.Topics[i];
                 string index = (i + 1).ToString("D2");
                 req.AddParameter(_nameTag + index, topic.Name);
                 req.AddParameter(_regexTag + index, topic.Regexes.Cat());

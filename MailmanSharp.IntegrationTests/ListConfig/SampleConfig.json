@@ -1,0 +1,185 @@
+{
+  "Meta": {
+    "AdminUrl": "http://lists.sherber.com//admin.cgi/test-sherber.com",
+    "ExportedDate": "2018-02-13T18:13:35",
+    "MailmanVersion": "2.1.23",
+    "MailmanSharpVersion": "2.3.0.0"
+  },
+  "General": {
+    "RealName": "Test",
+    "Owner": [
+      "aaron@sherber.com"
+    ],
+    "Moderator": [
+      "guid@example.com",
+      "guid@example.com"
+    ],
+    "Description": "guid",
+    "Info": "guid",
+    "SubjectPrefix": "guid",
+    "FromIsList": "enumFromIsListOption",
+    "AnonymousList": true,
+    "FirstStripReplyTo": true,
+    "ReplyGoesToList": "enumReplyGoesToListOption",
+    "ReplyToAddress": "guid@example.com",
+    "UmbrellaList": true,
+    "UmbrellaMemberSuffix": "-guid",
+    "SendReminders": true,
+    "WelcomeMsg": "guid",
+    "SendWelcomeMsg": true,
+    "GoodbyeMsg": "guid",
+    "SendGoodbyeMsg": true,
+    "AdminImmedNotify": true,
+    "AdminNotifyMchanges": true,
+    "RespondToPostRequests": true,
+    "Emergency": true,
+    "NewMemberOptions": "enumNewMemberOptions",
+    "Administrivia": true,
+    "MaxMessageSize": 99,
+    "AdminMemberChunksize": 99,
+    "IncludeRfc2369Headers": true,
+    "IncludeListPostHeader": true,
+    "IncludeSenderHeader": true,
+    "MaxDaysToHold": 99
+  },
+  "NonDigest": {
+    "Nondigestable": true,
+    "Personalize": "enumPersonalizeOption",
+    "MsgHeader": "guid",
+    "MsgFooter": "guid",
+    "ScrubNondigest": true,
+    "RegularExcludeLists": [
+      "guid@example.com",
+      "guid@example.com"
+    ],
+    "RegularExcludeIgnore": true,
+    "RegularIncludeLists": [ "guid@example.com" ]
+  },
+  "Digest": {
+    "Digestable": true,
+    "DigestIsDefault": "enumDigestIsDefaultOption",
+    "MimeIsDefaultDigest": "Plain",
+    "DigestSizeThreshhold": 99,
+    "DigestSendPeriodic": true,
+    "DigestHeader": "guid",
+    "DigestFooter": "guid\nguid",
+    "DigestVolumeFrequency": "enumDigestVolumeFrequencyOption"
+  },
+  "Privacy": {
+    "Advertised": true,
+    "SubscribePolicy": "enumSubscribePolicyOption",
+    "SubscribeAutoApproval": [ "guid@example.com" ],
+    "UnsubscribePolicy": true,
+    "BanList": [ "guid@example.com" ],
+    "PrivateRoster": "ListMembers",
+    "ObscureAddresses": true,
+    "DefaultMemberModeration": true,
+    "MemberVerbosityThreshold": 99,
+    "MemberVerbosityInterval": 99,
+    "MemberModerationAction": "enumMemberModerationActionOption",
+    "MemberModerationNotice": "guid",
+    "DmarcModerationAction": "enumDmarcModerationActionOption",
+    "DmarcQuarantineModerationAction": true,
+    "DmarcNoneModerationAction": true,
+    "DmarcModerationNotice": "guid",
+    "DmarcWrappedMessageText": "guid",
+    "EquivalentDomains": [
+      [ "guid", "guid" ],
+      [ "guid", "guid" ]
+    ],
+    "AcceptTheseNonmembers": [ "guid@example.com" ],
+    "HoldTheseNonmembers": [ "guid@example.com" ],
+    "RejectTheseNonmembers": [ "guid@example.com" ],
+    "DiscardTheseNonmembers": [ "guid@example.com" ],
+    "GenericNonmemberAction": "enumGenericNonmemberActionOption",
+    "ForwardAutoDiscards": true,
+    "NonmemberRejectionNotice": "guid",
+    "RequireExplicitDestination": true,
+    "AcceptableAliases": [
+      "guid@example.com",
+      "guid@example.com"
+    ],
+    "MaxNumRecipients": 99,
+    "BounceMatchingHeaders": [
+      "guid",
+      "guid"
+    ],
+    "HeaderFilterRules": [
+      {
+        "Regexes": [
+          "guid",
+          "guid"
+        ],
+        "Action": "enumHeaderFilterAction"
+      },
+      {
+        "Regexes": [
+          "guid"
+        ],
+        "Action": "enumHeaderFilterAction"
+      }
+    ]
+  },
+  "BounceProcessing": {
+    "BounceProcessing": true,
+    "BounceScoreThreshold": 99.9,
+    "BounceInfoStaleAfter": 99,
+    "BounceYouAreDisabledWarnings": 99,
+    "BounceYouAreDisabledWarningsInterval": 99,
+    "BounceUnrecognizedGoesToListOwner": true,
+    "BounceNotifyOwnerOnBounceIncrement": true,
+    "BounceNotifyOwnerOnDisable": true,
+    "BounceNotifyOwnerOnRemoval": true
+  },
+  "Archiving": {
+    "Archive": true,
+    "ArchivePrivate": "enumArchivePrivateOption",
+    "ArchiveVolumeFrequency": "enumArchiveVolumeFrequencyOption"
+  },
+  "MailNewsGateways": {
+    "NntpHost": "guid",
+    "LinkedNewsgroup": "guid",
+    "GatewayToNews": true,
+    "GatewayToMail": true,
+    "NewsModeration": "enumNewsModerationOption",
+    "NewsPrefixSubjectToo": true
+  },
+  "AutoResponder": {
+    "AutorespondPostings": true,
+    "AutoresponsePostingsText": "guid",
+    "AutorespondAdmin": true,
+    "AutoresponseAdminText": "guid",
+    "AutorespondRequests": "enumAutorespondRequestsOption",
+    "AutoresponseRequestText": "guid",
+    "AutoresponseGraceperiod": 99
+  },
+  "ContentFiltering": {
+    "FilterContent": true,
+    "FilterMimeTypes": [
+      "guid"
+    ],
+    "PassMimeTypes": [
+      "guid",
+      "guid",
+      "guid"
+    ],
+    "FilterFilenameExtensions": [
+      "guid"
+    ],
+    "PassFilenameExtensions": [ "guid" ],
+    "CollapseAlternatives": true,
+    "ConvertHtmlToPlaintext": true,
+    "FilterAction": "enumFilterActionOption"
+  },
+  "Topics": {
+    "TopicsEnabled": true,
+    "TopicsBodylinesLimit": 99,
+    "Topics": [
+      {
+        "Name": "guid",
+        "Regexes": [ "guid" ],
+        "Description":  "guid"
+      }
+    ]
+  }
+}

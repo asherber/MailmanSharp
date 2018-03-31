@@ -1,0 +1,385 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="SHORTCUT ICON" href="http://lists.sherber.com/icons/mm-icon.png">
+
+<title>Test Administration (General Options)</title>
+</head>
+<body bgcolor="white" dir="ltr">
+<center><h2>Test mailing list administration<br>General Options Section</h2></center><hr>
+<form action="http://lists.sherber.com/admin.cgi/test-sherber.com/general" method="POST">
+<input type="hidden" name="csrf_token" value="28020000006953e4535a733f000000746573742d736865726265722e636f6d2b61646d696e3a33373938613161643836383236613235353137626637653831633666636365376566376134396132">
+
+  <table width="100%">
+    <tbody><tr>
+      <td><center><strong>Configuration Categories</strong></center></td>
+      <td><center><strong>Other Administrative Activities</strong></center></td>
+    </tr>
+    <tr>
+      <td>
+          <table>
+            <tbody><tr valign="top">
+              <td>
+                  <ul>
+                  <li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/general"><strong>[General Options]</strong></a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/passwords">Passwords</a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/language">Language&nbsp;options</a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/members">Membership&nbsp;Management...</a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/nondigest">Non-digest&nbsp;options</a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/digest">Digest options</a>
+                  </li></ul>
+</td>
+              <td>
+                  <ul>
+                  <li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/privacy">Privacy options...</a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/bounce">Bounce processing</a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/archive">Archiving Options</a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/gateway">Mail&lt;-&gt;News&nbsp;gateways</a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/autoreply">Auto-responder</a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/contentfilter">Content&nbsp;filtering</a>
+                  </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/topics">Topics</a>
+                  </li></ul>
+</td>
+            </tr>
+          </tbody></table>
+</td>
+      <td>
+          <ul>
+          <li><a href="http://lists.sherber.com/admindb.cgi/test-sherber.com">Tend to pending moderator requests</a>
+          </li><li><a href="http://lists.sherber.com/listinfo.cgi/test-sherber.com">Go to the general list information page</a>
+          </li><li><a href="http://lists.sherber.com/edithtml.cgi/test-sherber.com">Edit the public HTML pages and text files</a>
+          </li><li><a href="http://lists.sherber.com/private.cgi/test-sherber.com/">Go to list archives</a><br>&nbsp;<br>
+          </li><li><a href="http://lists.sherber.com/admin.cgi/test-sherber.com/logout"><font size="+2"><b>Logout</b></font></a>
+          </li></ul>
+</td>
+    </tr>
+  </tbody></table>
+<hr>Make your changes in the following section, then submit them
+        using the <em>Submit Your Changes</em> button below.<p>
+  <table cellpadding="4" width="100%" cellspacing="3">
+    <tbody><tr>
+      <td colspan="2" bgcolor="#99ccff"><center><h2>General Options</h2></center></td>
+    </tr>
+    <tr>
+      <td colspan="2">Fundamental list characteristics, including descriptive
+            info and basic behaviors.</td>
+    </tr>
+    <tr>
+      <td><center><strong>Description</strong></center></td>
+      <td><center><strong>Value</strong></center></td>
+    </tr>
+    <tr>
+      <td colspan="2"><center><em>General list personality</em></center></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">The public name of this list (make case-changes only). <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/real_name"><br>(Details for <b>real_name</b>)</a></div></td>
+      <td bgcolor="#dddddd"><input name="real_name" type="TEXT" value="Test" size="40"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">The list administrator email addresses.  Multiple
+             administrator addresses, each on separate line is okay. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/owner"><br>(Details for <b>owner</b>)</a></div></td>
+      <td bgcolor="#dddddd"><textarea name="owner" rows="3" cols="40" wrap="off">aaron@sherber.com</textarea></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">The list moderator email addresses.  Multiple
+             moderator addresses, each on separate line is okay. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/moderator"><br>(Details for <b>moderator</b>)</a></div></td>
+      <td bgcolor="#dddddd"><textarea name="moderator" rows="3" cols="40" wrap="off"></textarea></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">A terse phrase identifying this list. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/description"><br>(Details for <b>description</b>)</a></div></td>
+      <td bgcolor="#dddddd"><input name="description" type="TEXT" value="MWS Announcements" size="40"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">An introductory description - a few paragraphs - about the
+             list.  It will be included, as html, at the top of the listinfo
+             page.  Carriage returns will end a paragraph - see the details
+             for more info. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/info"><br>(Details for <b>info</b>)</a></div></td>
+      <td bgcolor="#dddddd"><textarea name="info" rows="7" cols="40" wrap="soft"></textarea></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Prefix for subject line of list postings. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/subject_prefix"><br>(Details for <b>subject_prefix</b>)</a></div></td>
+      <td bgcolor="#dddddd"><input name="subject_prefix" type="TEXT" value="[MWS Announce] " size="40"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Replace the From: header address with the list's posting
+             address to mitigate issues stemming from the original From:
+             domain's DMARC or similar policies. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/from_is_list"><br>(Details for <b>from_is_list</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="from_is_list" type="RADIO" value="0">No</label></td>
+              <td><label><input name="from_is_list" type="RADIO" value="1">Munge From</label></td>
+              <td><label><input name="from_is_list" type="RADIO" value="2" checked="">Wrap Message</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Hide the sender of a message, replacing it with the list
+             address (Removes From, Sender and Reply-To fields) <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/anonymous_list"><br>(Edit <b>anonymous_list</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="anonymous_list" type="RADIO" value="0" checked="">No</label></td>
+              <td><label><input name="anonymous_list" type="RADIO" value="1">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td colspan="2"><center><em><tt>Reply-To:</tt> header munging</em></center></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Should any existing <tt>Reply-To:</tt> header found in the
+             original message be stripped?  If so, this will be done
+             regardless of whether an explict <tt>Reply-To:</tt> header is
+             added by Mailman or not. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/first_strip_reply_to"><br>(Edit <b>first_strip_reply_to</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="first_strip_reply_to" type="RADIO" value="0" checked="">No</label></td>
+              <td><label><input name="first_strip_reply_to" type="RADIO" value="1">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Where are replies to list messages directed?
+             <tt>Poster</tt> is <em>strongly</em> recommended for most mailing
+             lists. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/reply_goes_to_list"><br>(Details for <b>reply_goes_to_list</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="reply_goes_to_list" type="RADIO" value="0">Poster</label></td>
+              <td><label><input name="reply_goes_to_list" type="RADIO" value="1" checked="">This list</label></td>
+              <td><label><input name="reply_goes_to_list" type="RADIO" value="2">Explicit address</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Explicit <tt>Reply-To:</tt> header. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/reply_to_address"><br>(Details for <b>reply_to_address</b>)</a></div></td>
+      <td bgcolor="#dddddd"><input name="reply_to_address" type="TEXT" value="" size="40"></td>
+    </tr>
+    <tr>
+      <td colspan="2"><center><em>Umbrella list settings</em></center></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Send password reminders to, eg, "-owner" address instead of
+             directly to user. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/umbrella_list"><br>(Details for <b>umbrella_list</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="umbrella_list" type="RADIO" value="0" checked="">No</label></td>
+              <td><label><input name="umbrella_list" type="RADIO" value="1">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Suffix for use when this list is an umbrella for other
+             lists, according to setting of previous "umbrella_list"
+             setting. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/umbrella_member_suffix"><br>(Details for <b>umbrella_member_suffix</b>)</a></div></td>
+      <td bgcolor="#dddddd"><input name="umbrella_member_suffix" type="TEXT" value="-owner" size="40"></td>
+    </tr>
+    <tr>
+      <td colspan="2"><center><em>Notifications</em></center></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Send monthly password reminders? <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/send_reminders"><br>(Details for <b>send_reminders</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="send_reminders" type="RADIO" value="0" checked="">No</label></td>
+              <td><label><input name="send_reminders" type="RADIO" value="1">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">List-specific text prepended to new-subscriber welcome
+             message <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/welcome_msg"><br>(Details for <b>welcome_msg</b>)</a></div></td>
+      <td bgcolor="#dddddd"><textarea name="welcome_msg" rows="4" cols="40" wrap="soft"></textarea></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Send welcome message to newly subscribed members? <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/send_welcome_msg"><br>(Details for <b>send_welcome_msg</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="send_welcome_msg" type="RADIO" value="0" checked="">No</label></td>
+              <td><label><input name="send_welcome_msg" type="RADIO" value="1">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Text sent to people leaving the list.  If empty, no special
+             text will be added to the unsubscribe message. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/goodbye_msg"><br>(Edit <b>goodbye_msg</b>)</a></div></td>
+      <td bgcolor="#dddddd"><textarea name="goodbye_msg" rows="4" cols="40" wrap="soft"></textarea></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Send goodbye message to members when they are unsubscribed? <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/send_goodbye_msg"><br>(Edit <b>send_goodbye_msg</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="send_goodbye_msg" type="RADIO" value="0" checked="">No</label></td>
+              <td><label><input name="send_goodbye_msg" type="RADIO" value="1">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Should the list moderators get immediate notice of new
+             requests, as well as daily notices about collected ones? <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/admin_immed_notify"><br>(Details for <b>admin_immed_notify</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="admin_immed_notify" type="RADIO" value="0">No</label></td>
+              <td><label><input name="admin_immed_notify" type="RADIO" value="1" checked="">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Should administrator get notices of subscribes and
+             unsubscribes? <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/admin_notify_mchanges"><br>(Edit <b>admin_notify_mchanges</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="admin_notify_mchanges" type="RADIO" value="0" checked="">No</label></td>
+              <td><label><input name="admin_notify_mchanges" type="RADIO" value="1">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Send mail to poster when their posting is held for approval? <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/respond_to_post_requests"><br>(Edit <b>respond_to_post_requests</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="respond_to_post_requests" type="RADIO" value="0">No</label></td>
+              <td><label><input name="respond_to_post_requests" type="RADIO" value="1" checked="">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td colspan="2"><center><em>Additional settings</em></center></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Emergency moderation of all list traffic. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/emergency"><br>(Details for <b>emergency</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="emergency" type="RADIO" value="0" checked="">No</label></td>
+              <td><label><input name="emergency" type="RADIO" value="1">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Default options for new members joining this list.<input type="hidden" name="new_member_options" value="ignore"> <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/new_member_options"><br>(Details for <b>new_member_options</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="new_member_options" type="CHECKBOX" value="hide">Conceal the member's address</label></td>
+            </tr>
+            <tr>
+              <td><label><input name="new_member_options" type="CHECKBOX" value="ack">Acknowledge the member's posting</label></td>
+            </tr>
+            <tr>
+              <td><label><input name="new_member_options" type="CHECKBOX" value="notmetoo">Do not send a copy of a member's own post</label></td>
+            </tr>
+            <tr>
+              <td><label><input name="new_member_options" type="CHECKBOX" value="nodupes" checked="">Filter out duplicate messages to list members (if possible)</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">(Administrivia filter) Check postings and intercept ones
+             that seem to be administrative requests? <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/administrivia"><br>(Details for <b>administrivia</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="administrivia" type="RADIO" value="0" checked="">No</label></td>
+              <td><label><input name="administrivia" type="RADIO" value="1">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Maximum length in kilobytes (KB) of a message body.  Use 0
+             for no limit. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/max_message_size"><br>(Edit <b>max_message_size</b>)</a></div></td>
+      <td bgcolor="#dddddd"><input name="max_message_size" type="TEXT" value="0" size="7"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Maximum number of members to show on one page of the
+             Membership List. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/admin_member_chunksize"><br>(Edit <b>admin_member_chunksize</b>)</a></div></td>
+      <td bgcolor="#dddddd"><input name="admin_member_chunksize" type="TEXT" value="50" size="7"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Should messages from this mailing list include the
+                 <a href="http://www.faqs.org/rfcs/rfc2369.html">RFC 2369</a>
+                 (i.e. <tt>List-*</tt>) headers?  <em>Yes</em> is highly
+                 recommended. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/include_rfc2369_headers"><br>(Details for <b>include_rfc2369_headers</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="include_rfc2369_headers" type="RADIO" value="0">No</label></td>
+              <td><label><input name="include_rfc2369_headers" type="RADIO" value="1" checked="">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Should postings include the <tt>List-Post:</tt> header? <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/include_list_post_header"><br>(Details for <b>include_list_post_header</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="include_list_post_header" type="RADIO" value="0">No</label></td>
+              <td><label><input name="include_list_post_header" type="RADIO" value="1" checked="">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Should the <tt>Sender</tt> header be rewritten for this
+                 mailing list to avoid stray bounces?  <em>Yes</em> is
+                 recommended. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/include_sender_header"><br>(Details for <b>include_sender_header</b>)</a></div></td>
+      <td bgcolor="#dddddd">
+          <table cellspacing="5">
+            <tbody><tr>
+              <td><label><input name="include_sender_header" type="RADIO" value="0">No</label></td>
+              <td><label><input name="include_sender_header" type="RADIO" value="1" checked="">Yes</label></td>
+            </tr>
+          </tbody></table>
+</td>
+    </tr>
+    <tr>
+      <td bgcolor="#dddddd"><div align="right">Discard held messages older than this number of days.
+            Use 0 for no automatic discarding. <a href="http://lists.sherber.com/admin.cgi/test-sherber.com/?VARHELP=general/max_days_to_hold"><br>(Edit <b>max_days_to_hold</b>)</a></div></td>
+      <td bgcolor="#dddddd"><input name="max_days_to_hold" type="TEXT" value="180" size="7"></td>
+    </tr>
+    <tr>
+      <td colspan="2"><br></td>
+    </tr>
+  </tbody></table>
+</p><center>
+  <table cellpadding="2" cellspacing="0" border="0">
+    <tbody><tr>
+      <td align="middle"><strong><input name="submit" type="SUBMIT" value="Submit Your Changes"></strong></td>
+    </tr>
+  </tbody></table>
+</center>
+</form>
+<hr><address><a href="http://lists.sherber.com/listinfo.cgi/test-sherber.com">Test</a> list run by <a href="mailto:test-owner@lists.sherber.com">aaron at sherber.com</a><br><a href="http://lists.sherber.com/admin.cgi/test-sherber.com">Test administrative interface</a> (requires authorization)<br><p>
+<table width="100%" border="0">
+  <tbody><tr>
+    <td><img src="./general_files/mailman.jpg" alt="Delivered by Mailman" border="0"><br>version 2.1.23</td>
+    <td><img src="./general_files/PythonPowered.png" alt="Python Powered" border="0"></td>
+    <td><img src="./general_files/gnu-head-tiny.jpg" alt="GNU&#39;s Not Unix" border="0"></td>
+  </tr>
+</tbody></table>
+</p></address>
+
+
+</body></html>

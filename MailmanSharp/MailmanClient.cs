@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014-5 Aaron Sherber
+ * Copyright 2014-2018 Aaron Sherber
  * 
  * This file is part of MailmanSharp.
  *
@@ -18,42 +18,54 @@
  */
 
 using RestSharp;
+using RestSharp.Authenticators;
 using System;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MailmanSharp
 {
-    public class MailmanClient: RestClient
+    public class MailmanClient: IMailmanClientInternal
     {
-        /// <summary>
-        /// Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
-        /// </summary>
-        internal string AdminUrl { get { return GetAdminUrl(); } set { SetAdminUrl(value); } }
-        /// <summary>
-        /// Administrator password for list.
-        /// </summary>
-        internal string AdminPassword { get; set; }
+        string IMailmanClientInternal.AdminUrl { get { return GetAdminUrl(); } set { SetAdminUrl(value); } }
+        private string AdminUrl { get => ((IMailmanClientInternal)this).AdminUrl; set => ((IMailmanClientInternal)this).AdminUrl = value; }
+        string IMailmanClientInternal.AdminPassword { get; set; }
+        private string AdminPassword { get => ((IMailmanClientInternal)this).AdminPassword; set => ((IMailmanClientInternal)this).AdminPassword = value; }
+
+        public IAuthenticator Authenticator { get => _client.Authenticator; set => _client.Authenticator = value; }
+        public X509CertificateCollection ClientCertificates { get => _client.ClientCertificates; set => _client.ClientCertificates = value; }
+        public bool FollowRedirects { get => _client.FollowRedirects; set => _client.FollowRedirects = value; }
+        public int? MaxRedirects { get => _client.MaxRedirects; set => _client.MaxRedirects = value; }
+        public IWebProxy Proxy { get => _client.Proxy; set => _client.Proxy = value; }
+        public int Timeout { get => _client.Timeout; set => _client.Timeout = value; }
+        public string UserAgent { get => _client.UserAgent; set => _client.UserAgent = value; }
+        public bool UseSynchronizationContext { get => _client.UseSynchronizationContext; set => _client.UseSynchronizationContext = value; }
+        
 
         private string _listName;
         private string _adminPath;
         private MailmanList _list;
+        private IRestClient _client;
 
         internal MailmanClient(MailmanList list)
         {
-            if (list == null)
-                throw new ArgumentNullException("list");
-            _list = list;
-            this.FollowRedirects = true;
-            this.CookieContainer = new System.Net.CookieContainer();            
+            _list = list ?? throw new ArgumentNullException("list");
+
+            _client = new RestClient
+            {
+                FollowRedirects = true,
+                CookieContainer = new System.Net.CookieContainer()
+            };
         }
 
         /// <summary>
         /// Create a copy of a MailmanClient.
         /// </summary>
         /// <returns>New MailmanClient</returns>
-        internal MailmanClient Clone()
+        IMailmanClientInternal IMailmanClientInternal.Clone()
         {
             var result = new MailmanClient(_list)
             {
@@ -62,7 +74,7 @@ namespace MailmanSharp
 
                 Authenticator = this.Authenticator,
                 //BaseUrl = this.BaseUrl,
-                ClientCertificates = this.ClientCertificates,                
+                ClientCertificates = this.ClientCertificates,
                 FollowRedirects = this.FollowRedirects,
                 MaxRedirects = this.MaxRedirects,
                 Proxy = this.Proxy,
@@ -71,97 +83,94 @@ namespace MailmanSharp
                 UseSynchronizationContext = this.UseSynchronizationContext,
             };
 
-            foreach (var cookie in this.CookieContainer.GetCookies(BaseUrl))
-                result.CookieContainer.Add((Cookie)cookie);
+            foreach (var cookie in _client.CookieContainer.GetCookies(_client.BaseUrl))
+                result._client.CookieContainer.Add((Cookie)cookie);
             
-            foreach (var param in this.DefaultParameters)
-                result.DefaultParameters.Add(param);
+            foreach (var param in _client.DefaultParameters)
+                result._client.DefaultParameters.Add(param);
 
             return result;
         }
 
+        /// <summary>
+        /// Reset client to default values.
+        /// </summary>
         public void Reset()
         {
             _list.ResetClient();
         }
 
-        public IRestResponse ExecuteGetAdminRequest(string path, IRestRequest request)
-        {
-            return DoAdminRequest(path, request, Method.GET);
-        }
+        private static Regex _versionRe = new Regex(@"(?<=Delivered by Mailman.*version ).*(?=<)");
 
-        public IRestResponse ExecuteGetAdminRequest(string path, params object[] parms)
+        /// <summary>
+        /// Execute a request against the Mailman admin pages.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<IRestResponse> ExecuteAdminRequestAsync(string path, IRestRequest request)
         {
-            var req = BuildRequestFromParms(parms);
-            return this.ExecuteGetAdminRequest(path, req);
-        }
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
 
-        public IRestResponse ExecutePostAdminRequest(string path, IRestRequest request)
-        {
-            return DoAdminRequest(path, request, Method.POST);
-        }
-
-        public IRestResponse ExecutePostAdminRequest(string path, params object[] parms)
-        {
-            var req = BuildRequestFromParms(parms);
-            return this.ExecutePostAdminRequest(path, req);
-        }
-
-        private IRestResponse DoAdminRequest(string path, IRestRequest request, Method method)
-        {
             if (!String.IsNullOrEmpty(path))
                 path = path.Trim('/');
 
-            var req = request ?? new RestRequest();
-            req.Resource = String.Format("{0}/{1}/{2}", _adminPath, _listName, path); ;
-            req.Method = method;
-            req.AddOrSetParameter("adminpw", this.AdminPassword);
+            request.Resource = String.Format("{0}/{1}/{2}", _adminPath, _listName, path);
+            request.AddOrSetParameter("adminpw", this.AdminPassword);
 
-            var resp = this.Execute(req);
-            if (resp.StatusCode == HttpStatusCode.OK)
-            {
-                _list.MailmanVersion = Regex.Match(resp.Content, @"(?<=Delivered by Mailman.*version ).*(?=<)").Value;
-                return resp;
-            }
-            else
-            {
-                string msg = String.Format("Request failed. {{Uri={0}, Message={1}}}", resp.ResponseUri, resp.StatusDescription);
-                throw new Exception(msg);
-            }        
+            var resp = await _client.ExecuteTaskAsync(request).ConfigureAwait(false);
+
+            resp.CheckResponseAndThrowIfNeeded();
+
+            _list.SetMailmanVersion(_versionRe.Match(resp.Content).Value);
+            return resp;            
         }
 
-        private static IRestRequest BuildRequestFromParms(params object[] parms)
+        /// <summary>
+        /// Execute a request against the Mailman admin pages.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="path"></param>
+        /// <param name="parms"></param>
+        /// <returns></returns>
+        public Task<IRestResponse> ExecuteAdminRequestAsync(Method method, string path, params (string Name, object Value)[] parms)
         {
-            if (parms.Length % 2 != 0)
-                throw new ArgumentException("Argument 'parms' must have even number of values");
-
-            var result = new RestRequest();
-            for (int i = 0; i < parms.Length; i += 2)
+            var req = new RestRequest(method);
+            foreach (var parm in parms)
             {
-                result.AddParameter(parms[i].ToString(), parms[i + 1]);
+                req.AddParameter(parm.Name, parm.Value);
             }
-            return result;
+            
+            return this.ExecuteAdminRequestAsync(path, req);
         }
 
         private string GetRosterPath() 
         { 
             return _adminPath.Replace("admin", "roster"); 
         }
-        
 
-        public IRestResponse ExecuteRosterRequest()
+        /// <summary>
+        /// Execute a request to retrieve the list of subscribers.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IRestResponse> ExecuteRosterRequestAsync()
         {
             if (!HasAdminCookie())
-                ExecuteGetAdminRequest("");
+                await ExecuteAdminRequestAsync(Method.GET, null).ConfigureAwait(false);
             var resource = String.Format("{0}/{1}", this.GetRosterPath(), _listName);
             var req = new RestRequest(resource);
             req.AddParameter("adminpw", this.AdminPassword);
-            return this.Execute(req);
+            var resp = await _client.ExecuteTaskAsync(req).ConfigureAwait(false);
+
+            resp.CheckResponseAndThrowIfNeeded();
+
+            return resp;
         }
 
         internal bool HasAdminCookie()
         {
-            var cookies = CookieContainer.GetCookies(BaseUrl);
+            var cookies = _client.CookieContainer.GetCookies(_client.BaseUrl);
             return cookies.Cast<Cookie>().Any(c => c.Name == String.Format("{0}+admin", _listName));
         }
         
@@ -169,13 +178,13 @@ namespace MailmanSharp
         {
             // We know these bits have no trailing slashes.
             // BaseUrl gets trimmed by RestClient; the other two get trimmed in SetAdminUrl.
-            var url = String.Format("{0}/{1}/{2}", BaseUrl, _adminPath, _listName);
+            var url = String.Format("{0}/{1}/{2}", _client.BaseUrl, _adminPath, _listName);
             return Regex.IsMatch(url, "\\w") ? url : "";
         }
 
         private void SetAdminUrl(string value)
         {
-            BaseUrl = null;
+            _client.BaseUrl = null;
             _adminPath = "";
             _listName = "";
 
@@ -187,7 +196,7 @@ namespace MailmanSharp
                 if (numSegs < 3)
                     throw new ArgumentException("AdminUrl must have at least 3 path segments.");
 
-                BaseUrl = new Uri(uri.GetLeftPart(UriPartial.Authority)
+                _client.BaseUrl = new Uri(uri.GetLeftPart(UriPartial.Authority)
                     + String.Join("", uri.Segments.Take(numSegs - 2)));
                 _adminPath = uri.Segments[numSegs - 2].TrimEnd('/');
                 _listName = uri.Segments.Last().TrimEnd('/');
