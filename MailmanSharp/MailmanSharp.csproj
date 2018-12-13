@@ -11,8 +11,9 @@ Features include: all Mailman settings available as object properties, bulk subs
 
 Version 3 has several breaking changes; see release notes for details.</Description>
     <PackageIconUrl>https://raw.githubusercontent.com/asherber/MailmanSharp/master/MailmanSharp-64.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/asherber/MailmanSharp</PackageProjectUrl>
-    <PackageLicenseUrl>http://www.gnu.org/licenses/gpl.txt</PackageLicenseUrl>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/asherber/MailmanSharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>https://github.com/asherber/MailmanSharp/wiki/Changes-in-v3</PackageReleaseNotes>
     <Copyright>Copyright 2014-2018</Copyright>
     <PackageTags>Mailman listserv</PackageTags>
