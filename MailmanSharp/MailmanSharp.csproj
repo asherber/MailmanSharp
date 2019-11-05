@@ -18,6 +18,12 @@ Version 3 has several breaking changes; see release notes for details.</Descript
     <Copyright>Copyright 2014-2018</Copyright>
     <PackageTags>Mailman listserv</PackageTags>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+    <NoWarn>$(NoWarn);1591;1570;1587</NoWarn>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="[1.6.13,2.0)" />

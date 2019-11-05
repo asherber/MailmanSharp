@@ -1,0 +1,970 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MailmanSharp</name>
+    </assembly>
+    <members>
+        <member name="M:MailmanSharp.IMailmanClient.Reset">
+            <summary>
+            Reset client to default values.
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.IMailmanClient.ExecuteAdminRequestAsync(System.String,RestSharp.IRestRequest)">
+            <summary>
+            Execute a request against the Mailman admin pages.
+            </summary>
+            <param name="path"></param>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.IMailmanClient.ExecuteAdminRequestAsync(RestSharp.Method,System.String,System.ValueTuple{System.String,System.Object}[])">
+            <summary>
+            Execute a request against the Mailman admin pages.
+            </summary>
+            <param name="method"></param>
+            <param name="path"></param>
+            <param name="parms"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.IMailmanClient.ExecuteRosterRequestAsync">
+            <summary>
+            Execute a request to retrieve the list of subscribers.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:MailmanSharp.IMailmanList.AdminUrl">
+            <summary>
+            Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.IMailmanList.AdminPassword">
+            <summary>
+            Administrator password for list.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.IMailmanList.CurrentConfig">
+            <summary>
+            Current configuration of object as JSON.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.IMailmanList.MailmanVersion">
+            <summary>
+            Gets version of Mailman that this list is running on.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.IMailmanList.Client">
+            <summary>
+            Client which communicates with Mailman.
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.IMailmanList.ReadAsync">
+            <summary>
+            Read properties for all sections from Mailman.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.IMailmanList.WriteAsync">
+            <summary>
+            Write properties for all sections to Mailman.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.IMailmanList.LoadConfig(System.String)">
+            <summary>
+            Load configuration for this list from JSON string.
+            </summary>
+            <param name="json"></param>
+        </member>
+        <member name="M:MailmanSharp.IMailmanList.Reset">
+            <summary>
+            Reset all properties to defaults.
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.MailmanClient.MailmanSharp#IMailmanClientInternal#Clone">
+            <summary>
+            Create a copy of a MailmanClient.
+            </summary>
+            <returns>New MailmanClient</returns>
+        </member>
+        <member name="M:MailmanSharp.MailmanClient.Reset">
+            <summary>
+            Reset client to default values.
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.MailmanClient.ExecuteAdminRequestAsync(System.String,RestSharp.IRestRequest)">
+            <summary>
+            Execute a request against the Mailman admin pages.
+            </summary>
+            <param name="path"></param>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MailmanClient.ExecuteAdminRequestAsync(RestSharp.Method,System.String,System.ValueTuple{System.String,System.Object}[])">
+            <summary>
+            Execute a request against the Mailman admin pages.
+            </summary>
+            <param name="method"></param>
+            <param name="path"></param>
+            <param name="parms"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MailmanClient.ExecuteRosterRequestAsync">
+            <summary>
+            Execute a request to retrieve the list of subscribers.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:MailmanSharp.MailmanList.AdminUrl">
+            <summary>
+            Url to the admin page for this list (e.g., http://foo.com/mailman/admin/mylist).
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MailmanList.AdminPassword">
+            <summary>
+            Administrator password for list.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MailmanList.CurrentConfig">
+            <summary>
+            Current configuration of object as JSON.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MailmanList.MailmanVersion">
+            <summary>
+            Gets version of Mailman that this list is running on.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MailmanList.Client">
+            <summary>
+            Client which communicates with Mailman.
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.MailmanList.ReadAsync">
+            <summary>
+            Read properties for all sections from Mailman.
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.MailmanList.WriteAsync">
+            <summary>
+            Write properties for all sections to Mailman.
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.MailmanList.LoadConfig(System.String)">
+            <summary>
+            Load configuration for this list from JSON string.
+            </summary>
+            <param name="json"></param>
+        </member>
+        <member name="M:MailmanSharp.MailmanList.Reset">
+            <summary>
+            Reset all properties to defaults.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.HeaderFilterRule.Regexes">
+            <summary>
+            List of regexes to match against the headers of a message.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.HeaderFilterRule.Action">
+            <summary>
+            Action to take if a message matches.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.Topic.Regexes">
+            <summary>
+            Topic keywords, one per line, to match against each message.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ArchivingSection.Archive">
+            <summary>
+            Archive messages?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ArchivingSection.ArchivePrivate">
+            <summary>
+            Is archive file source for public or private archival?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ArchivingSection.ArchiveVolumeFrequency">
+            <summary>
+            How often should a new archive volume be started?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.AutoResponderSection.AutorespondPostings">
+            <summary>
+            Should Mailman send an auto-response to mailing list posters?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.AutoResponderSection.AutoresponsePostingsText">
+            <summary>
+            Auto-response text to send to mailing list posters.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.AutoResponderSection.AutorespondAdmin">
+            <summary>
+            Should Mailman send an auto-response to emails sent to the -owner address?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.AutoResponderSection.AutoresponseAdminText">
+            <summary>
+            Auto-response text to send to -owner emails.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.AutoResponderSection.AutorespondRequests">
+            <summary>
+            Should Mailman send an auto-response to emails sent to the -request address? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.AutoResponderSection.AutoresponseRequestText">
+            <summary>
+            Auto-response text to send to -request emails.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.AutoResponderSection.AutoresponseGraceperiod">
+            <summary>
+            Number of days between auto-responses to either the mailing list or -request/-owner 
+            address from the same poster. Set to zero (or negative) for no grace period 
+            (i.e. auto-respond to every message).
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.BounceProcessingSection.BounceProcessing">
+            <summary>
+            Should Mailman perform automatic bounce processing?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.BounceProcessingSection.BounceScoreThreshold">
+            <summary>
+            The maximum member bounce score before the member's subscription is disabled. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.BounceProcessingSection.BounceInfoStaleAfter">
+            <summary>
+            The number of days after which a member's bounce information is discarded, 
+            if no new bounces have been received in the interim. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.BounceProcessingSection.BounceYouAreDisabledWarnings">
+            <summary>
+            How many Your Membership Is Disabled warnings a disabled member should get before 
+            their address is removed from the mailing list. Set to 0 to immediately remove 
+            an address from the list once their bounce score exceeds the threshold. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.BounceProcessingSection.BounceYouAreDisabledWarningsInterval">
+            <summary>
+            The number of days between sending the Your Membership Is Disabled warnings. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.BounceProcessingSection.BounceUnrecognizedGoesToListOwner">
+            <summary>
+             Should Mailman send the list owner any bounce messages that failed to be 
+             detected by the bounce processor? Yes is recommended.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.BounceProcessingSection.BounceNotifyOwnerOnBounceIncrement">
+            <summary>
+            Should Mailman notify the list owner when bounces cause a member's 
+            bounce score to be incremented?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.BounceProcessingSection.BounceNotifyOwnerOnDisable">
+            <summary>
+            Should Mailman notify the list owner when bounces cause a member's subscription to be disabled?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.BounceProcessingSection.BounceNotifyOwnerOnRemoval">
+            <summary>
+            Should Mailman notify the list owner when bounces cause a member to be unsubscribed?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ContentFilteringSection.FilterContent">
+            <summary>
+            Should Mailman filter the content of list traffic according to the settings in this section?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ContentFilteringSection.FilterMimeTypes">
+            <summary>
+            Remove message attachments that have a matching content type.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ContentFilteringSection.PassMimeTypes">
+            <summary>
+            Remove message attachments that don't have a matching content type. Leave this property empty to skip this filter test.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ContentFilteringSection.FilterFilenameExtensions">
+            <summary>
+            Remove message attachments that have a matching filename extension.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ContentFilteringSection.PassFilenameExtensions">
+            <summary>
+            Remove message attachments that don't have a matching filename extension. Leave this property empty to skip this filter test.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ContentFilteringSection.CollapseAlternatives">
+            <summary>
+            Should Mailman collapse multipart/alternative to its first part content?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ContentFilteringSection.ConvertHtmlToPlaintext">
+            <summary>
+            Should Mailman convert text/html parts to plain text? This conversion happens after MIME attachments have been stripped.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.ContentFilteringSection.FilterAction">
+            <summary>
+            Action to take when a message matches the content filtering rules.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.DigestSection.Digestable">
+            <summary>
+            Can list members choose to receive list traffic bunched in digests?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.DigestSection.DigestIsDefault">
+            <summary>
+            Which delivery mode is the default for new users?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.DigestSection.MimeIsDefaultDigest">
+            <summary>
+            When receiving digests, which format is default?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.DigestSection.DigestSizeThreshhold">
+            <summary>
+            How big in Kb should a digest be before it gets sent out? 0 implies no maximum size. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.DigestSection.DigestSendPeriodic">
+            <summary>
+            Should a digest be dispatched daily when the size threshold isn't reached?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.DigestSection.DigestHeader">
+            <summary>
+            Header added to every digest.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.DigestSection.DigestFooter">
+            <summary>
+            Footer added to every digest.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.DigestSection.DigestVolumeFrequency">
+            <summary>
+            How often should a new digest volume be started?
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.DigestSection.NewVolumeAsync">
+            <summary>
+            Start a new digest volume.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.DigestSection.SendDigestNowAsync">
+            <summary>
+            Send the next digest right now, if it is not empty
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.RealName">
+            <summary>
+            The public name of this list (make case-changes only). 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.Owner">
+            <summary>
+            The list administrator email addresses.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.Moderator">
+            <summary>
+            The list moderator email addresses.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.Description">
+            <summary>
+            A terse phrase identifying this list.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.Info">
+            <summary>
+            An introductory description – a few paragraphs – about the list. 
+            It will be included, as html, at the top of the listinfo page.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.SubjectPrefix">
+            <summary>
+            Prefix for subject line of list postings.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.FromIsList">
+            <summary>
+            Replace the From: header address with the list's posting address to mitigate 
+            issues stemming from the original From: domain's DMARC or similar policies. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.AnonymousList">
+            <summary>
+            Hide the sender of a message, replacing it with the list address (Removes From, Sender and Reply-To fields) 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.FirstStripReplyTo">
+            <summary>
+            Should any existing Reply-To: header found in the original message be stripped? 
+            If so, this will be done regardless of whether an explict Reply-To: header is added by Mailman or not. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.ReplyGoesToList">
+            <summary>
+            Where are replies to list messages directed? Poster is strongly recommended for most mailing lists. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.ReplyToAddress">
+            <summary>
+            Explicit Reply-To: header. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.UmbrellaList">
+            <summary>
+            Send password reminders to, eg, "-owner" address instead of directly to user.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.UmbrellaMemberSuffix">
+            <summary>
+            Suffix for use when this list is an umbrella for other lists, 
+            according to setting of previous "umbrella_list" setting. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.SendReminders">
+            <summary>
+            Send monthly password reminders?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.WelcomeMsg">
+            <summary>
+            List-specific text prepended to new-subscriber welcome message.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.SendWelcomeMsg">
+            <summary>
+            Send welcome message to newly subscribed members? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.GoodbyeMsg">
+            <summary>
+            Text sent to people leaving the list. If empty, no special text will be added to the unsubscribe message.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.SendGoodbyeMsg">
+            <summary>
+            Send goodbye message to members when they are unsubscribed?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.AdminImmedNotify">
+            <summary>
+            Should the list moderators get immediate notice of new requests, as well as daily notices about collected ones?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.AdminNotifyMchanges">
+            <summary>
+            Should administrator get notices of subscribes and unsubscribes? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.RespondToPostRequests">
+            <summary>
+            Send mail to poster when their posting is held for approval? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.Emergency">
+            <summary>
+            Emergency moderation of all list traffic. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.NewMemberOptions">
+            <summary>
+            Default options for new members joining this list.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.Administrivia">
+            <summary>
+            Check postings and intercept ones that seem to be administrative requests? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.MaxMessageSize">
+            <summary>
+            Maximum length in kilobytes (KB) of a message body. Use 0 for no limit.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.AdminMemberChunksize">
+            <summary>
+            Maximum number of members to show on one page of the Membership List.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.IncludeRfc2369Headers">
+            <summary>
+            Should messages from this mailing list include the RFC 2369 (i.e. List-*) headers? Yes is highly recommended. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.IncludeListPostHeader">
+            <summary>
+            Should postings include the List-Post: header?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.IncludeSenderHeader">
+            <summary>
+            Should the Sender header be rewritten for this mailing list to avoid stray bounces? Yes is recommended. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.GeneralSection.MaxDaysToHold">
+            <summary>
+            Discard held messages older than this number of days. Use 0 for no automatic discarding.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MailNewsGatewaysSection.NntpHost">
+            <summary>
+            The hostname of the machine your news server is running on. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MailNewsGatewaysSection.LinkedNewsgroup">
+            <summary>
+            The name of the Usenet group to gateway to and/or from.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MailNewsGatewaysSection.GatewayToNews">
+            <summary>
+            Should new posts to the mailing list be sent to the newsgroup? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MailNewsGatewaysSection.GatewayToMail">
+            <summary>
+            Should new posts to the newsgroup be sent to the mailing list?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MailNewsGatewaysSection.NewsModeration">
+            <summary>
+            The moderation policy of the newsgroup. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MailNewsGatewaysSection.NewsPrefixSubjectToo">
+            <summary>
+            Prefix Subject: headers on postings gated to news?
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.MailNewsGatewaysSection.MassCatchupAsync">
+            <summary>
+            Perform a catchup on the newsgroup.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:MailmanSharp.MembershipSection.Emails">
+            <summary>
+            List of all subscribed addresses, separated by newline.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.MembershipSection.EmailList">
+            <summary>
+            List of all subscribed addresses.
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.ModerateAllAsync">
+            <summary>
+            Set the moderation bit for all members to on.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.UnmoderateAllAsync">
+            <summary>
+            Set the moderation bit for all members to off.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.SetModerateAllAsync(System.Boolean)">
+            <summary>
+            Set the moderation bit for all members to the specified value.
+            </summary>
+            <param name="moderate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.UnsubscribeAsync(System.String,MailmanSharp.UnsubscribeOptions)">
+            <summary>
+            Unsubscribe a newline-separated list of addresses.
+            </summary>
+            <param name="addresses"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.UnsubscribeAsync(System.Collections.Generic.IEnumerable{System.String},MailmanSharp.UnsubscribeOptions)">
+            <summary>
+            Unsubscribe a list of addresses.
+            </summary>
+            <param name="addresses"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.UnsubscribeAsync(System.Collections.Generic.IEnumerable{MailmanSharp.Member},MailmanSharp.UnsubscribeOptions)">
+            <summary>
+            Unsubscribe a list of members.
+            </summary>
+            <param name="members"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.UnsubscribeAsync(MailmanSharp.Member,MailmanSharp.UnsubscribeOptions)">
+            <summary>
+            Unsubscribe a single member.
+            </summary>
+            <param name="member"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.UnsubscribeAllAsync(MailmanSharp.UnsubscribeOptions)">
+            <summary>
+            Unsubscribe all members.
+            </summary>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.SubscribeAsync(System.String,MailmanSharp.SubscribeOptions)">
+            <summary>
+            Subscribe a newline-separated list of addresses.
+            </summary>
+            <param name="addresses"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.SubscribeAsync(System.String,System.String,MailmanSharp.SubscribeOptions)">
+            <summary>
+            Subscribe a newline-separated list of addresses, with additional text for the notification. 
+            </summary>
+            <param name="addresses"></param>
+            <param name="message"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.SubscribeAsync(System.Collections.Generic.IEnumerable{System.String},MailmanSharp.SubscribeOptions)">
+            <summary>
+            Subscribe a list of addresses.
+            </summary>
+            <param name="addresses"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.SubscribeAsync(System.Collections.Generic.IEnumerable{System.String},System.String,MailmanSharp.SubscribeOptions)">
+            <summary>
+            Subscribe a list of addresses, with additional text for the notification.
+            </summary>
+            <param name="addresses"></param>
+            <param name="message"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.InviteAsync(System.String)">
+            <summary>
+            Invite a newline-separated list of addresses.
+            </summary>
+            <param name="addresses"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.InviteAsync(System.String,System.String)">
+            <summary>
+            Invite a newline-separated list of addresses, with additional text for the invitation.
+            </summary>
+            <param name="addresses"></param>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.InviteAsync(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Invite a list of addresses.
+            </summary>
+            <param name="addresses"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.InviteAsync(System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Invite a list of addresses, with additional text for the invitation.
+            </summary>
+            <param name="addresses"></param>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.SearchMembersAsync(System.String)">
+            <summary>
+            Search for members.
+            </summary>
+            <param name="regexp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.GetAllMembersAsync">
+            <summary>
+            Get a list of all members.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.SaveMembersAsync(System.Collections.Generic.IEnumerable{MailmanSharp.Member})">
+            <summary>
+            Save changes to a list of members. Changes to the email address are not allowed.
+            </summary>
+            <param name="members"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.SaveMemberAsync(MailmanSharp.Member)">
+            <summary>
+            Save changes to a member.
+            </summary>
+            <param name="members"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.MembershipSection.ChangeMemberAddressAsync(System.String,System.String,MailmanSharp.ChangeNotificationOptions)">
+            <summary>
+            Change a member's address while leaving other options the same. Note: This function
+            is only available on Mailman 2.1.20 and higher.
+            </summary>
+            <param name="oldAddress"></param>
+            <param name="newAddress"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="P:MailmanSharp.NonDigestSection.Nondigestable">
+            <summary>
+            Can subscribers choose to receive mail immediately, rather than in batched digests? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.NonDigestSection.Personalize">
+            <summary>
+            Should Mailman personalize each non-digest delivery? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.NonDigestSection.MsgHeader">
+            <summary>
+            Header added to mail sent to regular list members.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.NonDigestSection.MsgFooter">
+            <summary>
+            Footer added to mail sent to regular list members.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.NonDigestSection.ScrubNondigest">
+            <summary>
+            Scrub attachments of regular delivery message? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.NonDigestSection.RegularExcludeLists">
+            <summary>
+            Other mailing lists on this site whose members are excluded from the regular 
+            (non-digest) delivery if those list addresses appear in a To: or Cc: header.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.NonDigestSection.RegularExcludeIgnore">
+            <summary>
+            Ignore regular_exclude_lists of which the poster is not a member. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.NonDigestSection.RegularIncludeLists">
+            <summary>
+            Other mailing lists on this site whose members are included in the regular 
+            (non-digest) delivery if those list addresses don't appear in a To: or Cc: header. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.Advertised">
+            <summary>
+            Advertise this list when people ask what lists are on this machine? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.SubscribePolicy">
+            <summary>
+            What steps are required for subscription?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.SubscribeAutoApproval">
+            <summary>
+            List of addresses (or regexps) whose subscriptions do not require approval.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.UnsubscribePolicy">
+            <summary>
+            Is the list moderator's approval required for unsubscription requests? (No is recommended.) 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.BanList">
+            <summary>
+            List of addresses which are banned from membership in this mailing list. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.PrivateRoster">
+            <summary>
+            Who can view subscription list?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.ObscureAddresses">
+            <summary>
+            Show member addresses so they're not directly recognizable as email addresses?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.DefaultMemberModeration">
+            <summary>
+            By default, should new list member postings be moderated?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.MemberVerbosityThreshold">
+            <summary>
+            Ceiling on acceptable number of member posts, per interval, before automatic moderation. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.MemberVerbosityInterval">
+            <summary>
+            Number of seconds to remember posts to this list to determine member_verbosity_threshold 
+            for automatic moderation of a member. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.MemberModerationAction">
+            <summary>
+            Action to take when a moderated member posts to the list.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.MemberModerationNotice">
+            <summary>
+            Text to include in any rejection notice to be sent to moderated members who post to this list.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.DmarcModerationAction">
+            <summary>
+            Action to take when anyone posts to the list from a domain with a DMARC Reject/Quarantine Policy. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.DmarcQuarantineModerationAction">
+            <summary>
+            Should the above dmarc_moderation_action apply to messages From: domains with 
+            DMARC p=quarantine as well as p=reject?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.DmarcNoneModerationAction">
+            <summary>
+            Should the above dmarc_moderation_action apply to messages From: domains with 
+            DMARC p=none as well as p=quarantine and p=reject 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.DmarcModerationNotice">
+            <summary>
+            Text to include in any rejection notice to be sent to anyone who posts to 
+            this list from a domain with a DMARC Reject/Quarantine Policy.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.DmarcWrappedMessageText">
+            <summary>
+            If dmarc_moderation_action applies and is Wrap Message, and this text is provided, 
+            the text will be placed in a separate text/plain MIME part preceding the original 
+            message part in the wrapped message. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.EquivalentDomains">
+            <summary>
+            A 'two dimensional' list of email address domains which are considered equivalent 
+            when checking if a post is from a list member.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.AcceptTheseNonmembers">
+            <summary>
+            List of non-member addresses whose postings should be automatically accepted. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.HoldTheseNonmembers">
+            <summary>
+            List of non-member addresses whose postings will be immediately held for moderation.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.RejectTheseNonmembers">
+            <summary>
+            List of non-member addresses whose postings will be automatically rejected. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.DiscardTheseNonmembers">
+            <summary>
+            List of non-member addresses whose postings will be automatically discarded.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.GenericNonmemberAction">
+            <summary>
+            Action to take for postings from non-members for which no explicit action is defined.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.ForwardAutoDiscards">
+            <summary>
+            Should messages from non-members, which are automatically discarded, be forwarded to the list moderator? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.NonmemberRejectionNotice">
+            <summary>
+            Text to include in any rejection notice to be sent to non-members who post to this list. This notice 
+            can include the list's owner address by %(listowner)s and replaces the internally crafted default message.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.RequireExplicitDestination">
+            <summary>
+            Must posts have list named in destination (to, cc) field (or be among the acceptable alias names, specified below)? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.AcceptableAliases">
+            <summary>
+            Alias names (regexps) which qualify as explicit to or cc destination names for this list. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.MaxNumRecipients">
+            <summary>
+            Ceiling on acceptable number of recipients for a posting.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.BounceMatchingHeaders">
+            <summary>
+            Hold posts with header value matching a specified regexp.
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.PrivacySection.HeaderFilterRules">
+            <summary>
+            Filter rules to match against the headers of a message. 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.SectionBase.CurrentConfig">
+            <summary>
+            Current configuration of object as JSON.
+            </summary>
+        </member>
+        <member name="M:MailmanSharp.SectionBase.ReadAsync">
+            <summary>
+            Read properties for this section from Mailman.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.SectionBase.WriteAsync">
+            <summary>
+            Write properties for this section to Mailman.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MailmanSharp.SectionBase.LoadConfig(System.String)">
+            <summary>
+            Load configuration for this section from JSON string.
+            </summary>
+            <param name="json"></param>
+        </member>
+        <member name="P:MailmanSharp.TopicsSection.TopicsEnabled">
+            <summary>
+            Should the topic filter be enabled or disabled?
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.TopicsSection.TopicsBodylinesLimit">
+            <summary>
+            How many body lines should the topic matcher scan? 
+            </summary>
+        </member>
+        <member name="P:MailmanSharp.TopicsSection.Topics">
+            <summary>
+            Topics to match against each message.
+            </summary>
+        </member>
+    </members>
+</doc>

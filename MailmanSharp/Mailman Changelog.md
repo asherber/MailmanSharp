@@ -2,6 +2,18 @@
 
 See http://bazaar.launchpad.net/~mailman-coders/mailman/2.1/view/head:/NEWS
 
+### 2.1.28
+
+No relevant new features
+
+### 2.1.27
+
+- [ ] An option has been added to bin/add_members to issue invitations instead of immediately adding members. 
+
+### 2.1.26
+
+No relevant new features
+
 ### 2.1.25
 
 No new features
