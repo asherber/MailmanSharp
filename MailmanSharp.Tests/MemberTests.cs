@@ -7,6 +7,7 @@ using Xunit;
 using FluentAssertions;
 using HtmlAgilityPack;
 using RestSharp;
+using System.IO;
 
 namespace MailmanSharp.Tests
 {
@@ -20,7 +21,7 @@ namespace MailmanSharp.Tests
             {
                 OptionFixNestedTags = true
             };
-            _doc.Load("members.html");
+            _doc.LoadHtml(File.ReadAllText("members.html"));
         }
 
         [Fact]
