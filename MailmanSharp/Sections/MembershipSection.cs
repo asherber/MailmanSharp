@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014-2018 Aaron Sherber
+ * Copyright 2014-2022 Aaron Sherber
  * 
  * This file is part of MailmanSharp.
  *
@@ -466,7 +466,7 @@ namespace MailmanSharp
         /// <summary>
         /// Save changes to a member.
         /// </summary>
-        /// <param name="members"></param>
+        /// <param name="member"></param>
         /// <returns></returns>
         public Task SaveMemberAsync(Member member)
         {

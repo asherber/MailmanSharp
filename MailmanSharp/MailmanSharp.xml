@@ -715,7 +715,7 @@
             <summary>
             Save changes to a member.
             </summary>
-            <param name="members"></param>
+            <param name="member"></param>
             <returns></returns>
         </member>
         <member name="M:MailmanSharp.MembershipSection.ChangeMemberAddressAsync(System.String,System.String,MailmanSharp.ChangeNotificationOptions)">

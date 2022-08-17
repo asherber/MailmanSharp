@@ -15,7 +15,7 @@ Version 3 has several breaking changes; see release notes for details.</Descript
     <RepositoryUrl>https://github.com/asherber/MailmanSharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>https://github.com/asherber/MailmanSharp/wiki/Changes-in-v3</PackageReleaseNotes>
-    <Copyright>Copyright 2014-2018</Copyright>
+    <Copyright>Copyright 2014-2022</Copyright>
     <PackageTags>Mailman listserv</PackageTags>
   </PropertyGroup>
   
@@ -28,7 +28,11 @@ Version 3 has several breaking changes; see release notes for details.</Descript
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="HtmlAgilityPack" Version="[1.6.13,2.0)" />
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.1.11" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.109" PrivateAssets="all" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="[106.2.1,107.0)" />
   </ItemGroup>
