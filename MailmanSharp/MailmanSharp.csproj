@@ -17,6 +17,7 @@ Version 3 has several breaking changes; see release notes for details.</Descript
     <PackageReleaseNotes>https://github.com/asherber/MailmanSharp/wiki/Changes-in-v3</PackageReleaseNotes>
     <Copyright>Copyright 2014-2022</Copyright>
     <PackageTags>Mailman listserv</PackageTags>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
   
   <PropertyGroup>
